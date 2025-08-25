@@ -76,20 +76,6 @@ class AuthService {
     }
   }
 
-  Future<bool> authenticateWithBiometrics(String reason) async {
-    try {
-      final authenticated = await _localAuth.authenticate(
-        localizedReason: reason,
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
-      );
-      return authenticated;
-    } catch (e) {
-      return false;
-    }
-  }
 
   Future<bool> authenticateWithBiometrics() async {
     try {
