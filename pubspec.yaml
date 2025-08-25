@@ -1,8 +1,13 @@
 name: focus_journal
-description: "A new Flutter project."
+description: "A minimalist journaling app focused on mindfulness and personal growth."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+homepage: https://bdgraue.vancheng.de
+repository: https://bdgraue.vancheng.de/focus_journal
+issue_tracker: https://bdgraue.vancheng.de/focus_journal/issues
+maintainer: bdgraue (bdgraue@gmail.com)
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -30,6 +35,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -43,10 +51,7 @@ dev_dependencies:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # encourage good coding practices.
   flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
@@ -54,6 +59,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # Enable generation of localization code
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

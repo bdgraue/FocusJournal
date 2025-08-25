@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:focus_journal/l10n/app_localizations.dart';
 import '../services/auth_service.dart';
 
 class PasswordSetupScreen extends StatefulWidget {
-  final VoidCallback onSetupComplete;
+  final VoidCallback? onSetupComplete;
+  final bool isChange;
+  final bool isFirstTimeSetup;
 
-  const PasswordSetupScreen({super.key, required this.onSetupComplete});
+  const PasswordSetupScreen({
+    super.key, 
+    this.onSetupComplete,
+    this.isChange = false,
+    this.isFirstTimeSetup = false,
+  });
 
   @override
   State<PasswordSetupScreen> createState() => _PasswordSetupScreenState();
@@ -26,7 +34,13 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       final authService = AuthService();
       await authService.setupPassword(_passwordController.text);
-      widget.onSetupComplete();
+      
+      if (widget.isChange) {
+        if (!mounted) return;
+        Navigator.pop(context);
+      } else {
+        widget.onSetupComplete?.call();
+      }
     }
   }
 
@@ -34,18 +48,20 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Setup Password'),
+        title: Text(widget.isChange 
+          ? AppLocalizations.of(context)!.changePassword 
+          : AppLocalizations.of(context)!.setupPassword),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Please set up a password to protect your journal',
-                style: TextStyle(fontSize: 16),
+              Text(
+                AppLocalizations.of(context)!.setupPasswordPrompt,
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 24),
               TextFormField(
