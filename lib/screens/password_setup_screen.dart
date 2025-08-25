@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
-import '../services/auth_service.dart';
+import '../services/authentication_service.dart';
 
 class PasswordSetupScreen extends StatefulWidget {
   final VoidCallback? onSetupComplete;
@@ -32,7 +32,7 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
 
   Future<void> _setupPassword() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final authService = AuthService();
+      final authService = AuthenticationService();
       await authService.setupPassword(_passwordController.text);
       
       if (widget.isChange) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/authentication_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'screens/password_setup_screen.dart';
-import 'services/auth_service.dart';
+import 'services/authentication_service.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
@@ -53,7 +53,7 @@ class AuthenticationWrapper extends StatefulWidget {
 }
 
 class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-  final _authService = AuthService();
+  final _authService = AuthenticationService();
   bool? _isAuthSetup;
   bool _isAuthenticated = false;
 

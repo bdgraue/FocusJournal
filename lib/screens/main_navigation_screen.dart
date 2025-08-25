@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
-import '../services/auth_service.dart';
+import '../services/authentication_service.dart';
 import 'password_setup_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -12,7 +12,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
-  final _authService = AuthService();
+  final _authService = AuthenticationService();
 
   void _logout() {
     Navigator.of(context).pushReplacement(

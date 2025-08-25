@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
-import '../services/auth_service.dart';
+import '../services/authentication_service.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   final VoidCallback? onAuthenticationSuccess;
@@ -18,11 +18,11 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final _credentialController = TextEditingController();
-  final _authService = AuthService();
+  final _authService = AuthenticationService();
   bool _isLoading = false;
   String? _errorMessage;
   bool _isSetup = false;
-  String _authMethod = AuthService.authMethodPassword;
+  String _authMethod = AuthenticationService.authMethodPassword;
 
   @override
   void initState() {
@@ -79,7 +79,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<void> _authenticate() async {
     if (_credentialController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'Please enter your ${_authMethod == AuthService.authMethodPassword ? 'password' : 'PIN'}';
+        _errorMessage = 'Please enter your ${_authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
       });
       return;
     }
@@ -90,7 +90,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
 
     bool success;
-    if (_authMethod == AuthService.authMethodPassword) {
+    if (_authMethod == AuthenticationService.authMethodPassword) {
       success = await _authService.verifyPassword(_credentialController.text);
     } else {
       success = await _authService.verifyPin(_credentialController.text);
@@ -105,7 +105,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Incorrect ${_authMethod == AuthService.authMethodPassword ? 'password' : 'PIN'}';
+        _errorMessage = 'Incorrect ${_authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
       });
     }
 
@@ -115,9 +115,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> _setupCredential() async {
-    if (_authMethod == AuthService.authMethodPin && !_authService.isValidPin(_credentialController.text)) {
+    if (_authMethod == AuthenticationService.authMethodPin && !_authService.isValidPin(_credentialController.text)) {
       setState(() {
-        _errorMessage = 'PIN must be at least ${AuthService.minPinLength} digits';
+        _errorMessage = 'PIN must be at least ${AuthenticationService.minPinLength} digits';
       });
       return;
     }
@@ -128,7 +128,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
 
     try {
-      if (_authMethod == AuthService.authMethodPassword) {
+      if (_authMethod == AuthenticationService.authMethodPassword) {
         await _authService.setupPassword(_credentialController.text);
       } else {
         await _authService.setupPin(_credentialController.text);
@@ -163,22 +163,22 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           children: [
             Text(
               _isSetup
-                ? (_authMethod == AuthService.authMethodPassword 
+                ? (_authMethod == AuthenticationService.authMethodPassword 
                     ? AppLocalizations.of(context)!.enterPasswordPrompt
                     : AppLocalizations.of(context)!.enterPinPrompt)
-                : (_authMethod == AuthService.authMethodPassword 
+                : (_authMethod == AuthenticationService.authMethodPassword 
                     ? AppLocalizations.of(context)!.setupPasswordPrompt
-                    : AppLocalizations.of(context)!.setupPinPrompt(AuthService.minPinLength)),
+                    : AppLocalizations.of(context)!.setupPinPrompt(AuthenticationService.minPinLength)),
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
             TextField(
               controller: _credentialController,
               obscureText: true,
-              keyboardType: _authMethod == AuthService.authMethodPin ? TextInputType.number : TextInputType.text,
-              maxLength: _authMethod == AuthService.authMethodPin ? 8 : null,
+              keyboardType: _authMethod == AuthenticationService.authMethodPin ? TextInputType.number : TextInputType.text,
+              maxLength: _authMethod == AuthenticationService.authMethodPin ? 8 : null,
               decoration: InputDecoration(
-                labelText: _authMethod == AuthService.authMethodPassword 
+                labelText: _authMethod == AuthenticationService.authMethodPassword
                   ? AppLocalizations.of(context)!.password 
                   : AppLocalizations.of(context)!.pin,
                 border: const OutlineInputBorder(),
@@ -193,7 +193,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   ? const CircularProgressIndicator()
                   : Text(_isSetup 
                       ? AppLocalizations.of(context)!.unlock 
-                      : _authMethod == AuthService.authMethodPassword 
+                      : _authMethod == AuthenticationService.authMethodPassword 
                           ? AppLocalizations.of(context)!.setPassword
                           : AppLocalizations.of(context)!.setPin),
             ),
