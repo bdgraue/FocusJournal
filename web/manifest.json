@@ -1,6 +1,6 @@
 {
-    "name": "focus_journal",
-    "short_name": "focus_journal",
+    "name": "Focus Journal",
+    "short_name": "Focus Journal",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
