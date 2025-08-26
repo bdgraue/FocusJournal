@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import '../services/authentication_service.dart';
+import 'pattern_setup_screen.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   final VoidCallback? onAuthenticationSuccess;
@@ -23,6 +24,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String? _errorMessage;
   bool _isSetup = false;
   String _authMethod = AuthenticationService.authMethodPassword;
+  bool _showBackupPassword = false;
+  bool _hasBackupPassword = false;
 
   @override
   void initState() {
@@ -39,36 +42,36 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<void> _checkAuthSetup() async {
     final isSetup = await _authService.isAuthenticationSetup();
     final currentMethod = await _authService.getCurrentAuthMethod();
+    final hasBackup = await _authService.hasBackupPassword();
     setState(() {
       _isSetup = isSetup;
       _authMethod = currentMethod;
+      _hasBackupPassword = hasBackup;
     });
-    if (isSetup) {
-      _checkBiometrics();
-    }
   }
 
-  Future<void> _checkBiometrics() async {
-    if (await _authService.canUseBiometrics()) {
-      _authenticateWithBiometrics();
-    }
-  }
 
-  Future<void> _authenticateWithBiometrics() async {
+  Future<void> _authenticateWithPattern(List<int> pattern) async {
+    if (pattern.length < 4) {
+      setState(() {
+        _errorMessage = 'Please draw your pattern';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
-    final success = await _authService.authenticateWithBiometrics();
+    final success = await _authService.verifyPattern(pattern.join());
     
     if (success) {
       widget.onAuthenticationSuccess?.call();
-      if (widget.isChangingPin) {
-        setState(() {
-          _isSetup = false;
-        });
-      }
+    } else {
+      setState(() {
+        _errorMessage = 'Incorrect pattern';
+      });
     }
 
     setState(() {
@@ -77,9 +80,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> _authenticate() async {
+    if (_authMethod == AuthenticationService.authMethodPattern) {
+      // Pattern authentication will be handled by the pattern input widget
+      return;
+    }
+    
     if (_credentialController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'Please enter your ${_authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
+        _errorMessage = 'Please enter your ${_showBackupPassword ? 'backup password' : _authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
       });
       return;
     }
@@ -90,10 +98,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
 
     bool success;
-    if (_authMethod == AuthenticationService.authMethodPassword) {
-      success = await _authService.verifyPassword(_credentialController.text);
+    if (_showBackupPassword) {
+      success = await _authService.authenticateWithBackupPassword(_credentialController.text);
     } else {
-      success = await _authService.verifyPin(_credentialController.text);
+      success = await _authService.authenticateWithCredentials(_credentialController.text);
     }
     
     if (success) {
@@ -105,12 +113,20 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Incorrect ${_authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
+        _errorMessage = 'Incorrect ${_showBackupPassword ? 'backup password' : _authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
       });
     }
 
     setState(() {
       _isLoading = false;
+    });
+  }
+
+  void _toggleBackupPassword() {
+    setState(() {
+      _showBackupPassword = !_showBackupPassword;
+      _credentialController.clear();
+      _errorMessage = null;
     });
   }
 
@@ -163,29 +179,56 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           children: [
             Text(
               _isSetup
-                ? (_authMethod == AuthenticationService.authMethodPassword 
+                ? (_showBackupPassword 
                     ? AppLocalizations.of(context)!.enterPasswordPrompt
-                    : AppLocalizations.of(context)!.enterPinPrompt)
+                    : _authMethod == AuthenticationService.authMethodPassword 
+                        ? AppLocalizations.of(context)!.enterPasswordPrompt
+                        : _authMethod == AuthenticationService.authMethodPin
+                            ? AppLocalizations.of(context)!.enterPinPrompt
+                            : AppLocalizations.of(context)!.drawPattern)
                 : (_authMethod == AuthenticationService.authMethodPassword 
                     ? AppLocalizations.of(context)!.setupPasswordPrompt
-                    : AppLocalizations.of(context)!.setupPinPrompt(AuthenticationService.minPinLength)),
+                    : _authMethod == AuthenticationService.authMethodPin
+                        ? AppLocalizations.of(context)!.setupPinPrompt(AuthenticationService.minPinLength)
+                        : AppLocalizations.of(context)!.drawPattern),
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            TextField(
-              controller: _credentialController,
-              obscureText: true,
-              keyboardType: _authMethod == AuthenticationService.authMethodPin ? TextInputType.number : TextInputType.text,
-              maxLength: _authMethod == AuthenticationService.authMethodPin ? 8 : null,
-              decoration: InputDecoration(
-                labelText: _authMethod == AuthenticationService.authMethodPassword
-                  ? AppLocalizations.of(context)!.password 
-                  : AppLocalizations.of(context)!.pin,
-                border: const OutlineInputBorder(),
-                errorText: _errorMessage,
+            if (_authMethod == AuthenticationService.authMethodPattern) ...[
+              PatternGrid(
+                onPatternDrawn: _isSetup ? _authenticateWithPattern : (pattern) => _setupCredential(),
+                currentPattern: [],
+                enabled: !_isLoading,
               ),
-              onSubmitted: (_) => _isSetup ? _authenticate() : _setupCredential(),
-            ),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ] else ...[
+              TextField(
+                controller: _credentialController,
+                obscureText: true,
+                keyboardType: (_showBackupPassword || _authMethod == AuthenticationService.authMethodPassword) ? TextInputType.text : TextInputType.number,
+                maxLength: (_showBackupPassword || _authMethod == AuthenticationService.authMethodPassword) ? null : 8,
+                decoration: InputDecoration(
+                  labelText: _showBackupPassword 
+                    ? AppLocalizations.of(context)!.password
+                    : _authMethod == AuthenticationService.authMethodPassword
+                        ? AppLocalizations.of(context)!.password 
+                        : AppLocalizations.of(context)!.pin,
+                  border: const OutlineInputBorder(),
+                  errorText: _errorMessage,
+                ),
+                onSubmitted: (_) => _isSetup ? _authenticate() : _setupCredential(),
+              ),
+            ],
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _isLoading ? null : (_isSetup ? _authenticate : _setupCredential),
@@ -197,20 +240,14 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                           ? AppLocalizations.of(context)!.setPassword
                           : AppLocalizations.of(context)!.setPin),
             ),
-            if (_isSetup) ...[
+            if (_isSetup && _hasBackupPassword && _authMethod != AuthenticationService.authMethodPattern) ...[
               const SizedBox(height: 16),
-              FutureBuilder<bool>(
-                future: _authService.canUseBiometrics(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data == true) {
-                    return TextButton.icon(
-                      onPressed: _isLoading ? null : _authenticateWithBiometrics,
-                      icon: const Icon(Icons.fingerprint),
-                      label: Text(AppLocalizations.of(context)!.useBiometrics),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+              TextButton.icon(
+                onPressed: _isLoading ? null : _toggleBackupPassword,
+                icon: Icon(_showBackupPassword ? Icons.lock_open : Icons.lock),
+                label: Text(_showBackupPassword 
+                  ? 'Use ${_authMethod == AuthenticationService.authMethodPin ? 'PIN' : 'Pattern'}'
+                  : 'Use backup password'),
               ),
             ],
           ],

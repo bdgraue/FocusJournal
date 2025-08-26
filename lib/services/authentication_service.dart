@@ -1,18 +1,16 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationService {
   static const String _passwordKey = 'password';
   static const String _pinKey = 'pin';
+  static const String _patternKey = 'pattern';
   static const String _hasSetupKey = 'hasSetupAuth';
-  static const String _useBiometricsKey = 'useBiometrics';
   static const String _screenLockKey = 'screenLock';
   static const String _authMethodKey = 'authMethod';
   static const int minPinLength = 4;
   
   final FlutterSecureStorage _secureStorage;
-  final LocalAuthentication _localAuth;
 
   // Available authentication methods
   static const String authMethodPassword = 'password';
@@ -20,8 +18,7 @@ class AuthenticationService {
   static const String authMethodPattern = 'pattern';
   
   AuthenticationService()
-      : _secureStorage = const FlutterSecureStorage(),
-        _localAuth = LocalAuthentication();
+      : _secureStorage = const FlutterSecureStorage();
 
   Future<bool> isAuthenticationSetup() async {
     final prefs = await SharedPreferences.getInstance();
@@ -52,6 +49,7 @@ class AuthenticationService {
     await _secureStorage.write(key: _pinKey, value: pin);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_authMethodKey, authMethodPin);
+    // Keep password as backup - don't delete it when switching to PIN
   }
 
   Future<bool> verifyPin(String pin) async {
@@ -60,46 +58,34 @@ class AuthenticationService {
     return storedPin == pin;
   }
 
+  bool isValidPattern(String pattern) {
+    if (pattern.isEmpty) return false;
+    // Pattern should be a sequence of numbers (0-8) representing dots in a 3x3 grid
+    return RegExp(r'^[0-8]+$').hasMatch(pattern) && pattern.length >= 4;
+  }
+
+  Future<void> setupPattern(String pattern) async {
+    if (!isValidPattern(pattern)) {
+      throw Exception('Pattern must connect at least 4 dots');
+    }
+    await _secureStorage.write(key: _patternKey, value: pattern);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_authMethodKey, authMethodPattern);
+    // Keep password as backup - don't delete it when switching to pattern
+  }
+
+  Future<bool> verifyPattern(String pattern) async {
+    if (!isValidPattern(pattern)) return false;
+    final storedPattern = await _secureStorage.read(key: _patternKey);
+    return storedPattern == pattern;
+  }
+
   Future<String> getCurrentAuthMethod() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_authMethodKey) ?? authMethodPassword;
   }
 
-  Future<bool> canUseBiometrics() async {
-    try {
-      final canAuthenticateWithBiometrics = await _localAuth.canCheckBiometrics;
-      final canAuthenticate = await _localAuth.isDeviceSupported();
-      final availableBiometrics = await _localAuth.getAvailableBiometrics();
-      return canAuthenticateWithBiometrics && canAuthenticate && availableBiometrics.isNotEmpty;
-    } catch (e) {
-      return false;
-    }
-  }
 
-
-  Future<bool> authenticateWithBiometrics() async {
-    try {
-      return await _localAuth.authenticate(
-        localizedReason: 'Please authenticate to access your journal',
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
-      );
-    } catch (_) {
-      return false;
-    }
-  }
-
-  Future<bool> isBiometricsEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_useBiometricsKey) ?? false;
-  }
-
-  Future<void> setBiometricsEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_useBiometricsKey, enabled);
-  }
 
   Future<bool> isScreenLockEnabled() async {
     final prefs = await SharedPreferences.getInstance();
@@ -111,20 +97,42 @@ class AuthenticationService {
     await prefs.setBool(_screenLockKey, enabled);
   }
 
-  Future<bool> authenticate(String reason) async {
-    if (await isBiometricsEnabled() && await canUseBiometrics()) {
-      return await authenticateWithBiometrics();
-    }
-    // PIN authentication will be handled by the UI
-    return false;
-  }
 
   Future<void> logout() async {
     await _secureStorage.delete(key: _passwordKey);
     await _secureStorage.delete(key: _pinKey);
+    await _secureStorage.delete(key: _patternKey);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_hasSetupKey, false);
-    await prefs.setBool(_useBiometricsKey, false);
     await prefs.setString(_authMethodKey, authMethodPassword);
+  }
+
+  Future<bool> authenticateWithCredentials(String credentials) async {
+    final method = await getCurrentAuthMethod();
+    switch (method) {
+      case authMethodPassword:
+        return await verifyPassword(credentials);
+      case authMethodPin:
+        return await verifyPin(credentials);
+      case authMethodPattern:
+        return await verifyPattern(credentials);
+      default:
+        return false;
+    }
+  }
+
+  Future<bool> authenticateWithBackupPassword(String password) async {
+    // Always authenticate with password regardless of current method
+    // This allows password as backup for PIN/pattern
+    return await verifyPassword(password);
+  }
+
+  Future<bool> hasBackupPassword() async {
+    final method = await getCurrentAuthMethod();
+    if (method == authMethodPassword) return false;
+    
+    // Check if password exists as backup for PIN/pattern methods
+    final storedPassword = await _secureStorage.read(key: _passwordKey);
+    return storedPassword != null && storedPassword.isNotEmpty;
   }
 }

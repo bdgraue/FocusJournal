@@ -167,11 +167,6 @@ abstract class AppLocalizations {
   /// **'Set PIN'**
   String get setPin;
 
-  /// Use biometrics label
-  /// 
-  /// In en, this message translates to:
-  /// **'Use Biometrics'**
-  String get useBiometrics;
 
   /// Change password
   /// 
@@ -208,6 +203,157 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your secure space for focused thoughts and reflections.'**
   String get journalDescription;
+
+  /// Setup security
+  /// 
+  /// In en, this message translates to:
+  /// **'Setup Security'**
+  String get setupSecurity;
+
+  /// Choose authentication method
+  /// 
+  /// In en, this message translates to:
+  /// **'Choose your authentication method'**
+  String get chooseAuthMethod;
+
+  /// Password description
+  /// 
+  /// In en, this message translates to:
+  /// **'Use a password for authentication'**
+  String get passwordDescription;
+
+  /// PIN description
+  /// 
+  /// In en, this message translates to:
+  /// **'Use a numeric PIN for authentication'**
+  String get pinDescription;
+
+  /// Pattern label
+  /// 
+  /// In en, this message translates to:
+  /// **'Pattern'**
+  String get pattern;
+
+  /// Pattern description
+  /// 
+  /// In en, this message translates to:
+  /// **'Draw a pattern for authentication'**
+  String get patternDescription;
+
+
+  /// Draw pattern
+  /// 
+  /// In en, this message translates to:
+  /// **'Draw your pattern'**
+  String get drawPattern;
+
+  /// Pattern too short
+  /// 
+  /// In en, this message translates to:
+  /// **'Pattern must connect at least 4 dots'**
+  String get patternTooShort;
+
+  /// Confirm pattern
+  /// 
+  /// In en, this message translates to:
+  /// **'Confirm your pattern'**
+  String get confirmPattern;
+
+  /// Patterns do not match
+  /// 
+  /// In en, this message translates to:
+  /// **'Patterns do not match'**
+  String get patternsDoNotMatch;
+
+  /// Change pattern
+  /// 
+  /// In en, this message translates to:
+  /// **'Change Pattern'**
+  String get changePattern;
+
+  /// Setup pattern
+  /// 
+  /// In en, this message translates to:
+  /// **'Setup Pattern'**
+  String get setupPattern;
+
+  /// Reset
+  /// 
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// Clear
+  /// 
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// Confirm
+  /// 
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// Next
+  /// 
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// Change PIN
+  /// 
+  /// In en, this message translates to:
+  /// **'Change PIN'**
+  String get changePin;
+
+  /// PIN too short with minimum length
+  /// 
+  /// In en, this message translates to:
+  /// **'PIN must be at least {minLength} digits'**
+  String pinTooShort(int minLength);
+
+  /// PIN only numbers
+  /// 
+  /// In en, this message translates to:
+  /// **'PIN must contain only numbers'**
+  String get pinOnlyNumbers;
+
+  /// Confirm PIN
+  /// 
+  /// In en, this message translates to:
+  /// **'Confirm PIN'**
+  String get confirmPin;
+
+  /// PINs do not match
+  /// 
+  /// In en, this message translates to:
+  /// **'PINs do not match'**
+  String get pinsDoNotMatch;
+
+  /// Security settings
+  /// 
+  /// In en, this message translates to:
+  /// **'Security Settings'**
+  String get securitySettings;
+
+  /// Current authentication method
+  /// 
+  /// In en, this message translates to:
+  /// **'Current Authentication Method'**
+  String get currentAuthMethod;
+
+  /// Change authentication method
+  /// 
+  /// In en, this message translates to:
+  /// **'Change Authentication Method'**
+  String get changeAuthMethod;
+
+  /// Select new authentication method
+  /// 
+  /// In en, this message translates to:
+  /// **'Select a new authentication method'**
+  String get selectNewAuthMethod;
 
   /// Logout button
   /// 
@@ -252,7 +398,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
 
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([String locale = 'en']) : super(locale);
+  AppLocalizationsEn([super.locale = 'en']);
 
   @override
   String get appTitle => 'Focus Journal';
@@ -292,8 +438,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get setPin => 'Set PIN';
 
-  @override
-  String get useBiometrics => 'Use Biometrics';
 
   @override
   String get changePassword => 'Change Password';
@@ -312,6 +456,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journalDescription => 'Your secure space for focused thoughts and reflections.';
+
+  @override
+  String get setupSecurity => 'Setup Security';
+
+  @override
+  String get chooseAuthMethod => 'Choose your authentication method';
+
+  @override
+  String get passwordDescription => 'Use a password for authentication';
+
+  @override
+  String get pinDescription => 'Use a numeric PIN for authentication';
+
+  @override
+  String get pattern => 'Pattern';
+
+  @override
+  String get patternDescription => 'Draw a pattern for authentication';
+
+
+  @override
+  String get drawPattern => 'Draw your pattern';
+
+  @override
+  String get patternTooShort => 'Pattern must connect at least 4 dots';
+
+  @override
+  String get confirmPattern => 'Confirm your pattern';
+
+  @override
+  String get patternsDoNotMatch => 'Patterns do not match';
+
+  @override
+  String get changePattern => 'Change Pattern';
+
+  @override
+  String get setupPattern => 'Setup Pattern';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get changePin => 'Change PIN';
+
+  @override
+  String pinTooShort(int minLength) {
+    return 'PIN must be at least $minLength digits';
+  }
+
+  @override
+  String get pinOnlyNumbers => 'PIN must contain only numbers';
+
+  @override
+  String get confirmPin => 'Confirm PIN';
+
+  @override
+  String get pinsDoNotMatch => 'PINs do not match';
+
+  @override
+  String get securitySettings => 'Security Settings';
+
+  @override
+  String get currentAuthMethod => 'Current Authentication Method';
+
+  @override
+  String get changeAuthMethod => 'Change Authentication Method';
+
+  @override
+  String get selectNewAuthMethod => 'Select a new authentication method';
 
   @override
   String get logout => 'Logout';

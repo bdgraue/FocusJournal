@@ -38,21 +38,20 @@ class MyApp extends StatelessWidget {
         Locale('nl'), // Dutch
         Locale('pl'), // Polish
       ],
-      home: AuthenticationWrapper(key: AuthenticationWrapper.globalKey),
+      home: const AuthenticationWrapper(),
     );
   }
 }
 
 class AuthenticationWrapper extends StatefulWidget {
-  static GlobalKey<_AuthenticationWrapperState> globalKey = GlobalKey();
-  
   const AuthenticationWrapper({super.key});
 
   @override
   State<AuthenticationWrapper> createState() => _AuthenticationWrapperState();
 }
 
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
+class _AuthenticationWrapperState extends State<AuthenticationWrapper> 
+    with WidgetsBindingObserver {
   final _authService = AuthenticationService();
   bool? _isAuthSetup;
   bool _isAuthenticated = false;
@@ -66,7 +65,25 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _checkAuthSetup();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    // Auto-logout when app goes to background or becomes inactive
+    // Only logout if user is currently authenticated
+    if (_isAuthenticated && (state == AppLifecycleState.paused || state == AppLifecycleState.inactive)) {
+      logout();
+    }
   }
 
   Future<void> _checkAuthSetup() async {
@@ -102,7 +119,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
     if (!_isAuthSetup!) {
       return PasswordSetupScreen(
         onSetupComplete: _onSetupComplete,
-        isChange: false,
+        isFirstTimeSetup: true,
       );
     }
 
@@ -110,6 +127,6 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
       return AuthenticationScreen(onAuthenticationSuccess: _onAuthenticationSuccess);
     }
 
-    return const MainNavigationScreen();
+    return MainNavigationScreen(onLogout: logout);
   }
 }

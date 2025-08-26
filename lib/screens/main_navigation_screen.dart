@@ -4,7 +4,9 @@ import '../services/authentication_service.dart';
 import 'password_setup_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  final VoidCallback onLogout;
+  
+  const MainNavigationScreen({super.key, required this.onLogout});
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
@@ -12,20 +14,9 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
-  final _authService = AuthenticationService();
 
   void _logout() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ),
-    );
-    // Trigger app restart by navigating to root
-    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+    widget.onLogout();
   }
 
   void _changePassword() {
