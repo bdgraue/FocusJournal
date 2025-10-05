@@ -5,57 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-/// Callers can lookup localized strings with an instance of AppLocalizations
-/// returned by `AppLocalizations.of(context)`.
-///
-/// Applications need to include `AppLocalizations.delegate()` in their app's
-/// `localizationDelegates` list, and the locales they support in the app's
-/// `supportedLocales` list. For example:
-///
-/// ```dart
-/// import 'l10n/app_localizations.dart';
-///
-/// return MaterialApp(
-///   localizationsDelegates: AppLocalizations.localizationsDelegates,
-///   supportedLocales: AppLocalizations.supportedLocales,
-///   home: MyApplicationHome(),
-/// );
-/// ```
-///
-/// ## Update pubspec.yaml
-///
-/// Please make sure to update your pubspec.yaml file to include the following
-/// packages:
-///
-/// ```yaml
-/// dependencies:
-///   # Internationalization support.
-///   flutter_localizations:
-///     sdk: flutter
-///   intl: any # Use the pinned version from flutter_localizations
-///
-///   # Rest of dependencies
-/// ```
-///
-/// ## iOS Applications
-///
-/// iOS applications define key application metadata, including supported
-/// locales, in an Info.plist file that is built into the application bundle.
-/// To configure the locales supported by your app, you'll need to edit this
-/// file.
-///
-/// First, open your project's ios/Runner.xcworkspace Xcode workspace file.
-/// Then, in the Project Navigator, open the Info.plist file under the Runner
-/// project's Runner folder.
-///
-/// Next, select the Information Property List item, select Add Item from the
-/// Editor menu, then select Localizations from the pop-up menu.
-///
-/// Select and expand the newly-created Localizations item then, for each
-/// locale your application supports, add a new item and select the locale
-/// you wish to add from the pop-up menu in the Value field. This list should
-/// be consistent with the languages listed in the AppLocalizations.supportedLocales
-/// property.
+import 'translations/index.dart';
+
 abstract class AppLocalizations {
   AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
@@ -70,7 +21,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
   ///
-  /// Returns a list of localizations delegates containing this delegate along with
+  /// Returns a list of localization delegates containing this delegate along with
   /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
   /// and GlobalWidgetsLocalizations.delegate.
   ///
@@ -192,7 +143,7 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// Welcome to journal message
+  /// Welcome message
   /// 
   /// In en, this message translates to:
   /// **'Welcome to Focus Journal'**
@@ -216,13 +167,13 @@ abstract class AppLocalizations {
   /// **'Choose your authentication method'**
   String get chooseAuthMethod;
 
-  /// Password description
+  /// Password authentication description
   /// 
   /// In en, this message translates to:
   /// **'Use a password for authentication'**
   String get passwordDescription;
 
-  /// PIN description
+  /// PIN authentication description
   /// 
   /// In en, this message translates to:
   /// **'Use a numeric PIN for authentication'**
@@ -234,122 +185,133 @@ abstract class AppLocalizations {
   /// **'Pattern'**
   String get pattern;
 
-  /// Pattern description
+  /// Pattern authentication description
   /// 
   /// In en, this message translates to:
   /// **'Draw a pattern for authentication'**
   String get patternDescription;
 
+  /// Enable biometrics
+  /// 
+  /// In en, this message translates to:
+  /// **'Enable Biometric Authentication'**
+  String get enableBiometrics;
 
-  /// Draw pattern
+  /// Biometrics description
+  /// 
+  /// In en, this message translates to:
+  /// **'Use fingerprint or face recognition for quick access'**
+  String get biometricsDescription;
+
+  /// Draw pattern prompt
   /// 
   /// In en, this message translates to:
   /// **'Draw your pattern'**
   String get drawPattern;
 
-  /// Pattern too short
+  /// Pattern too short message
   /// 
   /// In en, this message translates to:
   /// **'Pattern must connect at least 4 dots'**
   String get patternTooShort;
 
-  /// Confirm pattern
+  /// Confirm pattern prompt
   /// 
   /// In en, this message translates to:
   /// **'Confirm your pattern'**
   String get confirmPattern;
 
-  /// Patterns do not match
+  /// Patterns do not match message
   /// 
   /// In en, this message translates to:
   /// **'Patterns do not match'**
   String get patternsDoNotMatch;
 
-  /// Change pattern
+  /// Change pattern button
   /// 
   /// In en, this message translates to:
   /// **'Change Pattern'**
   String get changePattern;
 
-  /// Setup pattern
+  /// Setup pattern button
   /// 
   /// In en, this message translates to:
   /// **'Setup Pattern'**
   String get setupPattern;
 
-  /// Reset
+  /// Reset button
   /// 
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
 
-  /// Clear
+  /// Clear button
   /// 
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
 
-  /// Confirm
+  /// Confirm button
   /// 
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirm;
 
-  /// Next
+  /// Next button
   /// 
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
 
-  /// Change PIN
+  /// Change PIN button
   /// 
   /// In en, this message translates to:
   /// **'Change PIN'**
   String get changePin;
 
-  /// PIN too short with minimum length
+  /// PIN too short message
   /// 
   /// In en, this message translates to:
   /// **'PIN must be at least {minLength} digits'**
   String pinTooShort(int minLength);
 
-  /// PIN only numbers
+  /// PIN must contain only numbers message
   /// 
   /// In en, this message translates to:
   /// **'PIN must contain only numbers'**
   String get pinOnlyNumbers;
 
-  /// Confirm PIN
+  /// Confirm PIN prompt
   /// 
   /// In en, this message translates to:
   /// **'Confirm PIN'**
   String get confirmPin;
 
-  /// PINs do not match
+  /// PINs do not match message
   /// 
   /// In en, this message translates to:
   /// **'PINs do not match'**
   String get pinsDoNotMatch;
 
-  /// Security settings
+  /// Security settings title
   /// 
   /// In en, this message translates to:
   /// **'Security Settings'**
   String get securitySettings;
 
-  /// Current authentication method
+  /// Current authentication method label
   /// 
   /// In en, this message translates to:
   /// **'Current Authentication Method'**
   String get currentAuthMethod;
 
-  /// Change authentication method
+  /// Change authentication method button
   /// 
   /// In en, this message translates to:
   /// **'Change Authentication Method'**
   String get changeAuthMethod;
 
-  /// Select new authentication method
+  /// Select new authentication method prompt
   /// 
   /// In en, this message translates to:
   /// **'Select a new authentication method'**
@@ -360,8 +322,153 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+
+  /// Theme settings title
+  /// 
+  /// In en, this message translates to:
+  /// **'Theme Settings'**
+  String get themeSettings;
+
+  /// Dark mode label
+  /// 
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// Light mode label
+  /// 
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get lightMode;
+
+  /// System theme label
+  /// 
+  /// In en, this message translates to:
+  /// **'System Theme'**
+  String get systemTheme;
+
+  /// Primary color label
+  /// 
+  /// In en, this message translates to:
+  /// **'Primary Color'**
+  String get primaryColor;
+
+  /// Accent color label
+  /// 
+  /// In en, this message translates to:
+  /// **'Accent Color'**
+  String get accentColor;
+
+  /// Custom font label
+  /// 
+  /// In en, this message translates to:
+  /// **'Custom Font'**
+  String get customFont;
+
+  /// Backup settings title
+  /// 
+  /// In en, this message translates to:
+  /// **'Backup Settings'**
+  String get backupSettings;
+
+  /// Auto backup label
+  /// 
+  /// In en, this message translates to:
+  /// **'Auto Backup'**
+  String get autoBackup;
+
+  /// Backup frequency label
+  /// 
+  /// In en, this message translates to:
+  /// **'Backup Frequency'**
+  String get backupFrequency;
+
+  /// Export backup button
+  /// 
+  /// In en, this message translates to:
+  /// **'Export Backup'**
+  String get exportBackup;
+
+  /// Import backup button
+  /// 
+  /// In en, this message translates to:
+  /// **'Import Backup'**
+  String get importBackup;
+
+  /// Privacy settings title
+  /// 
+  /// In en, this message translates to:
+  /// **'Privacy Settings'**
+  String get privacySettings;
+
+  /// Analytics label
+  /// 
+  /// In en, this message translates to:
+  /// **'Analytics'**
+  String get analytics;
+
+  /// Share usage data label
+  /// 
+  /// In en, this message translates to:
+  /// **'Share Usage Data'**
+  String get shareUsageData;
+
+  /// Allow screenshots label
+  /// 
+  /// In en, this message translates to:
+  /// **'Allow Screenshots'**
+  String get allowScreenshots;
+
+  /// Store location data label
+  /// 
+  /// In en, this message translates to:
+  /// **'Store Location Data'**
+  String get storeLocationData;
+
+  /// Journal preferences title
+  /// 
+  /// In en, this message translates to:
+  /// **'Journal Preferences'**
+  String get journalPreferences;
+
+  /// Default view label
+  /// 
+  /// In en, this message translates to:
+  /// **'Default View'**
+  String get defaultView;
+
+  /// Sort order label
+  /// 
+  /// In en, this message translates to:
+  /// **'Sort Order'**
+  String get sortOrder;
+
+  /// Font size label
+  /// 
+  /// In en, this message translates to:
+  /// **'Font Size'**
+  String get fontSize;
+
+  /// Show date headers label
+  /// 
+  /// In en, this message translates to:
+  /// **'Show Date Headers'**
+  String get showDateHeaders;
+
+  /// Show tags label
+  /// 
+  /// In en, this message translates to:
+  /// **'Show Tags'**
+  String get showTags;
+
+  /// Enable spell check label
+  /// 
+  /// In en, this message translates to:
+  /// **'Enable Spell Check'**
+  String get enableSpellCheck;
 }
 
+/// The delegate class which loads AppLocalizations.
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
@@ -394,325 +501,4 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     'an issue with the localizations generation tool. Please file an issue on GitHub with a '
     'reproducible sample app and the gen-l10n configuration that was used.'
   );
-}
-
-/// The translations for English (`en`).
-class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([super.locale = 'en']);
-
-  @override
-  String get appTitle => 'Focus Journal';
-
-  @override
-  String get authenticationRequired => 'Authentication Required';
-
-  @override
-  String get setupPin => 'Setup PIN';
-
-  @override
-  String get enterPasswordPrompt => 'Enter your password';
-
-  @override
-  String get enterPinPrompt => 'Enter your PIN';
-
-  @override
-  String get setupPasswordPrompt => 'Setup your password';
-
-  @override
-  String setupPinPrompt(int minLength) {
-    return 'Setup your PIN (minimum $minLength digits)';
-  }
-
-  @override
-  String get password => 'Password';
-
-  @override
-  String get pin => 'PIN';
-
-  @override
-  String get unlock => 'Unlock';
-
-  @override
-  String get setPassword => 'Set Password';
-
-  @override
-  String get setPin => 'Set PIN';
-
-
-  @override
-  String get changePassword => 'Change Password';
-
-  @override
-  String get setupPassword => 'Setup Password';
-
-  @override
-  String get journal => 'Journal';
-
-  @override
-  String get settings => 'Settings';
-
-  @override
-  String get welcomeToJournal => 'Welcome to Focus Journal';
-
-  @override
-  String get journalDescription => 'Your secure space for focused thoughts and reflections.';
-
-  @override
-  String get setupSecurity => 'Setup Security';
-
-  @override
-  String get chooseAuthMethod => 'Choose your authentication method';
-
-  @override
-  String get passwordDescription => 'Use a password for authentication';
-
-  @override
-  String get pinDescription => 'Use a numeric PIN for authentication';
-
-  @override
-  String get pattern => 'Pattern';
-
-  @override
-  String get patternDescription => 'Draw a pattern for authentication';
-
-
-  @override
-  String get drawPattern => 'Draw your pattern';
-
-  @override
-  String get patternTooShort => 'Pattern must connect at least 4 dots';
-
-  @override
-  String get confirmPattern => 'Confirm your pattern';
-
-  @override
-  String get patternsDoNotMatch => 'Patterns do not match';
-
-  @override
-  String get changePattern => 'Change Pattern';
-
-  @override
-  String get setupPattern => 'Setup Pattern';
-
-  @override
-  String get reset => 'Reset';
-
-  @override
-  String get clear => 'Clear';
-
-  @override
-  String get confirm => 'Confirm';
-
-  @override
-  String get next => 'Next';
-
-  @override
-  String get changePin => 'Change PIN';
-
-  @override
-  String pinTooShort(int minLength) {
-    return 'PIN must be at least $minLength digits';
-  }
-
-  @override
-  String get pinOnlyNumbers => 'PIN must contain only numbers';
-
-  @override
-  String get confirmPin => 'Confirm PIN';
-
-  @override
-  String get pinsDoNotMatch => 'PINs do not match';
-
-  @override
-  String get securitySettings => 'Security Settings';
-
-  @override
-  String get currentAuthMethod => 'Current Authentication Method';
-
-  @override
-  String get changeAuthMethod => 'Change Authentication Method';
-
-  @override
-  String get selectNewAuthMethod => 'Select a new authentication method';
-
-  @override
-  String get logout => 'Logout';
-}
-
-/// Basic implementations for other languages (simplified for now)
-class AppLocalizationsDe extends AppLocalizationsEn {
-  AppLocalizationsDe() : super('de');
-
-  @override
-  String get appTitle => 'Focus Tagebuch';
-
-  @override
-  String get authenticationRequired => 'Authentifizierung erforderlich';
-
-  @override
-  String get setupPin => 'PIN einrichten';
-
-  @override
-  String get password => 'Passwort';
-
-  @override
-  String get pin => 'PIN';
-
-  @override
-  String get unlock => 'Entsperren';
-
-  @override
-  String get changePassword => 'Passwort ändern';
-
-  @override
-  String get setupPassword => 'Passwort einrichten';
-
-  @override
-  String get journal => 'Tagebuch';
-
-  @override
-  String get settings => 'Einstellungen';
-
-  @override
-  String get logout => 'Abmelden';
-}
-
-class AppLocalizationsEs extends AppLocalizationsEn {
-  AppLocalizationsEs() : super('es');
-
-  @override
-  String get appTitle => 'Diario Focus';
-
-  @override
-  String get authenticationRequired => 'Autenticación requerida';
-
-  @override
-  String get password => 'Contraseña';
-
-  @override
-  String get unlock => 'Desbloquear';
-
-  @override
-  String get changePassword => 'Cambiar contraseña';
-
-  @override
-  String get journal => 'Diario';
-
-  @override
-  String get settings => 'Configuración';
-
-  @override
-  String get logout => 'Cerrar sesión';
-}
-
-class AppLocalizationsFr extends AppLocalizationsEn {
-  AppLocalizationsFr() : super('fr');
-
-  @override
-  String get appTitle => 'Journal Focus';
-
-  @override
-  String get authenticationRequired => 'Authentification requise';
-
-  @override
-  String get password => 'Mot de passe';
-
-  @override
-  String get unlock => 'Déverrouiller';
-
-  @override
-  String get changePassword => 'Changer le mot de passe';
-
-  @override
-  String get journal => 'Journal';
-
-  @override
-  String get settings => 'Paramètres';
-
-  @override
-  String get logout => 'Déconnexion';
-}
-
-class AppLocalizationsIt extends AppLocalizationsEn {
-  AppLocalizationsIt() : super('it');
-
-  @override
-  String get appTitle => 'Diario Focus';
-
-  @override
-  String get authenticationRequired => 'Autenticazione richiesta';
-
-  @override
-  String get password => 'Password';
-
-  @override
-  String get unlock => 'Sblocca';
-
-  @override
-  String get changePassword => 'Cambia password';
-
-  @override
-  String get journal => 'Diario';
-
-  @override
-  String get settings => 'Impostazioni';
-
-  @override
-  String get logout => 'Disconnetti';
-}
-
-class AppLocalizationsNl extends AppLocalizationsEn {
-  AppLocalizationsNl() : super('nl');
-
-  @override
-  String get appTitle => 'Focus Dagboek';
-
-  @override
-  String get authenticationRequired => 'Authenticatie vereist';
-
-  @override
-  String get password => 'Wachtwoord';
-
-  @override
-  String get unlock => 'Ontgrendelen';
-
-  @override
-  String get changePassword => 'Wachtwoord wijzigen';
-
-  @override
-  String get journal => 'Dagboek';
-
-  @override
-  String get settings => 'Instellingen';
-
-  @override
-  String get logout => 'Uitloggen';
-}
-
-class AppLocalizationsPl extends AppLocalizationsEn {
-  AppLocalizationsPl() : super('pl');
-
-  @override
-  String get appTitle => 'Dziennik Focus';
-
-  @override
-  String get authenticationRequired => 'Wymagana autoryzacja';
-
-  @override
-  String get password => 'Hasło';
-
-  @override
-  String get unlock => 'Odblokuj';
-
-  @override
-  String get changePassword => 'Zmień hasło';
-
-  @override
-  String get journal => 'Dziennik';
-
-  @override
-  String get settings => 'Ustawienia';
-
-  @override
-  String get logout => 'Wyloguj';
 }

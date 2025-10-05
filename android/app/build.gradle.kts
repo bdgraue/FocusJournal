@@ -1,14 +1,20 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("kotlin-parcelize")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.bdgraue.focus_journal"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36 // Use latest Android SDK
     ndkVersion = "27.0.12077973"
+    
+    defaultConfig {
+        minSdk = flutter.minSdkVersion
+        targetSdk = 36
+    }
 
     signingConfigs {
         getByName("debug") {
@@ -48,6 +54,8 @@ android {
     }
 
     compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -60,7 +68,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.bdgraue.focus_journal"
         // Set minimum SDK version to 21 (Android 5.0) to ensure proper security features and biometric support
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

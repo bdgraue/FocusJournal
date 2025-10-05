@@ -15,7 +15,7 @@ class SecuritySettingsScreen extends StatefulWidget {
 class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
   final _authService = AuthenticationService();
   String _currentAuthMethod = AuthenticationService.authMethodPassword;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   void initState() {

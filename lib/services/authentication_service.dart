@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationService {
@@ -8,6 +9,7 @@ class AuthenticationService {
   static const String _hasSetupKey = 'hasSetupAuth';
   static const String _screenLockKey = 'screenLock';
   static const String _authMethodKey = 'authMethod';
+  static const String _biometricsKey = 'biometrics';
   static const int minPinLength = 4;
   
   final FlutterSecureStorage _secureStorage;
@@ -134,5 +136,43 @@ class AuthenticationService {
     // Check if password exists as backup for PIN/pattern methods
     final storedPassword = await _secureStorage.read(key: _passwordKey);
     return storedPassword != null && storedPassword.isNotEmpty;
+  }
+
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  
+  Future<bool> canUseBiometrics() async {
+    try {
+      return await _localAuth.canCheckBiometrics &&
+             await _localAuth.isDeviceSupported();
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> isBiometricsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_biometricsKey) ?? false;
+  }
+
+  Future<void> setBiometricsEnabled(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_biometricsKey, enabled);
+  }
+
+  Future<bool> authenticateWithBiometrics() async {
+    if (!await isBiometricsEnabled()) return false;
+
+    try {
+      final didAuthenticate = await _localAuth.authenticate(
+        localizedReason: 'Please authenticate to access your journal',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+      return didAuthenticate;
+    } catch (e) {
+      return false;
+    }
   }
 }

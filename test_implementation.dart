@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:focus_journal/services/authentication_service.dart';
 
 void main() async {
