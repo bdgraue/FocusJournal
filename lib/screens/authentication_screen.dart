@@ -34,9 +34,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!widget.isChangingPin) {
+      _checkShouldRequireAuth();
+    }
+  }
+
+  @override
   void dispose() {
     _credentialController.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkShouldRequireAuth() async {
+    // Check if this is just a rotation
+    final shouldRequireAuth = await _authService.shouldRequireAuth(context);
+    if (!shouldRequireAuth && widget.onAuthenticationSuccess != null) {
+      widget.onAuthenticationSuccess!();
+    }
   }
 
   Future<void> _checkAuthSetup() async {
@@ -167,90 +183,108 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_isSetup 
-          ? AppLocalizations.of(context)!.authenticationRequired 
-          : AppLocalizations.of(context)!.setupPin),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              _isSetup
-                ? (_showBackupPassword 
-                    ? AppLocalizations.of(context)!.enterPasswordPrompt
-                    : _authMethod == AuthenticationService.authMethodPassword 
-                        ? AppLocalizations.of(context)!.enterPasswordPrompt
-                        : _authMethod == AuthenticationService.authMethodPin
-                            ? AppLocalizations.of(context)!.enterPinPrompt
-                            : AppLocalizations.of(context)!.drawPattern)
-                : (_authMethod == AuthenticationService.authMethodPassword 
-                    ? AppLocalizations.of(context)!.setupPasswordPrompt
-                    : _authMethod == AuthenticationService.authMethodPin
-                        ? AppLocalizations.of(context)!.setupPinPrompt(AuthenticationService.minPinLength)
-                        : AppLocalizations.of(context)!.drawPattern),
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            if (_authMethod == AuthenticationService.authMethodPattern) ...[
-              PatternGrid(
-                onPatternDrawn: _isSetup ? _authenticateWithPattern : (pattern) => _setupCredential(),
-                currentPattern: [],
-                enabled: !_isLoading,
-              ),
-              if (_errorMessage != null) ...[
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 48),
+                Center(
+                  child: Image.asset(
+                    'assets/app_icon.png',
+                    width: 80,
+                    height: 80,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 Text(
-                  _errorMessage!,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontSize: 16,
-                  ),
+                  'Focus Journal',
                   textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                const SizedBox(height: 48),
+                Text(
+                  _isSetup
+                    ? (_showBackupPassword 
+                        ? AppLocalizations.of(context)!.enterPasswordPrompt
+                        : _authMethod == AuthenticationService.authMethodPassword 
+                            ? AppLocalizations.of(context)!.enterPasswordPrompt
+                            : _authMethod == AuthenticationService.authMethodPin
+                                ? AppLocalizations.of(context)!.enterPinPrompt
+                                : AppLocalizations.of(context)!.drawPattern)
+                    : (_authMethod == AuthenticationService.authMethodPassword 
+                        ? AppLocalizations.of(context)!.setupPasswordPrompt
+                        : _authMethod == AuthenticationService.authMethodPin
+                            ? AppLocalizations.of(context)!.setupPinPrompt(AuthenticationService.minPinLength)
+                            : AppLocalizations.of(context)!.drawPattern),
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 24),
+                if (_authMethod == AuthenticationService.authMethodPattern) ...[
+                  PatternGrid(
+                    onPatternDrawn: _isSetup ? _authenticateWithPattern : (pattern) => _setupCredential(),
+                    currentPattern: [],
+                    enabled: !_isLoading,
+                  ),
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      _errorMessage!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ] else ...[
+                  TextField(
+                    controller: _credentialController,
+                    obscureText: true,
+                    keyboardType: (_showBackupPassword || _authMethod == AuthenticationService.authMethodPassword) ? TextInputType.text : TextInputType.number,
+                    maxLength: (_showBackupPassword || _authMethod == AuthenticationService.authMethodPassword) ? null : 8,
+                    decoration: InputDecoration(
+                      labelText: _showBackupPassword 
+                        ? AppLocalizations.of(context)!.password
+                        : _authMethod == AuthenticationService.authMethodPassword
+                            ? AppLocalizations.of(context)!.password 
+                            : AppLocalizations.of(context)!.pin,
+                      border: const OutlineInputBorder(),
+                      errorText: _errorMessage,
+                    ),
+                    onSubmitted: (_) => _isSetup ? _authenticate() : _setupCredential(),
+                  ),
+                ],
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : (_isSetup ? _authenticate : _setupCredential),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : Text(_isSetup 
+                          ? AppLocalizations.of(context)!.unlock 
+                          : _authMethod == AuthenticationService.authMethodPassword 
+                              ? AppLocalizations.of(context)!.setPassword
+                              : AppLocalizations.of(context)!.setPin),
+                ),
+                if (_isSetup && _hasBackupPassword && _authMethod != AuthenticationService.authMethodPattern) ...[
+                  const SizedBox(height: 16),
+                  TextButton.icon(
+                    onPressed: _isLoading ? null : _toggleBackupPassword,
+                    icon: Icon(_showBackupPassword ? Icons.lock_open : Icons.lock),
+                    label: Text(_showBackupPassword 
+                      ? 'Use ${_authMethod == AuthenticationService.authMethodPin ? 'PIN' : 'Pattern'}'
+                      : 'Use backup password'),
+                  ),
+                ],
               ],
-            ] else ...[
-              TextField(
-                controller: _credentialController,
-                obscureText: true,
-                keyboardType: (_showBackupPassword || _authMethod == AuthenticationService.authMethodPassword) ? TextInputType.text : TextInputType.number,
-                maxLength: (_showBackupPassword || _authMethod == AuthenticationService.authMethodPassword) ? null : 8,
-                decoration: InputDecoration(
-                  labelText: _showBackupPassword 
-                    ? AppLocalizations.of(context)!.password
-                    : _authMethod == AuthenticationService.authMethodPassword
-                        ? AppLocalizations.of(context)!.password 
-                        : AppLocalizations.of(context)!.pin,
-                  border: const OutlineInputBorder(),
-                  errorText: _errorMessage,
-                ),
-                onSubmitted: (_) => _isSetup ? _authenticate() : _setupCredential(),
-              ),
-            ],
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : (_isSetup ? _authenticate : _setupCredential),
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(_isSetup 
-                      ? AppLocalizations.of(context)!.unlock 
-                      : _authMethod == AuthenticationService.authMethodPassword 
-                          ? AppLocalizations.of(context)!.setPassword
-                          : AppLocalizations.of(context)!.setPin),
             ),
-            if (_isSetup && _hasBackupPassword && _authMethod != AuthenticationService.authMethodPattern) ...[
-              const SizedBox(height: 16),
-              TextButton.icon(
-                onPressed: _isLoading ? null : _toggleBackupPassword,
-                icon: Icon(_showBackupPassword ? Icons.lock_open : Icons.lock),
-                label: Text(_showBackupPassword 
-                  ? 'Use ${_authMethod == AuthenticationService.authMethodPin ? 'PIN' : 'Pattern'}'
-                  : 'Use backup password'),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

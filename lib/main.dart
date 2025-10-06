@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'screens/authentication_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'screens/password_setup_screen.dart';
@@ -16,29 +17,50 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Focus Journal',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // Add localization support
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('de'), // German
-        Locale('fr'), // French
-        Locale('es'), // Spanish
-        Locale('it'), // Italian
-        Locale('nl'), // Dutch
-        Locale('pl'), // Polish
-      ],
-      home: const AuthenticationWrapper(),
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        ColorScheme lightColorScheme;
+        ColorScheme darkColorScheme;
+
+        if (lightDynamic != null && darkDynamic != null) {
+          lightColorScheme = lightDynamic.harmonized();
+          darkColorScheme = darkDynamic.harmonized();
+        } else {
+          // Fallback colors if dynamic color is not available.
+          lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+          darkColorScheme = ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple, brightness: Brightness.dark);
+        }
+
+        return MaterialApp(
+          title: 'Focus Journal',
+          theme: ThemeData(
+            colorScheme: lightColorScheme,
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: darkColorScheme,
+            useMaterial3: true,
+          ),
+          // Add localization support
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('de'), // German
+            Locale('fr'), // French
+            Locale('es'), // Spanish
+            Locale('it'), // Italian
+            Locale('nl'), // Dutch
+            Locale('pl'), // Polish
+          ],
+          home: const AuthenticationWrapper(),
+        );
+      },
     );
   }
 }
@@ -50,11 +72,12 @@ class AuthenticationWrapper extends StatefulWidget {
   State<AuthenticationWrapper> createState() => _AuthenticationWrapperState();
 }
 
-class _AuthenticationWrapperState extends State<AuthenticationWrapper> 
+class _AuthenticationWrapperState extends State<AuthenticationWrapper>
     with WidgetsBindingObserver {
   final _authService = AuthenticationService();
   bool? _isAuthSetup;
   bool _isAuthenticated = false;
+  bool _isLocked = false;
 
   void logout() {
     setState(() {
@@ -67,6 +90,16 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkAuthSetup();
+    _checkInitialLock();
+  }
+
+  Future<void> _checkInitialLock() async {
+    final shouldLock = await _authService.shouldRequireAuth(context);
+    if (shouldLock) {
+      setState(() {
+        _isLocked = true;
+      });
+    }
   }
 
   @override
@@ -77,12 +110,12 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    
-    // Auto-logout when app goes to background or becomes inactive
-    // Only logout if user is currently authenticated
-    if (_isAuthenticated && (state == AppLifecycleState.paused || state == AppLifecycleState.inactive)) {
-      logout();
+    if (state == AppLifecycleState.inactive) {
+      setState(() {
+        if (_isAuthenticated) {
+          _isLocked = true;
+        }
+      });
     }
   }
 
@@ -96,6 +129,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   void _onAuthenticationSuccess() {
     setState(() {
       _isAuthenticated = true;
+      _isLocked = false;
     });
   }
 
@@ -103,6 +137,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
     setState(() {
       _isAuthSetup = true;
       _isAuthenticated = true;
+      _isLocked = false;
     });
   }
 
@@ -116,17 +151,24 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
       );
     }
 
+    Widget mainContent;
     if (!_isAuthSetup!) {
-      return PasswordSetupScreen(
+      mainContent = PasswordSetupScreen(
         onSetupComplete: _onSetupComplete,
         isFirstTimeSetup: true,
       );
+    } else if (!_isAuthenticated) {
+      mainContent = AuthenticationScreen(onAuthenticationSuccess: _onAuthenticationSuccess);
+    } else {
+      mainContent = MainNavigationScreen(onLogout: logout);
     }
 
-    if (!_isAuthenticated) {
-      return AuthenticationScreen(onAuthenticationSuccess: _onAuthenticationSuccess);
-    }
-
-    return MainNavigationScreen(onLogout: logout);
+    return Stack(
+      children: [
+        mainContent,
+        if (_isLocked)
+          AuthenticationScreen(onAuthenticationSuccess: _onAuthenticationSuccess),
+      ],
+    );
   }
 }

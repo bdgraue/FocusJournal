@@ -1,4 +1,3 @@
-import '../app_localizations.dart';
 import 'app_localizations_en.dart';
 
 class AppLocalizationsNl extends AppLocalizationsEn {

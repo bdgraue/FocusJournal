@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 class AuthenticationService {
   static const String _passwordKey = 'password';
@@ -19,8 +20,38 @@ class AuthenticationService {
   static const String authMethodPin = 'pin';
   static const String authMethodPattern = 'pattern';
   
-  AuthenticationService()
+  static final AuthenticationService _instance = AuthenticationService._internal();
+  Orientation? _lastOrientation;
+  bool _isLocked = false;
+  
+  factory AuthenticationService() {
+    return _instance;
+  }
+
+  AuthenticationService._internal()
       : _secureStorage = const FlutterSecureStorage();
+
+  void lockApp() {
+    _isLocked = true;
+  }
+
+  Future<bool> shouldRequireAuth(BuildContext context) async {
+    // Always require auth if app is explicitly locked
+    if (_isLocked) {
+      _isLocked = false;  // Reset lock state after checking
+      return true;
+    }
+
+    // Check for orientation change
+    final currentOrientation = MediaQuery.of(context).orientation;
+    if (_lastOrientation != null && _lastOrientation != currentOrientation) {
+      _lastOrientation = currentOrientation;
+      return false;
+    }
+    _lastOrientation = currentOrientation;
+    
+    return true; // Always require authentication unless it's an orientation change
+  }
 
   Future<bool> isAuthenticationSetup() async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,6 +69,8 @@ class AuthenticationService {
     final storedPassword = await _secureStorage.read(key: _passwordKey);
     return storedPassword == password;
   }
+
+
 
   bool isValidPin(String pin) {
     if (pin.length < minPinLength) return false;
