@@ -57,7 +57,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeToJournal => 'Welcome to Focus Journal';
 
   @override
-  String get journalDescription => 'Your secure space for focused thoughts and reflections.';
+  String get journalDescription =>
+      'Your secure space for focused thoughts and reflections.';
 
   @override
   String get setupSecurity => 'Setup Security';
@@ -81,7 +82,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enableBiometrics => 'Enable Biometric Authentication';
 
   @override
-  String get biometricsDescription => 'Use fingerprint or face recognition for quick access';
+  String get biometricsDescription =>
+      'Use fingerprint or face recognition for quick access';
 
   @override
   String get drawPattern => 'Draw your pattern';
@@ -216,4 +218,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enableSpellCheck => 'Enable Spell Check';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get newEntry => 'New Entry';
+
+  @override
+  String get editEntry => 'Edit Entry';
+
+  @override
+  String get writeYourThoughts => 'Write your thoughts...';
+
+  @override
+  String get contentRequired => 'Content is required';
 }

@@ -7,10 +7,10 @@ class SettingsService extends ChangeNotifier {
   static const String _settingsKey = 'app_settings';
   final SharedPreferences _prefs;
   AppSettings _settings;
-  
+
   // Singleton pattern
   static SettingsService? _instance;
-  
+
   static Future<SettingsService> getInstance() async {
     if (_instance == null) {
       final prefs = await SharedPreferences.getInstance();
@@ -24,7 +24,7 @@ class SettingsService extends ChangeNotifier {
 
   // Getters for all settings
   AppSettings get settings => _settings;
-  
+
   // Load settings from SharedPreferences
   Future<void> _loadSettings() async {
     final String? settingsJson = _prefs.getString(_settingsKey);
@@ -97,8 +97,8 @@ class SettingsService extends ChangeNotifier {
   }
 
   // Example usage of section updates:
-  // 
-  // await settingsService.updateThemeSettings((current) => 
+  //
+  // await settingsService.updateThemeSettings((current) =>
   //   current.copyWith(themeSettings: current.themeSettings.copyWith(
   //     themeMode: ThemeMode.dark
   //   ))

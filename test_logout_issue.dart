@@ -2,7 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:focus_journal/main.dart';
 
 void main() {
-  testWidgets('Test duplicate GlobalKey issue during logout', (WidgetTester tester) async {
+  testWidgets('Test duplicate GlobalKey issue during logout', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
@@ -11,7 +13,7 @@ void main() {
 
     // Print current widget tree for debugging
     print('Initial widget tree built');
-    
+
     // Try to simulate the logout scenario that causes duplicate GlobalKey
     // This should reproduce the error mentioned in the issue
     try {

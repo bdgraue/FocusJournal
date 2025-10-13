@@ -1,17 +1,6 @@
-enum SecurityLevel {
-  none,
-  low,
-  medium,
-  high
-}
+enum SecurityLevel { none, low, medium, high }
 
-enum AuthMethod {
-  none,
-  pin,
-  password,
-  pattern,
-  biometric
-}
+enum AuthMethod { none, pin, password, pattern, biometric }
 
 class SecuritySettings {
   final SecurityLevel securityLevel;
@@ -50,7 +39,8 @@ class SecuritySettings {
       enableBiometric: enableBiometric ?? this.enableBiometric,
       autoLockTimeout: autoLockTimeout ?? this.autoLockTimeout,
       requireAuthOnStart: requireAuthOnStart ?? this.requireAuthOnStart,
-      requireAuthOnBackground: requireAuthOnBackground ?? this.requireAuthOnBackground,
+      requireAuthOnBackground:
+          requireAuthOnBackground ?? this.requireAuthOnBackground,
       hideAppContent: hideAppContent ?? this.hideAppContent,
       enableSecureBackup: enableSecureBackup ?? this.enableSecureBackup,
     );

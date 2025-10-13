@@ -1,24 +1,15 @@
 import 'package:flutter/material.dart';
 
-enum JournalViewMode {
-  calendar,
-  list,
-  timeline
-}
+enum JournalViewMode { calendar, list, timeline }
 
 enum EntrySortOrder {
   newestFirst,
   oldestFirst,
   titleAscending,
-  titleDescending
+  titleDescending,
 }
 
-enum FontSize {
-  small,
-  medium,
-  large,
-  extraLarge
-}
+enum FontSize { small, medium, large, extraLarge }
 
 class JournalPreferences {
   final JournalViewMode defaultView;

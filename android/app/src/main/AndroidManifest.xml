@@ -3,7 +3,7 @@
     <application
         android:label="Focus Journal"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/adaptive">
         <activity
             android:name=".MainActivity"
             android:exported="true"

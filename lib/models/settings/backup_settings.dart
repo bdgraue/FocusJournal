@@ -1,16 +1,11 @@
-enum BackupFrequency {
-  never,
-  daily,
-  weekly,
-  monthly
-}
+enum BackupFrequency { never, daily, weekly, monthly }
 
 enum BackupRetentionPolicy {
   keepAll,
   keepLast5,
   keepLast10,
   keepLastMonth,
-  keepLastYear
+  keepLastYear,
 }
 
 class BackupSettings {
@@ -61,7 +56,8 @@ class BackupSettings {
     return BackupSettings(
       autoBackupEnabled: json['autoBackupEnabled'] as bool,
       frequency: BackupFrequency.values[json['frequency'] as int],
-      retentionPolicy: BackupRetentionPolicy.values[json['retentionPolicy'] as int],
+      retentionPolicy:
+          BackupRetentionPolicy.values[json['retentionPolicy'] as int],
       selectedFolders: List<String>.from(json['selectedFolders'] as List),
       includeAttachments: json['includeAttachments'] as bool,
       encryptBackups: json['encryptBackups'] as bool,

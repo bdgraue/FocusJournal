@@ -29,15 +29,14 @@ class MyApp extends StatelessWidget {
           // Fallback colors if dynamic color is not available.
           lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
           darkColorScheme = ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple, brightness: Brightness.dark);
+            seedColor: Colors.deepPurple,
+            brightness: Brightness.dark,
+          );
         }
 
         return MaterialApp(
           title: 'Focus Journal',
-          theme: ThemeData(
-            colorScheme: lightColorScheme,
-            useMaterial3: true,
-          ),
+          theme: ThemeData(colorScheme: lightColorScheme, useMaterial3: true),
           darkTheme: ThemeData(
             colorScheme: darkColorScheme,
             useMaterial3: true,
@@ -78,6 +77,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   bool? _isAuthSetup;
   bool _isAuthenticated = false;
   bool _isLocked = false;
+  Orientation? _lastOrientation;
+  bool _orientationJustChanged = false;
 
   void logout() {
     setState(() {
@@ -89,6 +90,12 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Initialize orientation after first frame so MediaQuery is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _lastOrientation = MediaQuery.of(context).orientation;
+      }
+    });
     _checkAuthSetup();
     _checkInitialLock();
   }
@@ -111,12 +118,35 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
+      // In some cases, inactive may arrive before didChangeMetrics on rotation.
+      // Detect orientation change here as well and skip locking if it changed.
+      final currentOrientation = MediaQuery.of(context).orientation;
+      if (_lastOrientation != null && _lastOrientation != currentOrientation) {
+        _orientationJustChanged = true;
+      }
+      _lastOrientation = currentOrientation;
+
+      if (_orientationJustChanged) {
+        // Reset the flag and skip locking/unlocking on rotation
+        _orientationJustChanged = false;
+        return;
+      }
       setState(() {
         if (_isAuthenticated) {
           _isLocked = true;
         }
       });
     }
+  }
+
+  @override
+  void didChangeMetrics() {
+    // Triggered on orientation changes and other metrics updates
+    final currentOrientation = MediaQuery.of(context).orientation;
+    if (_lastOrientation != null && _lastOrientation != currentOrientation) {
+      _orientationJustChanged = true;
+    }
+    _lastOrientation = currentOrientation;
   }
 
   Future<void> _checkAuthSetup() async {
@@ -144,11 +174,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   @override
   Widget build(BuildContext context) {
     if (_isAuthSetup == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     Widget mainContent;
@@ -158,7 +184,9 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
         isFirstTimeSetup: true,
       );
     } else if (!_isAuthenticated) {
-      mainContent = AuthenticationScreen(onAuthenticationSuccess: _onAuthenticationSuccess);
+      mainContent = AuthenticationScreen(
+        onAuthenticationSuccess: _onAuthenticationSuccess,
+      );
     } else {
       mainContent = MainNavigationScreen(onLogout: logout);
     }
@@ -167,7 +195,9 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
       children: [
         mainContent,
         if (_isLocked)
-          AuthenticationScreen(onAuthenticationSuccess: _onAuthenticationSuccess),
+          AuthenticationScreen(
+            onAuthenticationSuccess: _onAuthenticationSuccess,
+          ),
       ],
     );
   }

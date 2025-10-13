@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
+import 'package:focus_journal/widgets/app_header.dart';
 import '../services/authentication_service.dart';
 
 class PatternSetupScreen extends StatefulWidget {
@@ -130,12 +131,8 @@ class _PatternSetupScreenState extends State<PatternSetupScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.grid_3x3_outlined,
-              size: 80,
-              color: Theme.of(context).primaryColor,
-            ),
-            const SizedBox(height: 24),
+            if (widget.isFirstTimeSetup) const AppHeader(),
+            if (widget.isFirstTimeSetup) const SizedBox(height: 8),
             Text(
               _statusMessage ?? AppLocalizations.of(context)!.drawPattern,
               style: const TextStyle(fontSize: 18),

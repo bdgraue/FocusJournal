@@ -140,7 +140,8 @@ class AppLocalizationsEs extends AppLocalizationsEn {
   String get changeAuthMethod => 'Cambiar método de autenticación';
 
   @override
-  String get selectNewAuthMethod => 'Selecciona un nuevo método de autenticación';
+  String get selectNewAuthMethod =>
+      'Selecciona un nuevo método de autenticación';
 
   @override
   String get logout => 'Cerrar sesión';
@@ -216,4 +217,22 @@ class AppLocalizationsEs extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Activar corrector ortográfico';
+
+  @override
+  String get today => 'Hoy';
+
+  @override
+  String get yesterday => 'Ayer';
+
+  @override
+  String get newEntry => 'Nueva entrada';
+
+  @override
+  String get editEntry => 'Editar entrada';
+
+  @override
+  String get writeYourThoughts => 'Escribe tus pensamientos...';
+
+  @override
+  String get contentRequired => 'El contenido es obligatorio';
 }

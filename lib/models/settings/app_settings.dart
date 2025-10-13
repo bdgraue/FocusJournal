@@ -47,11 +47,21 @@ class AppSettings {
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
     return AppSettings(
-      journalPreferences: JournalPreferences.fromJson(json['journalPreferences'] as Map<String, dynamic>),
-      backupSettings: BackupSettings.fromJson(json['backupSettings'] as Map<String, dynamic>),
-      securitySettings: SecuritySettings.fromJson(json['securitySettings'] as Map<String, dynamic>),
-      themeSettings: ThemeSettings.fromJson(json['themeSettings'] as Map<String, dynamic>),
-      privacySettings: PrivacySettings.fromJson(json['privacySettings'] as Map<String, dynamic>),
+      journalPreferences: JournalPreferences.fromJson(
+        json['journalPreferences'] as Map<String, dynamic>,
+      ),
+      backupSettings: BackupSettings.fromJson(
+        json['backupSettings'] as Map<String, dynamic>,
+      ),
+      securitySettings: SecuritySettings.fromJson(
+        json['securitySettings'] as Map<String, dynamic>,
+      ),
+      themeSettings: ThemeSettings.fromJson(
+        json['themeSettings'] as Map<String, dynamic>,
+      ),
+      privacySettings: PrivacySettings.fromJson(
+        json['privacySettings'] as Map<String, dynamic>,
+      ),
     );
   }
 }

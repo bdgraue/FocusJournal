@@ -1,5 +1,1 @@
-enum ImportStrategy {
-  completeOverwrite,
-  smartMerge,
-  addNewOnly,
-}
+enum ImportStrategy { completeOverwrite, smartMerge, addNewOnly }

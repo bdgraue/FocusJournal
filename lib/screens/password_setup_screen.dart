@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
+import 'package:focus_journal/widgets/app_header.dart';
 import '../services/authentication_service.dart';
 
 class PasswordSetupScreen extends StatefulWidget {
@@ -59,6 +60,8 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (widget.isFirstTimeSetup) const AppHeader(),
+              if (widget.isFirstTimeSetup) const SizedBox(height: 8),
               Text(
                 AppLocalizations.of(context)!.setupPasswordPrompt,
                 style: const TextStyle(fontSize: 18),

@@ -8,10 +8,7 @@ import 'pattern_setup_screen.dart';
 class MethodSelectionScreen extends StatefulWidget {
   final VoidCallback? onSetupComplete;
 
-  const MethodSelectionScreen({
-    super.key,
-    this.onSetupComplete,
-  });
+  const MethodSelectionScreen({super.key, this.onSetupComplete});
 
   @override
   State<MethodSelectionScreen> createState() => _MethodSelectionScreenState();
@@ -90,9 +87,7 @@ class _MethodSelectionScreenState extends State<MethodSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.setupSecurity),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.setupSecurity)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -104,19 +99,22 @@ class _MethodSelectionScreenState extends State<MethodSelectionScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            
+
             // Password Option
             Card(
               child: ListTile(
                 leading: const Icon(Icons.lock_outline),
                 title: Text(AppLocalizations.of(context)!.password),
-                subtitle: Text(AppLocalizations.of(context)!.passwordDescription),
+                subtitle: Text(
+                  AppLocalizations.of(context)!.passwordDescription,
+                ),
                 trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _selectMethod(AuthenticationService.authMethodPassword),
+                onTap: () =>
+                    _selectMethod(AuthenticationService.authMethodPassword),
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // PIN Option
             Card(
               child: ListTile(
@@ -128,26 +126,31 @@ class _MethodSelectionScreenState extends State<MethodSelectionScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Pattern Option
             Card(
               child: ListTile(
                 leading: const Icon(Icons.grid_3x3_outlined),
                 title: Text(AppLocalizations.of(context)!.pattern),
-                subtitle: Text(AppLocalizations.of(context)!.patternDescription),
+                subtitle: Text(
+                  AppLocalizations.of(context)!.patternDescription,
+                ),
                 trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () => _selectMethod(AuthenticationService.authMethodPattern),
+                onTap: () =>
+                    _selectMethod(AuthenticationService.authMethodPattern),
               ),
             ),
-            
+
             if (_canUseBiometrics) ...[
               const SizedBox(height: 32),
               const Divider(),
               const SizedBox(height: 16),
-              
+
               SwitchListTile(
                 title: Text(AppLocalizations.of(context)!.enableBiometrics),
-                subtitle: Text(AppLocalizations.of(context)!.biometricsDescription),
+                subtitle: Text(
+                  AppLocalizations.of(context)!.biometricsDescription,
+                ),
                 secondary: const Icon(Icons.fingerprint),
                 value: _enableBiometrics,
                 onChanged: (value) {

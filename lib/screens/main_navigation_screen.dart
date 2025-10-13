@@ -5,7 +5,7 @@ import 'journal_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final VoidCallback onLogout;
-  
+
   const MainNavigationScreen({super.key, required this.onLogout});
 
   @override
@@ -24,10 +24,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
       body: IndexedStack(
         index: _currentIndex,
-        children: [
-          _buildJournalTab(),
-          _buildSettingsTab(),
-        ],
+        children: [_buildJournalTab(), _buildSettingsTab()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

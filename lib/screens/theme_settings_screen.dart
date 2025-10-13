@@ -47,9 +47,7 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Theme Settings'),
-      ),
+      appBar: AppBar(title: const Text('Theme Settings')),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
@@ -67,16 +65,13 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildThemeModeSection() {
     final themeMode = _themeService.getThemeMode();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Appearance',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         RadioListTile<ThemeMode>(
@@ -103,16 +98,13 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildColorSection() {
     final settings = _themeService.themeSettings;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Colors',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         ListTile(
@@ -135,16 +127,13 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildFontSection() {
     final settings = _themeService.themeSettings;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Typography',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         SwitchListTile(
@@ -157,19 +146,13 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
             title: const Text('Font Family'),
             trailing: DropdownButton<String>(
               value: settings.customFontFamily ?? 'Roboto',
-              items: [
-                'Roboto',
-                'Lato',
-                'Open Sans',
-                'Montserrat',
-                'Poppins'
-              ].map((font) {
-                return DropdownMenuItem(
-                  value: font,
-                  child: Text(font),
-                );
-              }).toList(),
-              onChanged: (value) => _updateFontSettings(customFontFamily: value),
+              items: ['Roboto', 'Lato', 'Open Sans', 'Montserrat', 'Poppins']
+                  .map((font) {
+                    return DropdownMenuItem(value: font, child: Text(font));
+                  })
+                  .toList(),
+              onChanged: (value) =>
+                  _updateFontSettings(customFontFamily: value),
             ),
           ),
       ],
@@ -178,16 +161,13 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildAdvancedSection() {
     final settings = _themeService.themeSettings;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Advanced',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         SwitchListTile(
@@ -244,10 +224,7 @@ class _ColorButton extends StatelessWidget {
   final Color color;
   final ValueChanged<Color> onColorSelected;
 
-  const _ColorButton({
-    required this.color,
-    required this.onColorSelected,
-  });
+  const _ColorButton({required this.color, required this.onColorSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -259,10 +236,7 @@ class _ColorButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-            width: 1,
-          ),
+          border: Border.all(color: Theme.of(context).dividerColor, width: 1),
         ),
       ),
     );

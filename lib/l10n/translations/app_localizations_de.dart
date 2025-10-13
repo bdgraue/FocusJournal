@@ -57,7 +57,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get welcomeToJournal => 'Willkommen bei Focus Tagebuch';
 
   @override
-  String get journalDescription => 'Dein sicherer Ort für fokussierte Gedanken und Reflexionen.';
+  String get journalDescription =>
+      'Dein sicherer Ort für fokussierte Gedanken und Reflexionen.';
 
   @override
   String get setupSecurity => 'Sicherheit einrichten';
@@ -66,22 +67,26 @@ class AppLocalizationsDe extends AppLocalizations {
   String get chooseAuthMethod => 'Wählen Sie Ihre Authentifizierungsmethode';
 
   @override
-  String get passwordDescription => 'Verwenden Sie ein Passwort zur Authentifizierung';
+  String get passwordDescription =>
+      'Verwenden Sie ein Passwort zur Authentifizierung';
 
   @override
-  String get pinDescription => 'Verwenden Sie eine numerische PIN zur Authentifizierung';
+  String get pinDescription =>
+      'Verwenden Sie eine numerische PIN zur Authentifizierung';
 
   @override
   String get pattern => 'Muster';
 
   @override
-  String get patternDescription => 'Zeichnen Sie ein Muster zur Authentifizierung';
+  String get patternDescription =>
+      'Zeichnen Sie ein Muster zur Authentifizierung';
 
   @override
   String get enableBiometrics => 'Biometrische Authentifizierung aktivieren';
 
   @override
-  String get biometricsDescription => 'Fingerabdruck oder Gesichtserkennung für schnellen Zugriff verwenden';
+  String get biometricsDescription =>
+      'Fingerabdruck oder Gesichtserkennung für schnellen Zugriff verwenden';
 
   @override
   String get drawPattern => 'Zeichnen Sie Ihr Muster';
@@ -140,7 +145,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get changeAuthMethod => 'Authentifizierungsmethode ändern';
 
   @override
-  String get selectNewAuthMethod => 'Wählen Sie eine neue Authentifizierungsmethode';
+  String get selectNewAuthMethod =>
+      'Wählen Sie eine neue Authentifizierungsmethode';
 
   @override
   String get logout => 'Abmelden';
@@ -216,4 +222,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get enableSpellCheck => 'Rechtschreibprüfung aktivieren';
+
+  @override
+  String get today => 'Heute';
+
+  @override
+  String get yesterday => 'Gestern';
+
+  @override
+  String get newEntry => 'Neuer Eintrag';
+
+  @override
+  String get editEntry => 'Eintrag bearbeiten';
+
+  @override
+  String get writeYourThoughts => 'Schreibe deine Gedanken...';
+
+  @override
+  String get contentRequired => 'Inhalt ist erforderlich';
 }

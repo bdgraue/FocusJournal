@@ -34,25 +34,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!widget.isChangingPin) {
-      _checkShouldRequireAuth();
-    }
-  }
-
-  @override
   void dispose() {
     _credentialController.dispose();
     super.dispose();
-  }
-
-  Future<void> _checkShouldRequireAuth() async {
-    // Check if this is just a rotation
-    final shouldRequireAuth = await _authService.shouldRequireAuth(context);
-    if (!shouldRequireAuth && widget.onAuthenticationSuccess != null) {
-      widget.onAuthenticationSuccess!();
-    }
   }
 
   Future<void> _checkAuthSetup() async {
@@ -195,7 +179,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 const SizedBox(height: 48),
                 Center(
                   child: Image.asset(
-                    'assets/app_icon.png',
+                    'assets/journal-icon.png',
                     width: 80,
                     height: 80,
                   ),

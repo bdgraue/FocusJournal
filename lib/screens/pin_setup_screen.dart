@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
+import 'package:focus_journal/widgets/app_header.dart';
 import '../services/authentication_service.dart';
 
 class PinSetupScreen extends StatefulWidget {
@@ -76,11 +77,8 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.pin_outlined,
-                size: 80,
-                color: Theme.of(context).primaryColor,
-              ),
+              if (widget.isFirstTimeSetup) const AppHeader(),
+              if (widget.isFirstTimeSetup) const SizedBox(height: 8),
               const SizedBox(height: 24),
               Text(
                 AppLocalizations.of(context)!.setupPinPrompt(AuthenticationService.minPinLength),

@@ -1,14 +1,20 @@
 flutter_launcher_icons:
-  android: true
+  # Use explicit adaptive icons on Android to ensure fresh foreground/background assets are generated
+  android: "adaptive"
   ios: true
-  image_path: "assets/app_icon_source.png"
+  # Default image for non-Android platforms
+  image_path: "assets/journal-icon.png"
+  image_path_ios: "assets/journal-icon.png"
+  adaptive_icon_foreground: "assets/journal-icon.png"
+  # Pick a neutral background color to let the PNG's transparency sit nicely
+  adaptive_icon_background: "#FFFFFF"
   min_sdk_android: 21
   web:
     generate: true
-    image_path: "assets/app_icon_source.png"
+    image_path: "assets/journal-icon.png"
   windows:
     generate: true
-    image_path: "assets/app_icon_source.png"
+    image_path: "assets/journal-icon.png"
   macos:
     generate: true
-    image_path: "assets/app_icon_source.png"
+    image_path: "assets/journal-icon.png"

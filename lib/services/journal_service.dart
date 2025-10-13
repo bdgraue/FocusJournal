@@ -13,9 +13,9 @@ class JournalEntry {
     required this.content,
     DateTime? createdAt,
     DateTime? lastModified,
-  })  : id = id ?? const Uuid().v4(),
-        createdAt = createdAt ?? DateTime.now(),
-        lastModified = lastModified ?? DateTime.now();
+  }) : id = id ?? const Uuid().v4(),
+       createdAt = createdAt ?? DateTime.now(),
+       lastModified = lastModified ?? DateTime.now();
 
   Map<String, dynamic> toJson() {
     return {
@@ -35,9 +35,7 @@ class JournalEntry {
     );
   }
 
-  JournalEntry copyWith({
-    String? content,
-  }) {
+  JournalEntry copyWith({String? content}) {
     return JournalEntry(
       id: id,
       content: content ?? this.content,
@@ -64,10 +62,8 @@ class JournalService {
 
     try {
       final List<dynamic> jsonList = json.decode(jsonString);
-      return jsonList
-          .map((json) => JournalEntry.fromJson(json))
-          .toList()
-          ..sort((a, b) => b.lastModified.compareTo(a.lastModified));
+      return jsonList.map((json) => JournalEntry.fromJson(json)).toList()
+        ..sort((a, b) => b.lastModified.compareTo(a.lastModified));
     } catch (e) {
       print('Error loading journal entries: $e');
       return [];

@@ -12,45 +12,37 @@ class AuthenticationService {
   static const String _authMethodKey = 'authMethod';
   static const String _biometricsKey = 'biometrics';
   static const int minPinLength = 4;
-  
+
   final FlutterSecureStorage _secureStorage;
 
   // Available authentication methods
   static const String authMethodPassword = 'password';
   static const String authMethodPin = 'pin';
   static const String authMethodPattern = 'pattern';
-  
-  static final AuthenticationService _instance = AuthenticationService._internal();
-  Orientation? _lastOrientation;
+
+  static final AuthenticationService _instance =
+      AuthenticationService._internal();
   bool _isLocked = false;
-  
+
   factory AuthenticationService() {
     return _instance;
   }
 
   AuthenticationService._internal()
-      : _secureStorage = const FlutterSecureStorage();
+    : _secureStorage = const FlutterSecureStorage();
 
   void lockApp() {
     _isLocked = true;
   }
 
   Future<bool> shouldRequireAuth(BuildContext context) async {
-    // Always require auth if app is explicitly locked
+    // Require auth only if app was explicitly locked by app logic
     if (_isLocked) {
-      _isLocked = false;  // Reset lock state after checking
+      _isLocked = false; // Reset lock state after checking
       return true;
     }
-
-    // Check for orientation change
-    final currentOrientation = MediaQuery.of(context).orientation;
-    if (_lastOrientation != null && _lastOrientation != currentOrientation) {
-      _lastOrientation = currentOrientation;
-      return false;
-    }
-    _lastOrientation = currentOrientation;
-    
-    return true; // Always require authentication unless it's an orientation change
+    // Do not tie auth requirement to orientation changes
+    return false;
   }
 
   Future<bool> isAuthenticationSetup() async {
@@ -69,8 +61,6 @@ class AuthenticationService {
     final storedPassword = await _secureStorage.read(key: _passwordKey);
     return storedPassword == password;
   }
-
-
 
   bool isValidPin(String pin) {
     if (pin.length < minPinLength) return false;
@@ -120,18 +110,16 @@ class AuthenticationService {
     return prefs.getString(_authMethodKey) ?? authMethodPassword;
   }
 
-
-
   Future<bool> isScreenLockEnabled() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_screenLockKey) ?? true; // Default to true for security
+    return prefs.getBool(_screenLockKey) ??
+        true; // Default to true for security
   }
 
   Future<void> setScreenLockEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_screenLockKey, enabled);
   }
-
 
   Future<void> logout() async {
     await _secureStorage.delete(key: _passwordKey);
@@ -165,18 +153,18 @@ class AuthenticationService {
   Future<bool> hasBackupPassword() async {
     final method = await getCurrentAuthMethod();
     if (method == authMethodPassword) return false;
-    
+
     // Check if password exists as backup for PIN/pattern methods
     final storedPassword = await _secureStorage.read(key: _passwordKey);
     return storedPassword != null && storedPassword.isNotEmpty;
   }
 
   final LocalAuthentication _localAuth = LocalAuthentication();
-  
+
   Future<bool> canUseBiometrics() async {
     try {
       return await _localAuth.canCheckBiometrics &&
-             await _localAuth.isDeviceSupported();
+          await _localAuth.isDeviceSupported();
     } catch (e) {
       return false;
     }

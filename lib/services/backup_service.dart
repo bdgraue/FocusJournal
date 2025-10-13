@@ -14,21 +14,19 @@ class BackupService {
   final FlutterSecureStorage _secureStorage;
   final Uuid _uuid;
 
-  BackupService({
-    FlutterSecureStorage? secureStorage,
-    Uuid? uuid,
-  }) : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
-       _uuid = uuid ?? const Uuid();
+  BackupService({FlutterSecureStorage? secureStorage, Uuid? uuid})
+    : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
+      _uuid = uuid ?? const Uuid();
 
   Future<String> _getDeviceId() async {
     const deviceIdKey = 'device_id';
     String? deviceId = await _secureStorage.read(key: deviceIdKey);
-    
+
     if (deviceId == null) {
       deviceId = _uuid.v4();
       await _secureStorage.write(key: deviceIdKey, value: deviceId);
     }
-    
+
     return deviceId;
   }
 
@@ -56,7 +54,10 @@ class BackupService {
     return IV.fromSecureRandom(_ivSize);
   }
 
-  Future<void> exportJournal(Map<String, dynamic> journalData, String password) async {
+  Future<void> exportJournal(
+    Map<String, dynamic> journalData,
+    String password,
+  ) async {
     try {
       final metadata = await _prepareMetadata();
       final key = _deriveKey(password);
@@ -68,14 +69,13 @@ class BackupService {
 
       final exportData = {
         'metadata': metadata,
-        'data': {
-          'content': encrypted.base64,
-          'iv': iv.base64,
-        },
+        'data': {'content': encrypted.base64, 'iv': iv.base64},
       };
 
       final tempDir = await Directory.systemTemp.createTemp('journal_backup');
-      final file = File('${tempDir.path}/journal_backup_${DateTime.now().toIso8601String()}.fjb');
+      final file = File(
+        '${tempDir.path}/journal_backup_${DateTime.now().toIso8601String()}.fjb',
+      );
       await file.writeAsString(json.encode(exportData));
 
       await Share.shareXFiles(
@@ -91,7 +91,10 @@ class BackupService {
     }
   }
 
-  Future<Map<String, dynamic>> importJournal(String password, String filePath) async {
+  Future<Map<String, dynamic>> importJournal(
+    String password,
+    String filePath,
+  ) async {
     try {
       final file = File(filePath);
       final content = await file.readAsString();
@@ -110,10 +113,7 @@ class BackupService {
           iv: iv,
         );
 
-        return {
-          'metadata': metadata,
-          'data': json.decode(decrypted),
-        };
+        return {'metadata': metadata, 'data': json.decode(decrypted)};
       } catch (e) {
         throw Exception('Invalid password or corrupted backup file');
       }
@@ -130,10 +130,10 @@ class BackupService {
     switch (strategy) {
       case ImportStrategy.completeOverwrite:
         return importedData;
-      
+
       case ImportStrategy.addNewOnly:
         return _mergeAddNewOnly(currentData, importedData);
-      
+
       case ImportStrategy.smartMerge:
         return _mergeSmartStrategy(currentData, importedData);
     }
@@ -143,8 +143,10 @@ class BackupService {
     Map<String, dynamic> current,
     Map<String, dynamic> imported,
   ) {
-    final currentEntries = (current['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
-    final importedEntries = (imported['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final currentEntries =
+        (current['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final importedEntries =
+        (imported['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
     final currentIds = currentEntries.map((e) => e['id'] as String).toSet();
 
     final newEntries = [
@@ -152,18 +154,17 @@ class BackupService {
       ...importedEntries.where((entry) => !currentIds.contains(entry['id'])),
     ];
 
-    return {
-      ...current,
-      'entries': newEntries,
-    };
+    return {...current, 'entries': newEntries};
   }
 
   Map<String, dynamic> _mergeSmartStrategy(
     Map<String, dynamic> current,
     Map<String, dynamic> imported,
   ) {
-    final currentEntries = (current['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
-    final importedEntries = (imported['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final currentEntries =
+        (current['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    final importedEntries =
+        (imported['entries'] as List?)?.cast<Map<String, dynamic>>() ?? [];
 
     final entriesById = <String, Map<String, dynamic>>{};
 
@@ -182,8 +183,12 @@ class BackupService {
         entriesById[id] = entry;
       } else {
         // Compare timestamps and keep the most recent version
-        final currentTimestamp = DateTime.parse(currentEntry['lastModified'] as String);
-        final importedTimestamp = DateTime.parse(entry['lastModified'] as String);
+        final currentTimestamp = DateTime.parse(
+          currentEntry['lastModified'] as String,
+        );
+        final importedTimestamp = DateTime.parse(
+          entry['lastModified'] as String,
+        );
 
         if (importedTimestamp.isAfter(currentTimestamp)) {
           entriesById[id] = entry;
@@ -191,9 +196,40 @@ class BackupService {
       }
     }
 
-    return {
-      ...current,
-      'entries': entriesById.values.toList(),
-    };
+    return {...current, 'entries': entriesById.values.toList()};
+  }
+
+  // Validate the inner decrypted journal data map structure
+  // Expected keys: 'entries' as List<Map<String, dynamic>> with keys
+  //   id:String, content:String, createdAt:String(ISO), lastModified:String(ISO)
+  void validateJournalData(Map<String, dynamic> data) {
+    if (!data.containsKey('entries')) {
+      throw Exception("Invalid backup format: missing 'entries' key");
+    }
+    final entries = data['entries'];
+    if (entries is! List) {
+      throw Exception("Invalid backup format: 'entries' is not a list");
+    }
+    for (final e in entries) {
+      if (e is! Map) {
+        throw Exception('Invalid backup format: entry is not an object');
+      }
+      for (final key in ['id', 'content', 'createdAt', 'lastModified']) {
+        if (!e.containsKey(key)) {
+          throw Exception("Invalid backup format: entry missing '$key'");
+        }
+      }
+      if (e['id'] is! String || e['content'] is! String ||
+          e['createdAt'] is! String || e['lastModified'] is! String) {
+        throw Exception('Invalid backup format: wrong entry field types');
+      }
+      // Check date parseability
+      try {
+        DateTime.parse(e['createdAt'] as String);
+        DateTime.parse(e['lastModified'] as String);
+      } catch (_) {
+        throw Exception('Invalid backup format: invalid date strings');
+      }
+    }
   }
 }

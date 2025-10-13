@@ -6,10 +6,10 @@ import 'settings_service.dart';
 
 class ThemeService extends ChangeNotifier {
   final SettingsService _settingsService;
-  
+
   // Singleton pattern
   static ThemeService? _instance;
-  
+
   static Future<ThemeService> getInstance() async {
     if (_instance == null) {
       final settingsService = await SettingsService.getInstance();
@@ -122,8 +122,8 @@ class ThemeService extends ChangeNotifier {
     final newMode = currentMode == ThemeMode.light
         ? ThemeMode.dark
         : currentMode == ThemeMode.dark
-            ? ThemeMode.system
-            : ThemeMode.light;
+        ? ThemeMode.system
+        : ThemeMode.light;
 
     await updateThemeSettings(themeSettings.copyWith(themeMode: newMode));
   }
@@ -153,7 +153,9 @@ class ThemeService extends ChangeNotifier {
 
   // Update dynamic theming
   Future<void> setDynamicTheming(bool enabled) async {
-    await updateThemeSettings(themeSettings.copyWith(useDynamicTheming: enabled));
+    await updateThemeSettings(
+      themeSettings.copyWith(useDynamicTheming: enabled),
+    );
   }
 
   // Update contrast level

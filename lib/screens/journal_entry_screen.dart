@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/services/journal_service.dart';
+import 'package:focus_journal/l10n/app_localizations.dart';
 
 class JournalEntryScreen extends StatefulWidget {
   final JournalEntry? entry; // null for new entry, non-null for editing
@@ -18,7 +19,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   @override
   void initState() {
     super.initState();
-    _contentController = TextEditingController(text: widget.entry?.content ?? '');
+    _contentController = TextEditingController(
+      text: widget.entry?.content ?? '',
+    );
     _journalService = JournalService.create();
   }
 
@@ -31,7 +34,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   Future<void> _saveEntry() async {
     if (_contentController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Content is required')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.contentRequired)),
       );
       return;
     }
@@ -57,9 +60,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving entry: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error saving entry: $e')));
       }
     } finally {
       if (mounted) {
@@ -72,7 +75,11 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.entry == null ? 'New Entry' : 'Edit Entry'),
+        title: Text(
+          widget.entry == null
+              ? AppLocalizations.of(context)!.newEntry
+              : AppLocalizations.of(context)!.editEntry,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
@@ -84,9 +91,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
         padding: const EdgeInsets.all(16.0),
         child: TextField(
           controller: _contentController,
-          decoration: const InputDecoration(
-            hintText: 'Write your thoughts...',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.writeYourThoughts,
+            border: const OutlineInputBorder(),
           ),
           textCapitalization: TextCapitalization.sentences,
           maxLines: null,

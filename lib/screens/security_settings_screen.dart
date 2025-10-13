@@ -25,7 +25,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
 
   Future<void> _loadSettings() async {
     final method = await _authService.getCurrentAuthMethod();
-    
+
     setState(() {
       _currentAuthMethod = method;
     });
@@ -89,7 +89,6 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     );
   }
 
-
   String _getAuthMethodDisplayName(String method) {
     switch (method) {
       case AuthenticationService.authMethodPassword:
@@ -149,48 +148,64 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Change Authentication Method
           Card(
             child: Column(
               children: [
                 ListTile(
                   title: Text(AppLocalizations.of(context)!.changeAuthMethod),
-                  subtitle: Text(AppLocalizations.of(context)!.selectNewAuthMethod),
+                  subtitle: Text(
+                    AppLocalizations.of(context)!.selectNewAuthMethod,
+                  ),
                 ),
                 const Divider(height: 1),
-                
+
                 // Password Option
                 ListTile(
                   leading: const Icon(Icons.lock_outline),
                   title: Text(AppLocalizations.of(context)!.password),
-                  subtitle: Text(AppLocalizations.of(context)!.passwordDescription),
-                  trailing: _currentAuthMethod == AuthenticationService.authMethodPassword
+                  subtitle: Text(
+                    AppLocalizations.of(context)!.passwordDescription,
+                  ),
+                  trailing:
+                      _currentAuthMethod ==
+                          AuthenticationService.authMethodPassword
                       ? Icon(Icons.check, color: Theme.of(context).primaryColor)
                       : const Icon(Icons.arrow_forward_ios),
-                  onTap: () => _changeAuthMethod(AuthenticationService.authMethodPassword),
+                  onTap: () => _changeAuthMethod(
+                    AuthenticationService.authMethodPassword,
+                  ),
                 ),
-                
+
                 // PIN Option
                 ListTile(
                   leading: const Icon(Icons.pin_outlined),
                   title: Text(AppLocalizations.of(context)!.pin),
                   subtitle: Text(AppLocalizations.of(context)!.pinDescription),
-                  trailing: _currentAuthMethod == AuthenticationService.authMethodPin
+                  trailing:
+                      _currentAuthMethod == AuthenticationService.authMethodPin
                       ? Icon(Icons.check, color: Theme.of(context).primaryColor)
                       : const Icon(Icons.arrow_forward_ios),
-                  onTap: () => _changeAuthMethod(AuthenticationService.authMethodPin),
+                  onTap: () =>
+                      _changeAuthMethod(AuthenticationService.authMethodPin),
                 ),
-                
+
                 // Pattern Option
                 ListTile(
                   leading: const Icon(Icons.grid_3x3_outlined),
                   title: Text(AppLocalizations.of(context)!.pattern),
-                  subtitle: Text(AppLocalizations.of(context)!.patternDescription),
-                  trailing: _currentAuthMethod == AuthenticationService.authMethodPattern
+                  subtitle: Text(
+                    AppLocalizations.of(context)!.patternDescription,
+                  ),
+                  trailing:
+                      _currentAuthMethod ==
+                          AuthenticationService.authMethodPattern
                       ? Icon(Icons.check, color: Theme.of(context).primaryColor)
                       : const Icon(Icons.arrow_forward_ios),
-                  onTap: () => _changeAuthMethod(AuthenticationService.authMethodPattern),
+                  onTap: () => _changeAuthMethod(
+                    AuthenticationService.authMethodPattern,
+                  ),
                 ),
               ],
             ),

@@ -5,7 +5,7 @@ void main() {
   group('BackupService - Merge Strategies', () {
     test('completeOverwrite strategy should replace all data', () {
       final backupService = BackupService();
-      
+
       final currentData = {
         'entries': [
           {
@@ -37,7 +37,7 @@ void main() {
 
     test('addNewOnly strategy should only add new entries', () {
       final backupService = BackupService();
-      
+
       final currentData = {
         'entries': [
           {
@@ -71,7 +71,9 @@ void main() {
 
       expect((result['entries'] as List).length, equals(2));
       expect(
-        (result['entries'] as List).any((e) => e['id'] == '1' && e['content'] == 'entry 1'),
+        (result['entries'] as List).any(
+          (e) => e['id'] == '1' && e['content'] == 'entry 1',
+        ),
         isTrue,
         reason: 'Should keep original version of existing entry',
       );
@@ -84,7 +86,7 @@ void main() {
 
     test('smartMerge strategy should keep newest versions', () {
       final backupService = BackupService();
-      
+
       final currentData = {
         'entries': [
           {
@@ -128,12 +130,16 @@ void main() {
 
       expect((result['entries'] as List).length, equals(3));
       expect(
-        (result['entries'] as List).any((e) => e['id'] == '1' && e['content'] == 'newer entry 1'),
+        (result['entries'] as List).any(
+          (e) => e['id'] == '1' && e['content'] == 'newer entry 1',
+        ),
         isTrue,
         reason: 'Should keep newer version of entry 1',
       );
       expect(
-        (result['entries'] as List).any((e) => e['id'] == '2' && e['content'] == 'newer entry 2'),
+        (result['entries'] as List).any(
+          (e) => e['id'] == '2' && e['content'] == 'newer entry 2',
+        ),
         isTrue,
         reason: 'Should keep newer version of entry 2',
       );

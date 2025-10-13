@@ -216,4 +216,22 @@ class AppLocalizationsPl extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Włącz sprawdzanie pisowni';
+
+  @override
+  String get today => 'Dzisiaj';
+
+  @override
+  String get yesterday => 'Wczoraj';
+
+  @override
+  String get newEntry => 'Nowy wpis';
+
+  @override
+  String get editEntry => 'Edytuj wpis';
+
+  @override
+  String get writeYourThoughts => 'Zapisz swoje myśli...';
+
+  @override
+  String get contentRequired => 'Treść jest wymagana';
 }

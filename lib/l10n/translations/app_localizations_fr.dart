@@ -66,16 +66,19 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get chooseAuthMethod => "Choisissez votre méthode d'authentification";
 
   @override
-  String get passwordDescription => 'Utiliser un mot de passe pour l\'authentification';
+  String get passwordDescription =>
+      'Utiliser un mot de passe pour l\'authentification';
 
   @override
-  String get pinDescription => 'Utiliser un code PIN numérique pour l\'authentification';
+  String get pinDescription =>
+      'Utiliser un code PIN numérique pour l\'authentification';
 
   @override
   String get pattern => 'Schéma';
 
   @override
-  String get patternDescription => 'Dessiner un schéma pour l\'authentification';
+  String get patternDescription =>
+      'Dessiner un schéma pour l\'authentification';
 
   @override
   String get enableBiometrics => 'Activer l\'authentification biométrique';
@@ -140,7 +143,8 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get changeAuthMethod => 'Changer de méthode d\'authentification';
 
   @override
-  String get selectNewAuthMethod => 'Sélectionnez une nouvelle méthode d\'authentification';
+  String get selectNewAuthMethod =>
+      'Sélectionnez une nouvelle méthode d\'authentification';
 
   @override
   String get logout => 'Déconnexion';
@@ -216,4 +220,22 @@ class AppLocalizationsFr extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Activer la vérification orthographique';
+
+  @override
+  String get today => 'Aujourd\'hui';
+
+  @override
+  String get yesterday => 'Hier';
+
+  @override
+  String get newEntry => 'Nouvelle entrée';
+
+  @override
+  String get editEntry => 'Modifier l\'entrée';
+
+  @override
+  String get writeYourThoughts => 'Écrivez vos pensées...';
+
+  @override
+  String get contentRequired => 'Le contenu est requis';
 }

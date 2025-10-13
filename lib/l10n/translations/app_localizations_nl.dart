@@ -216,4 +216,22 @@ class AppLocalizationsNl extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Spellingcontrole inschakelen';
+
+  @override
+  String get today => 'Vandaag';
+
+  @override
+  String get yesterday => 'Gisteren';
+
+  @override
+  String get newEntry => 'Nieuw item';
+
+  @override
+  String get editEntry => 'Item bewerken';
+
+  @override
+  String get writeYourThoughts => 'Schrijf je gedachten...';
+
+  @override
+  String get contentRequired => 'Inhoud is vereist';
 }
