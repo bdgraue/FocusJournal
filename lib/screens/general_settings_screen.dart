@@ -111,7 +111,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   AppEventBus().emit(AppEvents.journalChanged);
 
       if (mounted) {
-        final msg = 'Import erfolgreich: +$added neue, ~${possiblyUpdated} aktualisiert, gesamt $mergedCount.';
+        final msg = 'Import erfolgreich: +$added neue, ~$possiblyUpdated aktualisiert, gesamt $mergedCount.';
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         // Clear password field after import for security
         _passwordController.clear();
