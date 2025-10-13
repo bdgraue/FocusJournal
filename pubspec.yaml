@@ -57,6 +57,7 @@ dependencies:
   uuid: ^4.3.3
   file_picker: ^10.3.3
   dynamic_color: ^1.8.1
+  flutter_sticky_header: ^0.8.0
 
 dev_dependencies:
   flutter_test:
@@ -111,3 +112,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  

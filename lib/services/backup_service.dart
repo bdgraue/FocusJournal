@@ -21,12 +21,11 @@ class BackupService {
   Future<String> _getDeviceId() async {
     const deviceIdKey = 'device_id';
     String? deviceId = await _secureStorage.read(key: deviceIdKey);
-
-    if (deviceId == null) {
-      deviceId = _uuid.v4();
-      await _secureStorage.write(key: deviceIdKey, value: deviceId);
+    if (deviceId == null || deviceId.isEmpty) {
+      final newId = _uuid.v4();
+      await _secureStorage.write(key: deviceIdKey, value: newId);
+      deviceId = newId;
     }
-
     return deviceId;
   }
 

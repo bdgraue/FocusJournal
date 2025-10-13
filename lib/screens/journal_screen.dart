@@ -5,6 +5,7 @@ import 'package:focus_journal/services/journal_service.dart';
 import 'package:intl/intl.dart';
 import 'journal_entry_screen.dart';
 import 'package:focus_journal/services/event_bus.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
@@ -17,6 +18,7 @@ class _JournalScreenState extends State<JournalScreen> {
   late final Future<JournalService> _journalService;
   List<JournalEntry>? _entries;
   StreamSubscription<String>? _sub;
+  // No global sticky header; we use per-day pinned headers only.
 
   @override
   void initState() {
@@ -153,16 +155,7 @@ class _JournalScreenState extends State<JournalScreen> {
     );
   }
 
-  SliverPersistentHeader _buildPinnedHeader(DateTime date) {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: _HeaderDelegate(
-        minExtent: 44,
-        maxExtent: 44,
-        child: _buildDateHeader(date),
-      ),
-    );
-  }
+  // Using SliverStickyHeader to ensure only the active date stays pinned
 
   Future<void> _createNewEntry() async {
     final result = await Navigator.of(context).push<bool>(
@@ -172,6 +165,8 @@ class _JournalScreenState extends State<JournalScreen> {
       await _loadEntries();
     }
   }
+
+  // No global sticky logic; SliverPersistentHeader per day handles pinning.
 
   @override
   Widget build(BuildContext context) {
@@ -205,22 +200,23 @@ class _JournalScreenState extends State<JournalScreen> {
           : Builder(
               builder: (context) {
                 final items = _buildGroupedItems(_entries!);
-                // Transform mixed list into slivers with pinned headers
                 final slivers = <Widget>[];
+
+                // Build pinned header per day followed by its entries
                 DateTime? currentHeader;
                 final dayEntries = <JournalEntry>[];
 
                 void flushDay() {
                   if (currentHeader == null) return;
-                  // Snapshot entries for this day to avoid mutation during build
                   final entriesForDay = List<JournalEntry>.from(dayEntries);
-                  slivers.add(_buildPinnedHeader(currentHeader));
                   slivers.add(
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) =>
-                            _buildEntryCard(entriesForDay[index]),
-                        childCount: entriesForDay.length,
+                    SliverStickyHeader(
+                      header: _buildDateHeader(currentHeader),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) => _buildEntryCard(entriesForDay[index]),
+                          childCount: entriesForDay.length,
+                        ),
                       ),
                     ),
                   );
@@ -229,14 +225,12 @@ class _JournalScreenState extends State<JournalScreen> {
 
                 for (final item in items) {
                   if (item is _DateHeader) {
-                    // Header boundary: flush previous day
                     flushDay();
                     currentHeader = item.date;
                   } else if (item is _EntryItem) {
                     dayEntries.add(item.entry);
                   }
                 }
-                // Flush last day
                 flushDay();
 
                 return CustomScrollView(slivers: slivers);
@@ -263,38 +257,4 @@ class _EntryItem implements _ListItem {
   _EntryItem(this.entry);
 }
 
-// Sticky header delegate
-class _HeaderDelegate extends SliverPersistentHeaderDelegate {
-  final double _minExtent;
-  final double _maxExtent;
-  final Widget child;
-
-  _HeaderDelegate({
-    required double minExtent,
-    required double maxExtent,
-    required this.child,
-  }) : _minExtent = minExtent,
-       _maxExtent = maxExtent;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return child;
-  }
-
-  @override
-  double get minExtent => _minExtent;
-
-  @override
-  double get maxExtent => _maxExtent;
-
-  @override
-  bool shouldRebuild(covariant _HeaderDelegate oldDelegate) {
-    return oldDelegate.minExtent != minExtent ||
-        oldDelegate.maxExtent != maxExtent ||
-        oldDelegate.child != child;
-  }
-}
+// Removed custom sticky header delegate in favor of SliverStickyHeader
