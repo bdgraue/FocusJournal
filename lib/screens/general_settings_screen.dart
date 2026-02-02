@@ -66,13 +66,13 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Journal exported successfully')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.journalExportedSuccessfully)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to export journal: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed(e.toString()))),
         );
       }
     }
@@ -111,7 +111,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
       AppEventBus().emit(AppEvents.journalChanged);
 
       if (mounted) {
-        final msg = 'Import successful: +$added new, ~$possiblyUpdated updated, $mergedCount total.';
+        final msg = AppLocalizations.of(context)!.importSuccessMessage(added, possiblyUpdated, mergedCount);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         // Clear password field after import for security
         _passwordController.clear();
@@ -120,7 +120,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to import journal: ${e.toString()}')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.importFailed(e.toString()))),
         );
       }
     }
@@ -130,16 +130,17 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
+        final l10n = AppLocalizations.of(context)!;
         return AlertDialog(
-          title: const Text('Import Strategy'),
+          title: Text(l10n.importStrategy),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   RadioListTile<ImportStrategy>(
-                    title: const Text('Complete Overwrite'),
-                    subtitle: const Text('Replace all existing data'),
+                    title: Text(l10n.completeOverwrite),
+                    subtitle: Text(l10n.replaceAllData),
                     value: ImportStrategy.completeOverwrite,
                     groupValue: _selectedImportStrategy,
                     onChanged: (ImportStrategy? value) {
@@ -147,8 +148,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     },
                   ),
                   RadioListTile<ImportStrategy>(
-                    title: const Text('Smart Merge (Recommended)'),
-                    subtitle: const Text('Merge with conflict resolution'),
+                    title: Text(l10n.smartMerge),
+                    subtitle: Text(l10n.mergeWithConflicts),
                     value: ImportStrategy.smartMerge,
                     groupValue: _selectedImportStrategy,
                     onChanged: (ImportStrategy? value) {
@@ -156,8 +157,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     },
                   ),
                   RadioListTile<ImportStrategy>(
-                    title: const Text('Add New Only'),
-                    subtitle: const Text('Only import new entries'),
+                    title: Text(l10n.addNewOnly),
+                    subtitle: Text(l10n.onlyImportNew),
                     value: ImportStrategy.addNewOnly,
                     groupValue: _selectedImportStrategy,
                     onChanged: (ImportStrategy? value) {
@@ -170,11 +171,11 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text('Proceed'),
+              child: Text(l10n.proceed),
               onPressed: () async {
                 Navigator.of(context).pop();
                 try {
@@ -191,8 +192,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     } else {
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Could not get file path'),
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!.couldNotGetFilePath),
                           ),
                         );
                       }
@@ -200,7 +201,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   } else {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No file selected')),
+                        SnackBar(content: Text(AppLocalizations.of(context)!.noFileSelected)),
                       );
                     }
                   }
@@ -208,7 +209,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Failed to pick file: ${e.toString()}'),
+                        content: Text(AppLocalizations.of(context)!.filePickFailed(e.toString())),
                       ),
                     );
                   }
@@ -288,15 +289,15 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Backup & Recovery',
+                        AppLocalizations.of(context)!.backupAndRecovery,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 16),
                       ListTile(
                         leading: const Icon(Icons.security),
-                        title: const Text('Backup Password'),
-                        subtitle: const Text(
-                          'Set a password to secure your backups',
+                        title: Text(AppLocalizations.of(context)!.backupPasswordLabel),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.backupPasswordHint,
                         ),
                       ),
                       // Password used for encryption/decryption of backups
@@ -304,7 +305,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
-              labelText: 'Password',
+              labelText: AppLocalizations.of(context)!.password,
                           suffixIcon: IconButton(
                             icon: Icon(
                               _isPasswordVisible
@@ -318,7 +319,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Password is required';
+                            return AppLocalizations.of(context)!.passwordRequired;
                           }
                           return null;
                         },
@@ -330,12 +331,12 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                           ElevatedButton.icon(
                             onPressed: _exportJournal,
                             icon: const Icon(Icons.upload),
-                            label: const Text('Create Backup'),
+                            label: Text(AppLocalizations.of(context)!.createBackup),
                           ),
                           ElevatedButton.icon(
                             onPressed: _showImportStrategyDialog,
                             icon: const Icon(Icons.download),
-                            label: const Text('Restore Backup'),
+                            label: Text(AppLocalizations.of(context)!.restoreBackup),
                           ),
                         ],
                       ),

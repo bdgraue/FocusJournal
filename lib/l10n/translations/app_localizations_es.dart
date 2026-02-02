@@ -235,4 +235,100 @@ class AppLocalizationsEs extends AppLocalizationsEn {
 
   @override
   String get contentRequired => 'El contenido es obligatorio';
+
+  @override
+  String get incorrectPattern => 'Patrón incorrecto';
+  @override
+  String get pleaseDrawYourPattern => 'Por favor dibuja tu patrón';
+  @override
+  String get useBackupPassword => 'Usar contraseña de respaldo';
+  @override
+  String get usePin => 'Usar PIN';
+  @override
+  String get usePattern => 'Usar patrón';
+  @override
+  String get incorrectPassword => 'Contraseña incorrecta';
+  @override
+  String get incorrectPin => 'PIN incorrecto';
+  @override
+  String get incorrectBackupPassword => 'Contraseña de respaldo incorrecta';
+  @override
+  String get pleaseEnterYourPassword => 'Por favor ingresa tu contraseña';
+  @override
+  String get pleaseEnterYourPin => 'Por favor ingresa tu PIN';
+  @override
+  String get pleaseEnterYourBackupPassword => 'Por favor ingresa tu contraseña de respaldo';
+  @override
+  String get confirmPassword => 'Confirmar contraseña';
+  @override
+  String get pleaseEnterAPassword => 'Por favor ingresa una contraseña';
+  @override
+  String passwordMinLength(int minLength) => 'La contraseña debe tener al menos $minLength caracteres';
+  @override
+  String get passwordsDoNotMatch => 'Las contraseñas no coinciden';
+  @override
+  String get journalExportedSuccessfully => 'Diario exportado con éxito';
+  @override
+  String exportFailed(String error) => 'Error al exportar el diario: $error';
+  @override
+  String importFailed(String error) => 'Error al importar el diario: $error';
+  @override
+  String get importStrategy => 'Estrategia de importación';
+  @override
+  String get completeOverwrite => 'Reemplazo completo';
+  @override
+  String get replaceAllData => 'Reemplazar todos los datos existentes';
+  @override
+  String get smartMerge => 'Fusión inteligente (Recomendado)';
+  @override
+  String get mergeWithConflicts => 'Fusionar con resolución de conflictos';
+  @override
+  String get addNewOnly => 'Solo agregar nuevas';
+  @override
+  String get onlyImportNew => 'Solo importar entradas nuevas';
+  @override
+  String get cancel => 'Cancelar';
+  @override
+  String get proceed => 'Continuar';
+  @override
+  String get couldNotGetFilePath => 'No se pudo obtener la ruta del archivo';
+  @override
+  String get noFileSelected => 'Ningún archivo seleccionado';
+  @override
+  String filePickFailed(String error) => 'Error al seleccionar archivo: $error';
+  @override
+  String get backupAndRecovery => 'Respaldo y recuperación';
+  @override
+  String get backupPasswordLabel => 'Contraseña de respaldo';
+  @override
+  String get backupPasswordHint => 'Establece una contraseña para proteger tus respaldos';
+  @override
+  String get passwordRequired => 'La contraseña es obligatoria';
+  @override
+  String get createBackup => 'Crear respaldo';
+  @override
+  String get restoreBackup => 'Restaurar respaldo';
+  @override
+  String importSuccessMessage(int added, int updated, int total) =>
+      'Importación exitosa: +$added nuevas, ~$updated actualizadas, $total en total.';
+  @override
+  String get appearance => 'Apariencia';
+  @override
+  String get colors => 'Colores';
+  @override
+  String get typography => 'Tipografía';
+  @override
+  String get useCustomFont => 'Usar fuente personalizada';
+  @override
+  String get fontFamily => 'Familia de fuente';
+  @override
+  String get advancedSettings => 'Avanzado';
+  @override
+  String get dynamicTheming => 'Tema dinámico';
+  @override
+  String get dynamicThemingDescription => 'Adaptar colores según el fondo de pantalla';
+  @override
+  String get contrastLabel => 'Contraste';
+  @override
+  String get pickAColor => 'Elegir un color';
 }

@@ -234,4 +234,100 @@ class AppLocalizationsNl extends AppLocalizationsEn {
 
   @override
   String get contentRequired => 'Inhoud is vereist';
+
+  @override
+  String get incorrectPattern => 'Onjuist patroon';
+  @override
+  String get pleaseDrawYourPattern => 'Teken uw patroon';
+  @override
+  String get useBackupPassword => 'Gebruik back-upwachtwoord';
+  @override
+  String get usePin => 'Gebruik PIN';
+  @override
+  String get usePattern => 'Gebruik patroon';
+  @override
+  String get incorrectPassword => 'Onjuist wachtwoord';
+  @override
+  String get incorrectPin => 'Onjuiste PIN';
+  @override
+  String get incorrectBackupPassword => 'Onjuist back-upwachtwoord';
+  @override
+  String get pleaseEnterYourPassword => 'Voer uw wachtwoord in';
+  @override
+  String get pleaseEnterYourPin => 'Voer uw PIN in';
+  @override
+  String get pleaseEnterYourBackupPassword => 'Voer uw back-upwachtwoord in';
+  @override
+  String get confirmPassword => 'Bevestig wachtwoord';
+  @override
+  String get pleaseEnterAPassword => 'Voer een wachtwoord in';
+  @override
+  String passwordMinLength(int minLength) => 'Wachtwoord moet minimaal $minLength tekens bevatten';
+  @override
+  String get passwordsDoNotMatch => 'Wachtwoorden komen niet overeen';
+  @override
+  String get journalExportedSuccessfully => 'Dagboek succesvol geëxporteerd';
+  @override
+  String exportFailed(String error) => 'Export mislukt: $error';
+  @override
+  String importFailed(String error) => 'Import mislukt: $error';
+  @override
+  String get importStrategy => 'Importstrategie';
+  @override
+  String get completeOverwrite => 'Volledig overschrijven';
+  @override
+  String get replaceAllData => 'Alle bestaande gegevens vervangen';
+  @override
+  String get smartMerge => 'Slim samenvoegen (Aanbevolen)';
+  @override
+  String get mergeWithConflicts => 'Samenvoegen met conflictoplossing';
+  @override
+  String get addNewOnly => 'Alleen nieuwe toevoegen';
+  @override
+  String get onlyImportNew => 'Alleen nieuwe items importeren';
+  @override
+  String get cancel => 'Annuleren';
+  @override
+  String get proceed => 'Doorgaan';
+  @override
+  String get couldNotGetFilePath => 'Kan bestandspad niet ophalen';
+  @override
+  String get noFileSelected => 'Geen bestand geselecteerd';
+  @override
+  String filePickFailed(String error) => 'Bestandsselectie mislukt: $error';
+  @override
+  String get backupAndRecovery => 'Back-up en herstel';
+  @override
+  String get backupPasswordLabel => 'Back-upwachtwoord';
+  @override
+  String get backupPasswordHint => 'Stel een wachtwoord in om uw back-ups te beveiligen';
+  @override
+  String get passwordRequired => 'Wachtwoord is vereist';
+  @override
+  String get createBackup => 'Back-up maken';
+  @override
+  String get restoreBackup => 'Back-up herstellen';
+  @override
+  String importSuccessMessage(int added, int updated, int total) =>
+      'Import geslaagd: +$added nieuw, ~$updated bijgewerkt, $total totaal.';
+  @override
+  String get appearance => 'Weergave';
+  @override
+  String get colors => 'Kleuren';
+  @override
+  String get typography => 'Typografie';
+  @override
+  String get useCustomFont => 'Aangepast lettertype gebruiken';
+  @override
+  String get fontFamily => 'Lettertypefamilie';
+  @override
+  String get advancedSettings => 'Geavanceerd';
+  @override
+  String get dynamicTheming => 'Dynamisch thema';
+  @override
+  String get dynamicThemingDescription => 'Kleuren aanpassen op basis van achtergrond';
+  @override
+  String get contrastLabel => 'Contrast';
+  @override
+  String get pickAColor => 'Kies een kleur';
 }

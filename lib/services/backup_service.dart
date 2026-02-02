@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,8 +11,11 @@ import '../models/import_strategy.dart';
 
 class BackupService {
   static const _algorithm = 'AES-256-GCM';
+  static const _backupVersion = '1.1';
   static const _keySize = 32; // 256 bits
   static const _ivSize = 16; // 128 bits
+  static const _saltSize = 32; // 256-bit salt
+  static const _pbkdf2Iterations = 100000;
   final FlutterSecureStorage _secureStorage;
   final Uuid _uuid;
 
@@ -32,15 +37,47 @@ class BackupService {
   Future<Map<String, dynamic>> _prepareMetadata() async {
     final deviceId = await _getDeviceId();
     return {
-      'version': '1.0',
+      'version': _backupVersion,
       'exportDate': DateTime.now().toUtc().toIso8601String(),
       'encryptionMethod': _algorithm,
+      'keyDerivation': 'PBKDF2-HMAC-SHA256',
+      'pbkdf2Iterations': _pbkdf2Iterations,
       'deviceId': deviceId,
       'exportId': _uuid.v4(),
     };
   }
 
-  Key _deriveKey(String password) {
+  Uint8List _generateSalt() {
+    final random = Random.secure();
+    return Uint8List.fromList(
+      List.generate(_saltSize, (_) => random.nextInt(256)),
+    );
+  }
+
+  /// Derives a 256-bit key using PBKDF2-HMAC-SHA256.
+  Key _deriveKey(String password, Uint8List salt) {
+    final passwordBytes = utf8.encode(password);
+    final hmac = Hmac(sha256, passwordBytes);
+
+    // PBKDF2 single block (SHA-256 output = 32 bytes = our key size)
+    final blockIndex = Uint8List(4)..[3] = 1;
+    var u = Uint8List.fromList(
+      hmac.convert([...salt, ...blockIndex]).bytes,
+    );
+    var result = Uint8List.fromList(u);
+
+    for (var i = 1; i < _pbkdf2Iterations; i++) {
+      u = Uint8List.fromList(hmac.convert(u).bytes);
+      for (var j = 0; j < result.length; j++) {
+        result[j] ^= u[j];
+      }
+    }
+
+    return Key(result);
+  }
+
+  /// Legacy key derivation for v1.0 backup compatibility.
+  Key _deriveKeyLegacy(String password) {
     final bytes = utf8.encode(password);
     final list = Uint8List(_keySize);
     for (var i = 0; i < _keySize; i++) {
@@ -58,7 +95,8 @@ class BackupService {
     String password,
   ) async {
     final metadata = await _prepareMetadata();
-    final key = _deriveKey(password);
+    final salt = _generateSalt();
+    final key = _deriveKey(password, salt);
     final iv = _generateIV();
     final encrypter = Encrypter(AES(key));
 
@@ -67,7 +105,11 @@ class BackupService {
 
     final exportData = {
       'metadata': metadata,
-      'data': {'content': encrypted.base64, 'iv': iv.base64},
+      'data': {
+        'content': encrypted.base64,
+        'iv': iv.base64,
+        'salt': base64.encode(salt),
+      },
     };
 
     final tempDir = await Directory.systemTemp.createTemp('journal_backup');
@@ -97,7 +139,16 @@ class BackupService {
     final metadata = importData['metadata'] as Map<String, dynamic>;
     final encryptedData = importData['data'] as Map<String, dynamic>;
 
-    final key = _deriveKey(password);
+    // Detect format: v1.1+ includes a salt for PBKDF2, v1.0 does not
+    final Key key;
+    final saltBase64 = encryptedData['salt'] as String?;
+    if (saltBase64 != null) {
+      final salt = Uint8List.fromList(base64.decode(saltBase64));
+      key = _deriveKey(password, salt);
+    } else {
+      key = _deriveKeyLegacy(password);
+    }
+
     final iv = IV.fromBase64(encryptedData['iv'] as String);
     final encrypter = Encrypter(AES(key));
 
