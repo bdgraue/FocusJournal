@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../services/theme_service.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -47,7 +48,7 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Theme Settings')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.themeSettings)),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
@@ -65,29 +66,30 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildThemeModeSection() {
     final themeMode = _themeService.getThemeMode();
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Appearance',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Text(
+          l10n.appearance,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         RadioListTile<ThemeMode>(
-          title: const Text('System'),
+          title: Text(l10n.systemTheme),
           value: ThemeMode.system,
           groupValue: themeMode,
           onChanged: (value) => _updateThemeMode(value!),
         ),
         RadioListTile<ThemeMode>(
-          title: const Text('Light'),
+          title: Text(l10n.lightMode),
           value: ThemeMode.light,
           groupValue: themeMode,
           onChanged: (value) => _updateThemeMode(value!),
         ),
         RadioListTile<ThemeMode>(
-          title: const Text('Dark'),
+          title: Text(l10n.darkMode),
           value: ThemeMode.dark,
           groupValue: themeMode,
           onChanged: (value) => _updateThemeMode(value!),
@@ -98,24 +100,25 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildColorSection() {
     final settings = _themeService.themeSettings;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Colors',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Text(
+          l10n.colors,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         ListTile(
-          title: const Text('Primary Color'),
+          title: Text(l10n.primaryColor),
           trailing: _ColorButton(
             color: settings.primaryColor,
             onColorSelected: (color) => _updatePrimaryColor(color),
           ),
         ),
         ListTile(
-          title: const Text('Accent Color'),
+          title: Text(l10n.accentColor),
           trailing: _ColorButton(
             color: settings.accentColor,
             onColorSelected: (color) => _updateAccentColor(color),
@@ -127,23 +130,24 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildFontSection() {
     final settings = _themeService.themeSettings;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Typography',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Text(
+          l10n.typography,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         SwitchListTile(
-          title: const Text('Use Custom Font'),
+          title: Text(l10n.useCustomFont),
           value: settings.useCustomFont,
           onChanged: (value) => _updateFontSettings(useCustomFont: value),
         ),
         if (settings.useCustomFont)
           ListTile(
-            title: const Text('Font Family'),
+            title: Text(l10n.fontFamily),
             trailing: DropdownButton<String>(
               value: settings.customFontFamily ?? 'Roboto',
               items: ['Roboto', 'Lato', 'Open Sans', 'Montserrat', 'Poppins']
@@ -161,23 +165,24 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
 
   Widget _buildAdvancedSection() {
     final settings = _themeService.themeSettings;
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Advanced',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        Text(
+          l10n.advancedSettings,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         SwitchListTile(
-          title: const Text('Dynamic Theming'),
-          subtitle: const Text('Adapt colors based on wallpaper'),
+          title: Text(l10n.dynamicTheming),
+          subtitle: Text(l10n.dynamicThemingDescription),
           value: settings.useDynamicTheming,
           onChanged: (value) => _themeService.setDynamicTheming(value),
         ),
         ListTile(
-          title: const Text('Contrast'),
+          title: Text(l10n.contrastLabel),
           subtitle: Slider(
             value: settings.contrastLevel,
             min: 0.0,
@@ -243,11 +248,12 @@ class _ColorButton extends StatelessWidget {
   }
 
   void _showColorPicker(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Pick a color'),
+          title: Text(l10n.pickAColor),
           content: SingleChildScrollView(
             child: MaterialPicker(
               pickerColor: color,
@@ -260,7 +266,7 @@ class _ColorButton extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
           ],
         );

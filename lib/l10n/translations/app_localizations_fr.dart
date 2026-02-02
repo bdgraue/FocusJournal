@@ -238,4 +238,100 @@ class AppLocalizationsFr extends AppLocalizationsEn {
 
   @override
   String get contentRequired => 'Le contenu est requis';
+
+  @override
+  String get incorrectPattern => 'Schéma incorrect';
+  @override
+  String get pleaseDrawYourPattern => 'Veuillez dessiner votre schéma';
+  @override
+  String get useBackupPassword => 'Utiliser le mot de passe de secours';
+  @override
+  String get usePin => 'Utiliser le code PIN';
+  @override
+  String get usePattern => 'Utiliser le schéma';
+  @override
+  String get incorrectPassword => 'Mot de passe incorrect';
+  @override
+  String get incorrectPin => 'Code PIN incorrect';
+  @override
+  String get incorrectBackupPassword => 'Mot de passe de secours incorrect';
+  @override
+  String get pleaseEnterYourPassword => 'Veuillez entrer votre mot de passe';
+  @override
+  String get pleaseEnterYourPin => 'Veuillez entrer votre code PIN';
+  @override
+  String get pleaseEnterYourBackupPassword => 'Veuillez entrer votre mot de passe de secours';
+  @override
+  String get confirmPassword => 'Confirmer le mot de passe';
+  @override
+  String get pleaseEnterAPassword => 'Veuillez entrer un mot de passe';
+  @override
+  String passwordMinLength(int minLength) => 'Le mot de passe doit comporter au moins $minLength caractères';
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
+  @override
+  String get journalExportedSuccessfully => 'Journal exporté avec succès';
+  @override
+  String exportFailed(String error) => 'Échec de l\'exportation : $error';
+  @override
+  String importFailed(String error) => 'Échec de l\'importation : $error';
+  @override
+  String get importStrategy => 'Stratégie d\'importation';
+  @override
+  String get completeOverwrite => 'Remplacement complet';
+  @override
+  String get replaceAllData => 'Remplacer toutes les données existantes';
+  @override
+  String get smartMerge => 'Fusion intelligente (Recommandé)';
+  @override
+  String get mergeWithConflicts => 'Fusionner avec résolution des conflits';
+  @override
+  String get addNewOnly => 'Ajouter uniquement les nouvelles';
+  @override
+  String get onlyImportNew => 'Importer uniquement les nouvelles entrées';
+  @override
+  String get cancel => 'Annuler';
+  @override
+  String get proceed => 'Continuer';
+  @override
+  String get couldNotGetFilePath => 'Impossible d\'obtenir le chemin du fichier';
+  @override
+  String get noFileSelected => 'Aucun fichier sélectionné';
+  @override
+  String filePickFailed(String error) => 'Échec de la sélection du fichier : $error';
+  @override
+  String get backupAndRecovery => 'Sauvegarde et restauration';
+  @override
+  String get backupPasswordLabel => 'Mot de passe de sauvegarde';
+  @override
+  String get backupPasswordHint => 'Définissez un mot de passe pour sécuriser vos sauvegardes';
+  @override
+  String get passwordRequired => 'Le mot de passe est requis';
+  @override
+  String get createBackup => 'Créer une sauvegarde';
+  @override
+  String get restoreBackup => 'Restaurer une sauvegarde';
+  @override
+  String importSuccessMessage(int added, int updated, int total) =>
+      'Import réussi : +$added nouvelles, ~$updated mises à jour, $total au total.';
+  @override
+  String get appearance => 'Apparence';
+  @override
+  String get colors => 'Couleurs';
+  @override
+  String get typography => 'Typographie';
+  @override
+  String get useCustomFont => 'Utiliser une police personnalisée';
+  @override
+  String get fontFamily => 'Famille de police';
+  @override
+  String get advancedSettings => 'Avancé';
+  @override
+  String get dynamicTheming => 'Thème dynamique';
+  @override
+  String get dynamicThemingDescription => 'Adapter les couleurs en fonction du fond d\'écran';
+  @override
+  String get contrastLabel => 'Contraste';
+  @override
+  String get pickAColor => 'Choisir une couleur';
 }

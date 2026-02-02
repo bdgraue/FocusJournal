@@ -504,6 +504,65 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable Spell Check'**
   String get enableSpellCheck;
+
+  // --- Authentication screen ---
+
+  String get incorrectPattern;
+  String get pleaseDrawYourPattern;
+  String get useBackupPassword;
+  String get usePin;
+  String get usePattern;
+  String get incorrectPassword;
+  String get incorrectPin;
+  String get incorrectBackupPassword;
+  String get pleaseEnterYourPassword;
+  String get pleaseEnterYourPin;
+  String get pleaseEnterYourBackupPassword;
+
+  // --- Password setup ---
+
+  String get confirmPassword;
+  String get pleaseEnterAPassword;
+  String passwordMinLength(int minLength);
+  String get passwordsDoNotMatch;
+
+  // --- Backup & Import ---
+
+  String get journalExportedSuccessfully;
+  String exportFailed(String error);
+  String importFailed(String error);
+  String get importStrategy;
+  String get completeOverwrite;
+  String get replaceAllData;
+  String get smartMerge;
+  String get mergeWithConflicts;
+  String get addNewOnly;
+  String get onlyImportNew;
+  String get cancel;
+  String get proceed;
+  String get couldNotGetFilePath;
+  String get noFileSelected;
+  String filePickFailed(String error);
+  String get backupAndRecovery;
+  String get backupPasswordLabel;
+  String get backupPasswordHint;
+  String get passwordRequired;
+  String get createBackup;
+  String get restoreBackup;
+  String importSuccessMessage(int added, int updated, int total);
+
+  // --- Theme settings ---
+
+  String get appearance;
+  String get colors;
+  String get typography;
+  String get useCustomFont;
+  String get fontFamily;
+  String get advancedSettings;
+  String get dynamicTheming;
+  String get dynamicThemingDescription;
+  String get contrastLabel;
+  String get pickAColor;
 }
 
 /// The delegate class which loads AppLocalizations.

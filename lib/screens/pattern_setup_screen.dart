@@ -280,7 +280,7 @@ class _PatternGridState extends State<PatternGrid> {
                   ),
                 ),
                 child: isSelected
-                    ? Icon(
+                    ? const Icon(
                         Icons.circle,
                         color: Colors.white,
                         size: 20,

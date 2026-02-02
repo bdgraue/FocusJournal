@@ -70,16 +70,16 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.password,
+                  border: const OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
+                    return AppLocalizations.of(context)!.pleaseEnterAPassword;
                   }
                   if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
+                    return AppLocalizations.of(context)!.passwordMinLength(6);
                   }
                   return null;
                 },
@@ -88,13 +88,13 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
               TextFormField(
                 controller: _confirmPasswordController,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm Password',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.confirmPassword,
+                  border: const OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value != _passwordController.text) {
-                    return 'Passwords do not match';
+                    return AppLocalizations.of(context)!.passwordsDoNotMatch;
                   }
                   return null;
                 },
@@ -102,7 +102,7 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _setupPassword,
-                child: const Text('Set Password'),
+                child: Text(AppLocalizations.of(context)!.setPassword),
               ),
             ],
           ),

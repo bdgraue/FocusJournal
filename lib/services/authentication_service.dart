@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +35,48 @@ class AuthenticationService {
   AuthenticationService._internal()
     : _secureStorage = const FlutterSecureStorage();
 
+  // --- Credential hashing helpers ---
+
+  static const _saltSeparator = r'$';
+
+  /// Hashes a credential with a random salt using HMAC-SHA256.
+  /// Returns `base64(salt)$hex(hash)`.
+  String _hashCredential(String credential) {
+    final random = Random.secure();
+    final salt = Uint8List.fromList(
+      List.generate(32, (_) => random.nextInt(256)),
+    );
+    final hash = _computeHash(credential, salt);
+    return '${base64.encode(salt)}$_saltSeparator$hash';
+  }
+
+  String _computeHash(String credential, Uint8List salt) {
+    final hmac = Hmac(sha256, salt);
+    return hmac.convert(utf8.encode(credential)).toString();
+  }
+
+  /// Verifies a credential against a stored value.
+  /// Supports both legacy plaintext and new hashed format.
+  bool _verifyCredential(String credential, String stored) {
+    if (!stored.contains(_saltSeparator)) {
+      // Legacy plaintext format
+      return stored == credential;
+    }
+    final parts = stored.split(_saltSeparator);
+    if (parts.length != 2) return false;
+    final salt = Uint8List.fromList(base64.decode(parts[0]));
+    final expectedHash = parts[1];
+    return _computeHash(credential, salt) == expectedHash;
+  }
+
+  /// Migrates a legacy plaintext credential to hashed format.
+  Future<void> _migrateIfLegacy(String key, String credential) async {
+    final stored = await _secureStorage.read(key: key);
+    if (stored != null && !stored.contains(_saltSeparator)) {
+      await _secureStorage.write(key: key, value: _hashCredential(credential));
+    }
+  }
+
   void lockApp() {
     _isLocked = true;
   }
@@ -51,15 +97,21 @@ class AuthenticationService {
   }
 
   Future<void> setupPassword(String password) async {
-    await _secureStorage.write(key: _passwordKey, value: password);
+    await _secureStorage.write(
+      key: _passwordKey,
+      value: _hashCredential(password),
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_hasSetupKey, true);
     await prefs.setString(_authMethodKey, authMethodPassword);
   }
 
   Future<bool> verifyPassword(String password) async {
-    final storedPassword = await _secureStorage.read(key: _passwordKey);
-    return storedPassword == password;
+    final stored = await _secureStorage.read(key: _passwordKey);
+    if (stored == null) return false;
+    final matches = _verifyCredential(password, stored);
+    if (matches) await _migrateIfLegacy(_passwordKey, password);
+    return matches;
   }
 
   bool isValidPin(String pin) {
@@ -71,7 +123,7 @@ class AuthenticationService {
     if (!isValidPin(pin)) {
       throw Exception('PIN must be at least $minPinLength digits');
     }
-    await _secureStorage.write(key: _pinKey, value: pin);
+    await _secureStorage.write(key: _pinKey, value: _hashCredential(pin));
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_authMethodKey, authMethodPin);
     // Keep password as backup - don't delete it when switching to PIN
@@ -79,8 +131,11 @@ class AuthenticationService {
 
   Future<bool> verifyPin(String pin) async {
     if (!isValidPin(pin)) return false;
-    final storedPin = await _secureStorage.read(key: _pinKey);
-    return storedPin == pin;
+    final stored = await _secureStorage.read(key: _pinKey);
+    if (stored == null) return false;
+    final matches = _verifyCredential(pin, stored);
+    if (matches) await _migrateIfLegacy(_pinKey, pin);
+    return matches;
   }
 
   bool isValidPattern(String pattern) {
@@ -93,7 +148,10 @@ class AuthenticationService {
     if (!isValidPattern(pattern)) {
       throw Exception('Pattern must connect at least 4 dots');
     }
-    await _secureStorage.write(key: _patternKey, value: pattern);
+    await _secureStorage.write(
+      key: _patternKey,
+      value: _hashCredential(pattern),
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_authMethodKey, authMethodPattern);
     // Keep password as backup - don't delete it when switching to pattern
@@ -101,8 +159,11 @@ class AuthenticationService {
 
   Future<bool> verifyPattern(String pattern) async {
     if (!isValidPattern(pattern)) return false;
-    final storedPattern = await _secureStorage.read(key: _patternKey);
-    return storedPattern == pattern;
+    final stored = await _secureStorage.read(key: _patternKey);
+    if (stored == null) return false;
+    final matches = _verifyCredential(pattern, stored);
+    if (matches) await _migrateIfLegacy(_patternKey, pattern);
+    return matches;
   }
 
   Future<String> getCurrentAuthMethod() async {

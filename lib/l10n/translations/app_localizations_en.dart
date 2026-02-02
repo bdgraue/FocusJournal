@@ -236,4 +236,154 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contentRequired => 'Content is required';
+
+  // --- Authentication screen ---
+
+  @override
+  String get incorrectPattern => 'Incorrect pattern';
+
+  @override
+  String get pleaseDrawYourPattern => 'Please draw your pattern';
+
+  @override
+  String get useBackupPassword => 'Use backup password';
+
+  @override
+  String get usePin => 'Use PIN';
+
+  @override
+  String get usePattern => 'Use Pattern';
+
+  @override
+  String get incorrectPassword => 'Incorrect password';
+
+  @override
+  String get incorrectPin => 'Incorrect PIN';
+
+  @override
+  String get incorrectBackupPassword => 'Incorrect backup password';
+
+  @override
+  String get pleaseEnterYourPassword => 'Please enter your password';
+
+  @override
+  String get pleaseEnterYourPin => 'Please enter your PIN';
+
+  @override
+  String get pleaseEnterYourBackupPassword => 'Please enter your backup password';
+
+  // --- Password setup ---
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get pleaseEnterAPassword => 'Please enter a password';
+
+  @override
+  String passwordMinLength(int minLength) => 'Password must be at least $minLength characters';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  // --- Backup & Import ---
+
+  @override
+  String get journalExportedSuccessfully => 'Journal exported successfully';
+
+  @override
+  String exportFailed(String error) => 'Failed to export journal: $error';
+
+  @override
+  String importFailed(String error) => 'Failed to import journal: $error';
+
+  @override
+  String get importStrategy => 'Import Strategy';
+
+  @override
+  String get completeOverwrite => 'Complete Overwrite';
+
+  @override
+  String get replaceAllData => 'Replace all existing data';
+
+  @override
+  String get smartMerge => 'Smart Merge (Recommended)';
+
+  @override
+  String get mergeWithConflicts => 'Merge with conflict resolution';
+
+  @override
+  String get addNewOnly => 'Add New Only';
+
+  @override
+  String get onlyImportNew => 'Only import new entries';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get proceed => 'Proceed';
+
+  @override
+  String get couldNotGetFilePath => 'Could not get file path';
+
+  @override
+  String get noFileSelected => 'No file selected';
+
+  @override
+  String filePickFailed(String error) => 'Failed to pick file: $error';
+
+  @override
+  String get backupAndRecovery => 'Backup & Recovery';
+
+  @override
+  String get backupPasswordLabel => 'Backup Password';
+
+  @override
+  String get backupPasswordHint => 'Set a password to secure your backups';
+
+  @override
+  String get passwordRequired => 'Password is required';
+
+  @override
+  String get createBackup => 'Create Backup';
+
+  @override
+  String get restoreBackup => 'Restore Backup';
+
+  @override
+  String importSuccessMessage(int added, int updated, int total) =>
+      'Import successful: +$added new, ~$updated updated, $total total.';
+
+  // --- Theme settings ---
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get colors => 'Colors';
+
+  @override
+  String get typography => 'Typography';
+
+  @override
+  String get useCustomFont => 'Use Custom Font';
+
+  @override
+  String get fontFamily => 'Font Family';
+
+  @override
+  String get advancedSettings => 'Advanced';
+
+  @override
+  String get dynamicTheming => 'Dynamic Theming';
+
+  @override
+  String get dynamicThemingDescription => 'Adapt colors based on wallpaper';
+
+  @override
+  String get contrastLabel => 'Contrast';
+
+  @override
+  String get pickAColor => 'Pick a color';
 }

@@ -54,7 +54,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Future<void> _authenticateWithPattern(List<int> pattern) async {
     if (pattern.length < 4) {
       setState(() {
-        _errorMessage = 'Please draw your pattern';
+        _errorMessage = AppLocalizations.of(context)!.pleaseDrawYourPattern;
       });
       return;
     }
@@ -70,7 +70,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       widget.onAuthenticationSuccess?.call();
     } else {
       setState(() {
-        _errorMessage = 'Incorrect pattern';
+        _errorMessage = AppLocalizations.of(context)!.incorrectPattern;
       });
     }
 
@@ -87,7 +87,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     
     if (_credentialController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'Please enter your ${_showBackupPassword ? 'backup password' : _authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
+        _errorMessage = _showBackupPassword
+            ? AppLocalizations.of(context)!.pleaseEnterYourBackupPassword
+            : _authMethod == AuthenticationService.authMethodPassword
+                ? AppLocalizations.of(context)!.pleaseEnterYourPassword
+                : AppLocalizations.of(context)!.pleaseEnterYourPin;
       });
       return;
     }
@@ -113,7 +117,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Incorrect ${_showBackupPassword ? 'backup password' : _authMethod == AuthenticationService.authMethodPassword ? 'password' : 'PIN'}';
+        _errorMessage = _showBackupPassword
+            ? AppLocalizations.of(context)!.incorrectBackupPassword
+            : _authMethod == AuthenticationService.authMethodPassword
+                ? AppLocalizations.of(context)!.incorrectPassword
+                : AppLocalizations.of(context)!.incorrectPin;
       });
     }
 
@@ -186,7 +194,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Focus Journal',
+                  AppLocalizations.of(context)!.appTitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
@@ -261,9 +269,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   TextButton.icon(
                     onPressed: _isLoading ? null : _toggleBackupPassword,
                     icon: Icon(_showBackupPassword ? Icons.lock_open : Icons.lock),
-                    label: Text(_showBackupPassword 
-                      ? 'Use ${_authMethod == AuthenticationService.authMethodPin ? 'PIN' : 'Pattern'}'
-                      : 'Use backup password'),
+                    label: Text(_showBackupPassword
+                      ? (_authMethod == AuthenticationService.authMethodPin
+                          ? AppLocalizations.of(context)!.usePin
+                          : AppLocalizations.of(context)!.usePattern)
+                      : AppLocalizations.of(context)!.useBackupPassword),
                   ),
                 ],
               ],

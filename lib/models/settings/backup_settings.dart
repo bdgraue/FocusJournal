@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum BackupFrequency { never, daily, weekly, monthly }
 
 enum BackupRetentionPolicy {
@@ -8,6 +10,7 @@ enum BackupRetentionPolicy {
   keepLastYear,
 }
 
+@immutable
 class BackupSettings {
   final bool autoBackupEnabled;
   final BackupFrequency frequency;

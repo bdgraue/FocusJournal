@@ -234,4 +234,100 @@ class AppLocalizationsPl extends AppLocalizationsEn {
 
   @override
   String get contentRequired => 'Treść jest wymagana';
+
+  @override
+  String get incorrectPattern => 'Nieprawidłowy wzór';
+  @override
+  String get pleaseDrawYourPattern => 'Proszę narysować wzór';
+  @override
+  String get useBackupPassword => 'Użyj hasła zapasowego';
+  @override
+  String get usePin => 'Użyj PINu';
+  @override
+  String get usePattern => 'Użyj wzoru';
+  @override
+  String get incorrectPassword => 'Nieprawidłowe hasło';
+  @override
+  String get incorrectPin => 'Nieprawidłowy PIN';
+  @override
+  String get incorrectBackupPassword => 'Nieprawidłowe hasło zapasowe';
+  @override
+  String get pleaseEnterYourPassword => 'Proszę wprowadzić hasło';
+  @override
+  String get pleaseEnterYourPin => 'Proszę wprowadzić PIN';
+  @override
+  String get pleaseEnterYourBackupPassword => 'Proszę wprowadzić hasło zapasowe';
+  @override
+  String get confirmPassword => 'Potwierdź hasło';
+  @override
+  String get pleaseEnterAPassword => 'Proszę wprowadzić hasło';
+  @override
+  String passwordMinLength(int minLength) => 'Hasło musi mieć co najmniej $minLength znaków';
+  @override
+  String get passwordsDoNotMatch => 'Hasła nie pasują do siebie';
+  @override
+  String get journalExportedSuccessfully => 'Dziennik wyeksportowany pomyślnie';
+  @override
+  String exportFailed(String error) => 'Eksport nieudany: $error';
+  @override
+  String importFailed(String error) => 'Import nieudany: $error';
+  @override
+  String get importStrategy => 'Strategia importu';
+  @override
+  String get completeOverwrite => 'Całkowite nadpisanie';
+  @override
+  String get replaceAllData => 'Zastąp wszystkie istniejące dane';
+  @override
+  String get smartMerge => 'Inteligentne scalanie (Zalecane)';
+  @override
+  String get mergeWithConflicts => 'Scalanie z rozwiązywaniem konfliktów';
+  @override
+  String get addNewOnly => 'Dodaj tylko nowe';
+  @override
+  String get onlyImportNew => 'Importuj tylko nowe wpisy';
+  @override
+  String get cancel => 'Anuluj';
+  @override
+  String get proceed => 'Kontynuuj';
+  @override
+  String get couldNotGetFilePath => 'Nie udało się uzyskać ścieżki pliku';
+  @override
+  String get noFileSelected => 'Nie wybrano pliku';
+  @override
+  String filePickFailed(String error) => 'Wybór pliku nieudany: $error';
+  @override
+  String get backupAndRecovery => 'Kopia zapasowa i odzyskiwanie';
+  @override
+  String get backupPasswordLabel => 'Hasło kopii zapasowej';
+  @override
+  String get backupPasswordHint => 'Ustaw hasło, aby zabezpieczyć swoje kopie zapasowe';
+  @override
+  String get passwordRequired => 'Hasło jest wymagane';
+  @override
+  String get createBackup => 'Utwórz kopię zapasową';
+  @override
+  String get restoreBackup => 'Przywróć kopię zapasową';
+  @override
+  String importSuccessMessage(int added, int updated, int total) =>
+      'Import udany: +$added nowych, ~$updated zaktualizowanych, $total łącznie.';
+  @override
+  String get appearance => 'Wygląd';
+  @override
+  String get colors => 'Kolory';
+  @override
+  String get typography => 'Typografia';
+  @override
+  String get useCustomFont => 'Użyj własnej czcionki';
+  @override
+  String get fontFamily => 'Rodzina czcionki';
+  @override
+  String get advancedSettings => 'Zaawansowane';
+  @override
+  String get dynamicTheming => 'Dynamiczny motyw';
+  @override
+  String get dynamicThemingDescription => 'Dostosuj kolory na podstawie tapety';
+  @override
+  String get contrastLabel => 'Kontrast';
+  @override
+  String get pickAColor => 'Wybierz kolor';
 }
