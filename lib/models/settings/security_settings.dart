@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 enum SecurityLevel { none, low, medium, high }
 
 enum AuthMethod { none, pin, password, pattern, biometric }
 
+@immutable
 class SecuritySettings {
   final SecurityLevel securityLevel;
   final AuthMethod primaryAuthMethod;

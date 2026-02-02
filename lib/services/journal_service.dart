@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -65,7 +66,7 @@ class JournalService {
       return jsonList.map((json) => JournalEntry.fromJson(json)).toList()
         ..sort((a, b) => b.lastModified.compareTo(a.lastModified));
     } catch (e) {
-      print('Error loading journal entries: $e');
+      debugPrint('Error loading journal entries: $e');
       return [];
     }
   }

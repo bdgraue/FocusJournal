@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+@immutable
 class PrivacySettings {
   final bool collectAnalytics;
   final bool shareUsageData;

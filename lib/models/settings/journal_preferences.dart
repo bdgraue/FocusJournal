@@ -11,6 +11,7 @@ enum EntrySortOrder {
 
 enum FontSize { small, medium, large, extraLarge }
 
+@immutable
 class JournalPreferences {
   final JournalViewMode defaultView;
   final EntrySortOrder sortOrder;

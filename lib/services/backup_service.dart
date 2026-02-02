@@ -57,67 +57,59 @@ class BackupService {
     Map<String, dynamic> journalData,
     String password,
   ) async {
-    try {
-      final metadata = await _prepareMetadata();
-      final key = _deriveKey(password);
-      final iv = _generateIV();
-      final encrypter = Encrypter(AES(key));
+    final metadata = await _prepareMetadata();
+    final key = _deriveKey(password);
+    final iv = _generateIV();
+    final encrypter = Encrypter(AES(key));
 
-      final jsonData = json.encode(journalData);
-      final encrypted = encrypter.encrypt(jsonData, iv: iv);
+    final jsonData = json.encode(journalData);
+    final encrypted = encrypter.encrypt(jsonData, iv: iv);
 
-      final exportData = {
-        'metadata': metadata,
-        'data': {'content': encrypted.base64, 'iv': iv.base64},
-      };
+    final exportData = {
+      'metadata': metadata,
+      'data': {'content': encrypted.base64, 'iv': iv.base64},
+    };
 
-      final tempDir = await Directory.systemTemp.createTemp('journal_backup');
-      final file = File(
-        '${tempDir.path}/journal_backup_${DateTime.now().toIso8601String()}.fjb',
-      );
-      await file.writeAsString(json.encode(exportData));
+    final tempDir = await Directory.systemTemp.createTemp('journal_backup');
+    final file = File(
+      '${tempDir.path}/journal_backup_${DateTime.now().toIso8601String()}.fjb',
+    );
+    await file.writeAsString(json.encode(exportData));
 
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Journal Backup',
-        text: 'FocusJournal Backup File',
-      );
+    await Share.shareXFiles(
+      [XFile(file.path)],
+      subject: 'Journal Backup',
+      text: 'FocusJournal Backup File',
+    );
 
-      // Clean up temp file
-      await tempDir.delete(recursive: true);
-    } catch (e) {
-      rethrow;
-    }
+    // Clean up temp file
+    await tempDir.delete(recursive: true);
   }
 
   Future<Map<String, dynamic>> importJournal(
     String password,
     String filePath,
   ) async {
+    final file = File(filePath);
+    final content = await file.readAsString();
+    final importData = json.decode(content) as Map<String, dynamic>;
+
+    final metadata = importData['metadata'] as Map<String, dynamic>;
+    final encryptedData = importData['data'] as Map<String, dynamic>;
+
+    final key = _deriveKey(password);
+    final iv = IV.fromBase64(encryptedData['iv'] as String);
+    final encrypter = Encrypter(AES(key));
+
     try {
-      final file = File(filePath);
-      final content = await file.readAsString();
-      final importData = json.decode(content) as Map<String, dynamic>;
+      final decrypted = encrypter.decrypt64(
+        encryptedData['content'] as String,
+        iv: iv,
+      );
 
-      final metadata = importData['metadata'] as Map<String, dynamic>;
-      final encryptedData = importData['data'] as Map<String, dynamic>;
-
-      final key = _deriveKey(password);
-      final iv = IV.fromBase64(encryptedData['iv'] as String);
-      final encrypter = Encrypter(AES(key));
-
-      try {
-        final decrypted = encrypter.decrypt64(
-          encryptedData['content'] as String,
-          iv: iv,
-        );
-
-        return {'metadata': metadata, 'data': json.decode(decrypted)};
-      } catch (e) {
-        throw Exception('Invalid password or corrupted backup file');
-      }
+      return {'metadata': metadata, 'data': json.decode(decrypted)};
     } catch (e) {
-      rethrow;
+      throw Exception('Invalid password or corrupted backup file');
     }
   }
 

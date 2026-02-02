@@ -107,11 +107,11 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
 
       await service.importData(mergedData);
 
-  // Notify app that journal data changed so UI can refresh
-  AppEventBus().emit(AppEvents.journalChanged);
+      // Notify app that journal data changed so UI can refresh
+      AppEventBus().emit(AppEvents.journalChanged);
 
       if (mounted) {
-        final msg = 'Import erfolgreich: +$added neue, ~$possiblyUpdated aktualisiert, gesamt $mergedCount.';
+        final msg = 'Import successful: +$added new, ~$possiblyUpdated updated, $mergedCount total.';
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         // Clear password field after import for security
         _passwordController.clear();
