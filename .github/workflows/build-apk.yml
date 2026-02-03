@@ -28,23 +28,16 @@ jobs:
       - name: Generate debug keystore
         run: keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
 
+      - name: Override local Java home for CI
+        run: sed -i "s|org.gradle.java.home=.*|org.gradle.java.home=$JAVA_HOME|" android/gradle.properties
+
       - run: flutter pub get
 
       - name: Build release APK
-        run: flutter build apk --release 2>&1 | tee build.log || true
-
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
-          retention-days: 7
+        run: flutter build apk --release
 
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: focus-journal-apk
           path: build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: ignore
           retention-days: 90
