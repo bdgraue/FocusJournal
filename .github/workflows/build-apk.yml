@@ -30,7 +30,13 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build apk --release
+      - name: Check Flutter and Dart versions
+        run: flutter --version && flutter doctor -v
+
+      - name: Analyze Dart code
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
+
+      - run: flutter build apk --release --verbose
 
       - uses: actions/upload-artifact@v4
         with:
