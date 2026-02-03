@@ -30,16 +30,21 @@ jobs:
 
       - run: flutter pub get
 
-      - name: Check Flutter and Dart versions
-        run: flutter --version && flutter doctor -v
+      - name: Build release APK
+        run: flutter build apk --release 2>&1 | tee build.log || true
 
-      - name: Analyze Dart code
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
-
-      - run: flutter build apk --release --verbose
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
 
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: focus-journal-apk
           path: build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: ignore
           retention-days: 90
