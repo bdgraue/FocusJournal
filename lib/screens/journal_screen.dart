@@ -62,17 +62,8 @@ class _JournalScreenState extends State<JournalScreen> {
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: ListTile(
-        title: Text(
-          entry.content,
-          // Show full content without truncation
-          softWrap: true,
-        ),
-        subtitle: Text(
-          timeFormat.format(entry.createdAt),
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        isThreeLine: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
         onTap: () async {
           final result = await Navigator.of(context).push<bool>(
             MaterialPageRoute(
@@ -83,26 +74,56 @@ class _JournalScreenState extends State<JournalScreen> {
             await _loadEntries();
           }
         },
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              child: const Text('Edit'),
-              onTap: () async {
-                final result = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(
-                    builder: (context) => JournalEntryScreen(entry: entry),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      entry.content,
+                      softWrap: true,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      timeFormat.format(entry.createdAt),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                iconSize: 20,
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: const Text('Edit'),
+                    onTap: () async {
+                      final result = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              JournalEntryScreen(entry: entry),
+                        ),
+                      );
+                      if (result == true) {
+                        await _loadEntries();
+                      }
+                    },
                   ),
-                );
-                if (result == true) {
-                  await _loadEntries();
-                }
-              },
-            ),
-            PopupMenuItem(
-              child: const Text('Delete'),
-              onTap: () => _deleteEntry(entry.id),
-            ),
-          ],
+                  PopupMenuItem(
+                    child: const Text('Delete'),
+                    onTap: () => _deleteEntry(entry.id),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
