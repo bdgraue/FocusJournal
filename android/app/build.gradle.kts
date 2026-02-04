@@ -37,7 +37,7 @@ android {
         variant.outputs.all {
             val output = this
             if (output is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
-                output.outputFileName = "FocusJournal-v${variant.versionName}-${variant.name}.apk"
+                output.outputFileName = "app-${variant.name}.apk"
             }
         }
     }
@@ -47,7 +47,7 @@ android {
         variant.assembleProvider.get().doLast {
             copy {
                 from("${buildDir}/outputs/apk/${variant.name}")
-                include("FocusJournal-v${variant.versionName}-${variant.name}.apk")
+                include("app-${variant.name}.apk")
                 into("${rootProject.projectDir}/../build/app/outputs/flutter-apk")
             }
         }
