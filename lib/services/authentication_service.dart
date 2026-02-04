@@ -241,12 +241,12 @@ class AuthenticationService {
     await prefs.setBool(_biometricsKey, enabled);
   }
 
-  Future<bool> authenticateWithBiometrics() async {
+  Future<bool> authenticateWithBiometrics({String? localizedReason}) async {
     if (!await isBiometricsEnabled()) return false;
 
     try {
       final didAuthenticate = await _localAuth.authenticate(
-        localizedReason: 'Please authenticate to access your journal',
+        localizedReason: localizedReason ?? 'Please authenticate to access your journal',
         options: const AuthenticationOptions(
           stickyAuth: true,
           biometricOnly: true,
