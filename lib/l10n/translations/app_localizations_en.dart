@@ -386,4 +386,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pickAColor => 'Pick a color';
+
+  @override
+  String get biometricPrompt => 'Authenticate to access your journal';
+
+  @override
+  String get enableBiometricsQuestion => 'Would you like to enable biometric authentication for quick access?';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get biometricAuthFailed => 'Biometric authentication failed';
 }

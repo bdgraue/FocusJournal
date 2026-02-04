@@ -390,4 +390,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pickAColor => 'Farbe wählen';
+
+  @override
+  String get biometricPrompt => 'Authentifizieren Sie sich, um auf Ihr Tagebuch zuzugreifen';
+
+  @override
+  String get enableBiometricsQuestion => 'Möchten Sie die biometrische Authentifizierung für schnellen Zugriff aktivieren?';
+
+  @override
+  String get skip => 'Überspringen';
+
+  @override
+  String get biometricAuthFailed => 'Biometrische Authentifizierung fehlgeschlagen';
 }

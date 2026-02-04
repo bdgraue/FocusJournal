@@ -35,13 +35,43 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       final authService = AuthenticationService();
       await authService.setupPassword(_passwordController.text);
-      
+
       if (widget.isChange) {
         if (!mounted) return;
         Navigator.pop(context);
       } else {
+        await _offerBiometrics(authService);
         widget.onSetupComplete?.call();
       }
+    }
+  }
+
+  Future<void> _offerBiometrics(AuthenticationService authService) async {
+    final canUse = await authService.canUseBiometrics();
+    if (!canUse || !mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final enable = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.fingerprint, size: 48),
+        title: Text(l10n.enableBiometrics),
+        content: Text(l10n.enableBiometricsQuestion),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.skip),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+
+    if (enable == true) {
+      await authService.setBiometricsEnabled(true);
     }
   }
 

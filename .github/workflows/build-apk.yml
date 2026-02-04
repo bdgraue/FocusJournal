@@ -36,8 +36,17 @@ jobs:
       - name: Build release APK
         run: flutter build apk --release
 
+      - name: Rename APK to include version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
+          APK_DIR=build/app/outputs/flutter-apk
+          for f in "$APK_DIR"/*.apk; do
+            mv "$f" "$APK_DIR/FocusJournal-v${VERSION}.apk"
+            break
+          done
+
       - uses: actions/upload-artifact@v4
         with:
-          name: focus-journal-apk
+          name: FocusJournal-APK
           path: build/app/outputs/flutter-apk/*.apk
           retention-days: 90

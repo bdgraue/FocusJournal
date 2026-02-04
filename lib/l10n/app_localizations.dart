@@ -563,6 +563,13 @@ abstract class AppLocalizations {
   String get dynamicThemingDescription;
   String get contrastLabel;
   String get pickAColor;
+
+  // --- Biometric authentication ---
+
+  String get biometricPrompt;
+  String get enableBiometricsQuestion;
+  String get skip;
+  String get biometricAuthFailed;
 }
 
 /// The delegate class which loads AppLocalizations.

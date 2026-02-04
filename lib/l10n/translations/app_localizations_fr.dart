@@ -334,4 +334,16 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get contrastLabel => 'Contraste';
   @override
   String get pickAColor => 'Choisir une couleur';
+
+  @override
+  String get biometricPrompt => 'Authentifiez-vous pour accéder à votre journal';
+
+  @override
+  String get enableBiometricsQuestion => 'Souhaitez-vous activer l\'authentification biométrique pour un accès rapide ?';
+
+  @override
+  String get skip => 'Passer';
+
+  @override
+  String get biometricAuthFailed => 'Échec de l\'authentification biométrique';
 }
