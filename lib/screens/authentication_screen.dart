@@ -60,9 +60,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> _authenticateWithBiometrics() async {
-    final success = await _authService.authenticateWithBiometrics();
+    final success = await _authService.authenticateWithBiometrics(
+      localizedReason: AppLocalizations.of(context)!.biometricPrompt,
+    );
     if (success) {
       widget.onAuthenticationSuccess?.call();
+    } else {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = AppLocalizations.of(context)!.biometricAuthFailed;
+      });
     }
   }
 
