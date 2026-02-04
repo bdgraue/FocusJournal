@@ -140,28 +140,31 @@ class BackupService {
     final encryptedData = importData['data'] as Map<String, dynamic>;
 
     // Detect format: v1.1+ includes a salt for PBKDF2, v1.0 does not
-    final Key key;
     final saltBase64 = encryptedData['salt'] as String?;
+    final iv = IV.fromBase64(encryptedData['iv'] as String);
+    final content = encryptedData['content'] as String;
+
+    // Build ordered list of keys to try: primary method first, then fallback
+    final keysToTry = <Key>[];
     if (saltBase64 != null) {
       final salt = Uint8List.fromList(base64.decode(saltBase64));
-      key = _deriveKey(password, salt);
+      keysToTry.add(_deriveKey(password, salt));
+      keysToTry.add(_deriveKeyLegacy(password)); // fallback
     } else {
-      key = _deriveKeyLegacy(password);
+      keysToTry.add(_deriveKeyLegacy(password));
     }
 
-    final iv = IV.fromBase64(encryptedData['iv'] as String);
-    final encrypter = Encrypter(AES(key));
-
-    try {
-      final decrypted = encrypter.decrypt64(
-        encryptedData['content'] as String,
-        iv: iv,
-      );
-
-      return {'metadata': metadata, 'data': json.decode(decrypted)};
-    } catch (e) {
-      throw Exception('Invalid password or corrupted backup file');
+    for (final key in keysToTry) {
+      try {
+        final encrypter = Encrypter(AES(key));
+        final decrypted = encrypter.decrypt64(content, iv: iv);
+        return {'metadata': metadata, 'data': json.decode(decrypted)};
+      } catch (_) {
+        // Try next key derivation method
+      }
     }
+
+    throw Exception('Invalid password or corrupted backup file');
   }
 
   Map<String, dynamic> mergeJournals(
