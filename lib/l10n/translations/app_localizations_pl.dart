@@ -342,4 +342,9 @@ class AppLocalizationsPl extends AppLocalizationsEn {
 
   @override
   String get biometricAuthFailed => 'Uwierzytelnianie biometryczne nie powiodło się';
+
+  @override
+  String get editEntries => 'Edytuj wpisy';
+  @override
+  String get done => 'Gotowe';
 }

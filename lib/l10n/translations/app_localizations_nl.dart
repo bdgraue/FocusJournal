@@ -342,4 +342,9 @@ class AppLocalizationsNl extends AppLocalizationsEn {
 
   @override
   String get biometricAuthFailed => 'Biometrische verificatie mislukt';
+
+  @override
+  String get editEntries => 'Items bewerken';
+  @override
+  String get done => 'Klaar';
 }

@@ -402,4 +402,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get biometricAuthFailed => 'Biometrische Authentifizierung fehlgeschlagen';
+
+  @override
+  String get editEntries => 'Einträge bearbeiten';
+  @override
+  String get done => 'Fertig';
 }

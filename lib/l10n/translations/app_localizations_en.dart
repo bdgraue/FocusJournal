@@ -398,4 +398,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get biometricAuthFailed => 'Biometric authentication failed';
+
+  @override
+  String get editEntries => 'Edit Entries';
+  @override
+  String get done => 'Done';
 }
