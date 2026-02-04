@@ -325,15 +325,16 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          ElevatedButton.icon(
+                          FilledButton.icon(
                             onPressed: _exportJournal,
                             icon: const Icon(Icons.upload),
                             label: Text(AppLocalizations.of(context)!.createBackup),
                           ),
-                          ElevatedButton.icon(
+                          const SizedBox(height: 8),
+                          OutlinedButton.icon(
                             onPressed: _showImportStrategyDialog,
                             icon: const Icon(Icons.download),
                             label: Text(AppLocalizations.of(context)!.restoreBackup),

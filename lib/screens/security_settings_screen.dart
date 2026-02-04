@@ -224,7 +224,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
           ),
 
           // Biometric Authentication
-          if (_canUseBiometrics) ...[
+          if (_canUseBiometrics || _biometricsEnabled) ...[
             const SizedBox(height: 16),
             Card(
               child: SwitchListTile(
