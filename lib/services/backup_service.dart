@@ -142,7 +142,7 @@ class BackupService {
     // Detect format: v1.1+ includes a salt for PBKDF2, v1.0 does not
     final saltBase64 = encryptedData['salt'] as String?;
     final iv = IV.fromBase64(encryptedData['iv'] as String);
-    final content = encryptedData['content'] as String;
+    final encryptedContent = encryptedData['content'] as String;
 
     // Build ordered list of keys to try: primary method first, then fallback
     final keysToTry = <Key>[];
@@ -157,7 +157,7 @@ class BackupService {
     for (final key in keysToTry) {
       try {
         final encrypter = Encrypter(AES(key));
-        final decrypted = encrypter.decrypt64(content, iv: iv);
+        final decrypted = encrypter.decrypt64(encryptedContent, iv: iv);
         return {'metadata': metadata, 'data': json.decode(decrypted)};
       } catch (_) {
         // Try next key derivation method
