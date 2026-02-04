@@ -26,6 +26,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String _authMethod = AuthenticationService.authMethodPassword;
   bool _showBackupPassword = false;
   bool _hasBackupPassword = false;
+  bool _biometricsAvailable = false;
 
   @override
   void initState() {
@@ -43,11 +44,26 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     final isSetup = await _authService.isAuthenticationSetup();
     final currentMethod = await _authService.getCurrentAuthMethod();
     final hasBackup = await _authService.hasBackupPassword();
+    final canBiometric = await _authService.canUseBiometrics();
+    final biometricEnabled = await _authService.isBiometricsEnabled();
     setState(() {
       _isSetup = isSetup;
       _authMethod = currentMethod;
       _hasBackupPassword = hasBackup;
+      _biometricsAvailable = canBiometric && biometricEnabled;
     });
+
+    // Auto-trigger biometric auth on screen load
+    if (isSetup && _biometricsAvailable) {
+      _authenticateWithBiometrics();
+    }
+  }
+
+  Future<void> _authenticateWithBiometrics() async {
+    final success = await _authService.authenticateWithBiometrics();
+    if (success) {
+      widget.onAuthenticationSuccess?.call();
+    }
   }
 
 
@@ -264,6 +280,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               ? AppLocalizations.of(context)!.setPassword
                               : AppLocalizations.of(context)!.setPin),
                 ),
+                if (_isSetup && _biometricsAvailable) ...[
+                  const SizedBox(height: 16),
+                  IconButton(
+                    onPressed: _isLoading ? null : _authenticateWithBiometrics,
+                    icon: const Icon(Icons.fingerprint),
+                    iconSize: 48,
+                    tooltip: AppLocalizations.of(context)!.enableBiometrics,
+                  ),
+                ],
                 if (_isSetup && _hasBackupPassword && _authMethod != AuthenticationService.authMethodPattern) ...[
                   const SizedBox(height: 16),
                   TextButton.icon(

@@ -330,4 +330,16 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get contrastLabel => 'Contrast';
   @override
   String get pickAColor => 'Kies een kleur';
+
+  @override
+  String get biometricPrompt => 'Verifieer je identiteit om je dagboek te openen';
+
+  @override
+  String get enableBiometricsQuestion => 'Wil je biometrische verificatie inschakelen voor snelle toegang?';
+
+  @override
+  String get skip => 'Overslaan';
+
+  @override
+  String get biometricAuthFailed => 'Biometrische verificatie mislukt';
 }

@@ -330,4 +330,16 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   String get contrastLabel => 'Kontrast';
   @override
   String get pickAColor => 'Wybierz kolor';
+
+  @override
+  String get biometricPrompt => 'Uwierzytelnij się, aby uzyskać dostęp do dziennika';
+
+  @override
+  String get enableBiometricsQuestion => 'Czy chcesz włączyć uwierzytelnianie biometryczne dla szybkiego dostępu?';
+
+  @override
+  String get skip => 'Pomiń';
+
+  @override
+  String get biometricAuthFailed => 'Uwierzytelnianie biometryczne nie powiodło się';
 }

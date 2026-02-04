@@ -64,11 +64,12 @@ class _PatternSetupScreenState extends State<PatternSetupScreen> {
     try {
       final authService = AuthenticationService();
       await authService.setupPattern(_currentPattern.join());
-      
+
       if (widget.isChange) {
         if (!mounted) return;
         Navigator.pop(context);
       } else {
+        await _offerBiometrics(authService);
         widget.onSetupComplete?.call();
       }
     } catch (e) {
@@ -111,12 +112,41 @@ class _PatternSetupScreenState extends State<PatternSetupScreen> {
     });
   }
 
+  Future<void> _offerBiometrics(AuthenticationService authService) async {
+    final canUse = await authService.canUseBiometrics();
+    if (!canUse || !mounted) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final enable = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.fingerprint, size: 48),
+        title: Text(l10n.enableBiometrics),
+        content: Text(l10n.enableBiometricsQuestion),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.skip),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+
+    if (enable == true) {
+      await authService.setBiometricsEnabled(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isChange 
-          ? AppLocalizations.of(context)!.changePattern 
+        title: Text(widget.isChange
+          ? AppLocalizations.of(context)!.changePattern
           : AppLocalizations.of(context)!.setupPattern),
         actions: [
           if (!_isLoading)

@@ -15,6 +15,8 @@ class SecuritySettingsScreen extends StatefulWidget {
 class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
   final _authService = AuthenticationService();
   String _currentAuthMethod = AuthenticationService.authMethodPassword;
+  bool _canUseBiometrics = false;
+  bool _biometricsEnabled = false;
 
   @override
   void initState() {
@@ -24,9 +26,20 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
 
   Future<void> _loadSettings() async {
     final method = await _authService.getCurrentAuthMethod();
+    final canBiometric = await _authService.canUseBiometrics();
+    final biometricEnabled = await _authService.isBiometricsEnabled();
 
     setState(() {
       _currentAuthMethod = method;
+      _canUseBiometrics = canBiometric;
+      _biometricsEnabled = biometricEnabled;
+    });
+  }
+
+  Future<void> _toggleBiometrics(bool enabled) async {
+    await _authService.setBiometricsEnabled(enabled);
+    setState(() {
+      _biometricsEnabled = enabled;
     });
   }
 
@@ -209,6 +222,22 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
               ],
             ),
           ),
+
+          // Biometric Authentication
+          if (_canUseBiometrics) ...[
+            const SizedBox(height: 16),
+            Card(
+              child: SwitchListTile(
+                secondary: const Icon(Icons.fingerprint),
+                title: Text(AppLocalizations.of(context)!.enableBiometrics),
+                subtitle: Text(
+                  AppLocalizations.of(context)!.biometricsDescription,
+                ),
+                value: _biometricsEnabled,
+                onChanged: _toggleBiometrics,
+              ),
+            ),
+          ],
         ],
       ),
     );
