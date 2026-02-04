@@ -570,6 +570,10 @@ abstract class AppLocalizations {
   String get enableBiometricsQuestion;
   String get skip;
   String get biometricAuthFailed;
+
+  // --- Edit mode ---
+  String get editEntries;
+  String get done;
 }
 
 /// The delegate class which loads AppLocalizations.

@@ -8,7 +8,9 @@ import 'package:focus_journal/services/event_bus.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class JournalScreen extends StatefulWidget {
-  const JournalScreen({super.key});
+  final bool isEditMode;
+
+  const JournalScreen({super.key, this.isEditMode = false});
 
   @override
   State<JournalScreen> createState() => _JournalScreenState();
@@ -75,7 +77,7 @@ class _JournalScreenState extends State<JournalScreen> {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -97,31 +99,42 @@ class _JournalScreenState extends State<JournalScreen> {
                   ],
                 ),
               ),
-              PopupMenuButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                iconSize: 20,
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    child: const Text('Edit'),
-                    onTap: () async {
-                      final result = await Navigator.of(context).push<bool>(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              JournalEntryScreen(entry: entry),
-                        ),
-                      );
-                      if (result == true) {
-                        await _loadEntries();
-                      }
-                    },
-                  ),
-                  PopupMenuItem(
-                    child: const Text('Delete'),
-                    onTap: () => _deleteEntry(entry.id),
-                  ),
-                ],
-              ),
+              if (widget.isEditMode) ...[
+                const SizedBox(width: 8),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 20),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () async {
+                        final result =
+                            await Navigator.of(context).push<bool>(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                JournalEntryScreen(entry: entry),
+                          ),
+                        );
+                        if (result == true) {
+                          await _loadEntries();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.error),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () => _deleteEntry(entry.id),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
