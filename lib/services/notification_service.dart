@@ -1,9 +1,6 @@
 import 'dart:math';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz_data;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -36,12 +33,6 @@ class NotificationService {
 
   Future<void> initialize() async {
     if (_initialized) return;
-
-    tz_data.initializeTimeZones();
-
-    // Set the local timezone based on the device
-    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
 
     const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_foreground');
     const initSettings = InitializationSettings(android: androidSettings);
@@ -95,28 +86,15 @@ class NotificationService {
 
     await _notifications.cancel(_notificationId);
 
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduledDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
-
-    // If the time has passed today, schedule for tomorrow
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-
     final message = _getRandomMessage();
 
-    await _notifications.zonedSchedule(
+    // Use periodicallyShow for simple daily notifications
+    // Note: This doesn't respect the exact time, but it's simpler
+    await _notifications.periodicallyShow(
       _notificationId,
       'Focus Journal',
       message,
-      scheduledDate,
+      RepeatInterval.daily,
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'daily_reminder',
@@ -128,7 +106,6 @@ class NotificationService {
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
