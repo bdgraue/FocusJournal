@@ -39,8 +39,13 @@ jobs:
 
       - run: flutter pub get
 
+      - name: Show Flutter and Dart versions
+        run: |
+          flutter --version
+          dart --version
+
       - name: Build release APK
-        run: flutter build apk --release
+        run: flutter build apk --release --verbose
 
       - name: Rename APK to include version
         run: |
