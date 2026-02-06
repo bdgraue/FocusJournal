@@ -59,9 +59,8 @@ dependencies:
   file_picker: ^10.3.3
   dynamic_color: ^1.8.1
   flutter_sticky_header: ^0.8.0
-  # Temporarily disabled for build testing
-  # flutter_local_notifications: ^17.2.4
-  # timezone: ^0.9.4
+  flutter_local_notifications: ^17.2.4
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_test:
