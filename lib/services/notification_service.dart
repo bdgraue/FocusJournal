@@ -38,7 +38,7 @@ class NotificationService {
 
     tz_data.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/adaptive');
+    const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_foreground');
     const initSettings = InitializationSettings(android: androidSettings);
 
     await _notifications.initialize(initSettings);
@@ -119,7 +119,7 @@ class NotificationService {
           channelDescription: 'Daily journal writing reminders',
           importance: Importance.defaultImportance,
           priority: Priority.defaultPriority,
-          icon: '@mipmap/adaptive',
+          icon: '@drawable/ic_launcher_foreground',
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
