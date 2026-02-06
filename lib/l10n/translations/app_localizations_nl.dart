@@ -347,4 +347,12 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get editEntries => 'Items bewerken';
   @override
   String get done => 'Klaar';
+  @override
+  String get notificationsAndReminders => 'Meldingen en herinneringen';
+  @override
+  String get dailyReminders => 'Dagelijkse herinneringen';
+  @override
+  String get dailyRemindersDescription => 'Ontvang een vriendelijke herinnering om in je dagboek te schrijven';
+  @override
+  String get reminderTime => 'Herinneringstijd';
 }

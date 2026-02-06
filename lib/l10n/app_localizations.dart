@@ -574,6 +574,12 @@ abstract class AppLocalizations {
   // --- Edit mode ---
   String get editEntries;
   String get done;
+
+  // --- Notifications ---
+  String get notificationsAndReminders;
+  String get dailyReminders;
+  String get dailyRemindersDescription;
+  String get reminderTime;
 }
 
 /// The delegate class which loads AppLocalizations.

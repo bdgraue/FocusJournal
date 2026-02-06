@@ -59,6 +59,8 @@ dependencies:
   file_picker: ^10.3.3
   dynamic_color: ^1.8.1
   flutter_sticky_header: ^0.8.0
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:

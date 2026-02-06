@@ -407,4 +407,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get editEntries => 'Einträge bearbeiten';
   @override
   String get done => 'Fertig';
+  @override
+  String get notificationsAndReminders => 'Benachrichtigungen & Erinnerungen';
+  @override
+  String get dailyReminders => 'Tägliche Erinnerungen';
+  @override
+  String get dailyRemindersDescription => 'Erhalte eine freundliche Erinnerung, in dein Tagebuch zu schreiben';
+  @override
+  String get reminderTime => 'Erinnerungszeit';
 }

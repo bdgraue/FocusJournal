@@ -348,4 +348,12 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   String get editEntries => 'Modifica voci';
   @override
   String get done => 'Fatto';
+  @override
+  String get notificationsAndReminders => 'Notifiche e promemoria';
+  @override
+  String get dailyReminders => 'Promemoria giornalieri';
+  @override
+  String get dailyRemindersDescription => 'Ricevi un promemoria amichevole per scrivere nel tuo diario';
+  @override
+  String get reminderTime => 'Orario promemoria';
 }

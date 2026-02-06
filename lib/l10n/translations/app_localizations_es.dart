@@ -348,4 +348,12 @@ class AppLocalizationsEs extends AppLocalizationsEn {
   String get editEntries => 'Editar entradas';
   @override
   String get done => 'Listo';
+  @override
+  String get notificationsAndReminders => 'Notificaciones y recordatorios';
+  @override
+  String get dailyReminders => 'Recordatorios diarios';
+  @override
+  String get dailyRemindersDescription => 'Recibe un recordatorio amigable para escribir en tu diario';
+  @override
+  String get reminderTime => 'Hora del recordatorio';
 }

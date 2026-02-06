@@ -347,4 +347,12 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   String get editEntries => 'Edytuj wpisy';
   @override
   String get done => 'Gotowe';
+  @override
+  String get notificationsAndReminders => 'Powiadomienia i przypomnienia';
+  @override
+  String get dailyReminders => 'Codzienne przypomnienia';
+  @override
+  String get dailyRemindersDescription => 'Otrzymuj przyjazne przypomnienie o pisaniu w dzienniku';
+  @override
+  String get reminderTime => 'Godzina przypomnienia';
 }

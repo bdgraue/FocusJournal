@@ -351,4 +351,12 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get editEntries => 'Modifier les entrées';
   @override
   String get done => 'Terminé';
+  @override
+  String get notificationsAndReminders => 'Notifications et rappels';
+  @override
+  String get dailyReminders => 'Rappels quotidiens';
+  @override
+  String get dailyRemindersDescription => 'Recevez un rappel amical pour écrire dans votre journal';
+  @override
+  String get reminderTime => 'Heure du rappel';
 }
