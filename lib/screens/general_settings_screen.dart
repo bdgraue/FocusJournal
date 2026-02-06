@@ -502,53 +502,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               const SizedBox(height: 16),
-              // Notifications & Reminders Section (hidden until implemented)
-              if (_showNotificationsSection)
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Notifications & Reminders',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        SwitchListTile(
-                          title: const Text('Daily Reminders'),
-                          subtitle: const Text('Remind me to write daily'),
-                          secondary: const Icon(Icons.notifications_active),
-                          value: false, // Replace with actual state
-                          onChanged: (bool value) {
-                            // TODO: Handle reminder toggle
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.access_time),
-                          title: const Text('Reminder Time'),
-                          subtitle: const Text('8:00 PM'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open time picker
-                          },
-                        ),
-                        SwitchListTile(
-                          title: const Text('Weekly Summary'),
-                          subtitle: const Text(
-                            'Get a weekly review of your entries',
-                          ),
-                          secondary: const Icon(Icons.summarize),
-                          value: false, // Replace with actual state
-                          onChanged: (bool value) {
-                            // TODO: Handle weekly summary toggle
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 16),
               // Customization Section (hidden until implemented)
               if (_showCustomizationSection)
                 Card(
