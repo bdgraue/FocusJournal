@@ -4,7 +4,7 @@ import '../l10n/app_localizations.dart';
 import '../services/authentication_service.dart';
 import '../services/backup_service.dart';
 import '../services/journal_service.dart';
-// import '../services/notification_service.dart'; // Temporarily disabled
+import '../services/notification_service.dart';
 import '../models/import_strategy.dart';
 import '../services/event_bus.dart';
 
@@ -27,7 +27,7 @@ class GeneralSettingsScreen extends StatefulWidget {
 class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _authService = AuthenticationService();
-  // final _notificationService = NotificationService(); // Temporarily disabled
+  final _notificationService = NotificationService();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   ImportStrategy _selectedImportStrategy = ImportStrategy.smartMerge;
@@ -56,7 +56,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   void initState() {
     super.initState();
     _loadBiometricState();
-    // _loadNotificationState(); // Temporarily disabled
+    _loadNotificationState();
   }
 
   Future<void> _loadBiometricState() async {
@@ -75,40 +75,39 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     });
   }
 
-  // Temporarily disabled notification methods
-  // Future<void> _loadNotificationState() async {
-  //   await _notificationService.initialize();
-  //   final enabled = await _notificationService.isEnabled();
-  //   final time = await _notificationService.getScheduledTime();
-  //   setState(() {
-  //     _notificationsEnabled = enabled;
-  //     _reminderTime = TimeOfDay(hour: time.$1, minute: time.$2);
-  //   });
-  // }
+  Future<void> _loadNotificationState() async {
+    await _notificationService.initialize();
+    final enabled = await _notificationService.isEnabled();
+    final time = await _notificationService.getScheduledTime();
+    setState(() {
+      _notificationsEnabled = enabled;
+      _reminderTime = TimeOfDay(hour: time.$1, minute: time.$2);
+    });
+  }
 
-  // Future<void> _toggleNotifications(bool enabled) async {
-  //   if (enabled) {
-  //     final granted = await _notificationService.requestPermission();
-  //     if (!granted) return;
-  //   }
-  //   await _notificationService.setEnabled(enabled);
-  //   setState(() {
-  //     _notificationsEnabled = enabled;
-  //   });
-  // }
+  Future<void> _toggleNotifications(bool enabled) async {
+    if (enabled) {
+      final granted = await _notificationService.requestPermission();
+      if (!granted) return;
+    }
+    await _notificationService.setEnabled(enabled);
+    setState(() {
+      _notificationsEnabled = enabled;
+    });
+  }
 
-  // Future<void> _pickReminderTime() async {
-  //   final picked = await showTimePicker(
-  //     context: context,
-  //     initialTime: _reminderTime,
-  //   );
-  //   if (picked != null) {
-  //     await _notificationService.setScheduledTime(picked.hour, picked.minute);
-  //     setState(() {
-  //       _reminderTime = picked;
-  //     });
-  //   }
-  // }
+  Future<void> _pickReminderTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTime,
+    );
+    if (picked != null) {
+      await _notificationService.setScheduledTime(picked.hour, picked.minute);
+      setState(() {
+        _reminderTime = picked;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -423,40 +422,40 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ],
-              // Notifications & Reminders - Temporarily disabled
-              // const SizedBox(height: 16),
-              // Card(
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(16.0),
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Text(
-              //           AppLocalizations.of(context)!.notificationsAndReminders,
-              //           style: Theme.of(context).textTheme.titleLarge,
-              //         ),
-              //         const SizedBox(height: 8),
-              //         SwitchListTile(
-              //           secondary: const Icon(Icons.notifications_active),
-              //           title: Text(AppLocalizations.of(context)!.dailyReminders),
-              //           subtitle: Text(
-              //             AppLocalizations.of(context)!.dailyRemindersDescription,
-              //           ),
-              //           value: _notificationsEnabled,
-              //           onChanged: _toggleNotifications,
-              //         ),
-              //         if (_notificationsEnabled)
-              //           ListTile(
-              //             leading: const Icon(Icons.access_time),
-              //             title: Text(AppLocalizations.of(context)!.reminderTime),
-              //             subtitle: Text(_reminderTime.format(context)),
-              //             trailing: const Icon(Icons.chevron_right),
-              //             onTap: _pickReminderTime,
-              //           ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+              // Notifications & Reminders
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.notificationsAndReminders,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      SwitchListTile(
+                        secondary: const Icon(Icons.notifications_active),
+                        title: Text(AppLocalizations.of(context)!.dailyReminders),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.dailyRemindersDescription,
+                        ),
+                        value: _notificationsEnabled,
+                        onChanged: _toggleNotifications,
+                      ),
+                      if (_notificationsEnabled)
+                        ListTile(
+                          leading: const Icon(Icons.access_time),
+                          title: Text(AppLocalizations.of(context)!.reminderTime),
+                          subtitle: Text(_reminderTime.format(context)),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: _pickReminderTime,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               // Journal Preferences Section (hidden until implemented)
               if (_showJournalPreferencesSection)
