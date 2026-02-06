@@ -7,6 +7,7 @@ import '../services/journal_service.dart';
 import '../services/notification_service.dart';
 import '../models/import_strategy.dart';
 import '../services/event_bus.dart';
+import 'security_settings_screen.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
   final VoidCallback? onSetupComplete;
@@ -37,11 +38,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   TimeOfDay _reminderTime = const TimeOfDay(hour: 20, minute: 0);
 
   // Feature flags to temporarily hide inactive settings until implemented.
-  // TODO(settings): Re-enable security section when implemented
-  //  - Show current auth method from AuthenticationService.getCurrentAuthMethod()
-  //  - Implement navigation to a functional security screen (change method, change PIN/password)
-  //  - Remove hardcoded 'Pattern' subtitle
-  final bool _showSecuritySection = false;
+  final bool _showSecuritySection = true;
+  String _currentAuthMethod = AuthenticationService.authMethodPassword;
 
   // TODO(settings): Implement journal preferences (default view, sorting, font size)
   final bool _showJournalPreferencesSection = false;
@@ -57,6 +55,14 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     super.initState();
     _loadBiometricState();
     _loadNotificationState();
+    _loadAuthMethod();
+  }
+
+  Future<void> _loadAuthMethod() async {
+    final method = await _authService.getCurrentAuthMethod();
+    setState(() {
+      _currentAuthMethod = method;
+    });
   }
 
   Future<void> _loadBiometricState() async {
@@ -107,6 +113,40 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
         _reminderTime = picked;
       });
     }
+  }
+
+  String _getAuthMethodDisplayName(String method) {
+    switch (method) {
+      case AuthenticationService.authMethodPassword:
+        return AppLocalizations.of(context)!.password;
+      case AuthenticationService.authMethodPin:
+        return AppLocalizations.of(context)!.pin;
+      case AuthenticationService.authMethodPattern:
+        return AppLocalizations.of(context)!.pattern;
+      default:
+        return AppLocalizations.of(context)!.password;
+    }
+  }
+
+  IconData _getAuthMethodIcon(String method) {
+    switch (method) {
+      case AuthenticationService.authMethodPassword:
+        return Icons.lock_outline;
+      case AuthenticationService.authMethodPin:
+        return Icons.pin_outlined;
+      case AuthenticationService.authMethodPattern:
+        return Icons.grid_3x3_outlined;
+      default:
+        return Icons.lock_outline;
+    }
+  }
+
+  void _navigateToSecuritySettings() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SecuritySettingsScreen(),
+      ),
+    ).then((_) => _loadAuthMethod());
   }
 
   @override
@@ -297,7 +337,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Security Section (hidden until implemented)
+              // Security Section
               if (_showSecuritySection)
                 Card(
                   child: Padding(
@@ -306,38 +346,21 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)?.securitySettings ??
-                              'Security Settings',
+                          AppLocalizations.of(context)!.securitySettings,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         ListTile(
-                          leading: const Icon(Icons.lock_outline),
+                          leading: Icon(_getAuthMethodIcon(_currentAuthMethod)),
                           title: Text(
-                            AppLocalizations.of(context)?.currentAuthMethod ??
-                                'Current Authentication Method',
+                            AppLocalizations.of(context)!.currentAuthMethod,
                           ),
-                          subtitle: const Text(
-                            'Pattern',
-                          ), // TODO: wire actual current method
+                          subtitle: Text(
+                            _getAuthMethodDisplayName(_currentAuthMethod),
+                          ),
                           trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Implement security screen navigation
-                            // Navigator.pushNamed(context, '/security');
-                          },
+                          onTap: _navigateToSecuritySettings,
                         ),
-                        // TODO: Implement biometrics or remove if not planned
-                        // ListTile(
-                        //   leading: const Icon(Icons.fingerprint),
-                        //   title: Text(
-                        //     AppLocalizations.of(context)?.enableBiometrics ??
-                        //         'Enable Biometric Authentication',
-                        //   ),
-                        //   trailing: Switch(
-                        //     value: false,
-                        //     onChanged: (bool value) {},
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
