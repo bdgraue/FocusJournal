@@ -7,6 +7,7 @@ import '../services/journal_service.dart';
 import '../services/notification_service.dart';
 import '../models/import_strategy.dart';
 import '../services/event_bus.dart';
+import 'acknowledgments_screen.dart';
 import 'security_settings_screen.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
@@ -32,8 +33,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   ImportStrategy _selectedImportStrategy = ImportStrategy.smartMerge;
-  bool _canUseBiometrics = false;
-  bool _biometricsEnabled = false;
   bool _notificationsEnabled = false;
   TimeOfDay _reminderTime = const TimeOfDay(hour: 20, minute: 0);
 
@@ -53,7 +52,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadBiometricState();
     _loadNotificationState();
     _loadAuthMethod();
   }
@@ -62,22 +60,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     final method = await _authService.getCurrentAuthMethod();
     setState(() {
       _currentAuthMethod = method;
-    });
-  }
-
-  Future<void> _loadBiometricState() async {
-    final canUse = await _authService.canUseBiometrics();
-    final enabled = await _authService.isBiometricsEnabled();
-    setState(() {
-      _canUseBiometrics = canUse;
-      _biometricsEnabled = enabled;
-    });
-  }
-
-  Future<void> _toggleBiometrics(bool enabled) async {
-    await _authService.setBiometricsEnabled(enabled);
-    setState(() {
-      _biometricsEnabled = enabled;
     });
   }
 
@@ -337,6 +319,40 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Notifications & Reminders
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.notificationsAndReminders,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      SwitchListTile(
+                        secondary: const Icon(Icons.notifications_active),
+                        title: Text(AppLocalizations.of(context)!.dailyReminders),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.dailyRemindersDescription,
+                        ),
+                        value: _notificationsEnabled,
+                        onChanged: _toggleNotifications,
+                      ),
+                      if (_notificationsEnabled)
+                        ListTile(
+                          leading: const Icon(Icons.access_time),
+                          title: Text(AppLocalizations.of(context)!.reminderTime),
+                          subtitle: Text(_reminderTime.format(context)),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: _pickReminderTime,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               // Security Section
               if (_showSecuritySection)
                 Card(
@@ -430,52 +446,17 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ),
-              // Biometric Authentication
-              if (_canUseBiometrics || _biometricsEnabled) ...[
-                const SizedBox(height: 16),
-                Card(
-                  child: SwitchListTile(
-                    secondary: const Icon(Icons.fingerprint),
-                    title: Text(AppLocalizations.of(context)!.enableBiometrics),
-                    subtitle: Text(
-                      AppLocalizations.of(context)!.biometricsDescription,
-                    ),
-                    value: _biometricsEnabled,
-                    onChanged: _toggleBiometrics,
-                  ),
-                ),
-              ],
-              // Notifications & Reminders
+              // Acknowledgments
               const SizedBox(height: 16),
               Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.notificationsAndReminders,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      SwitchListTile(
-                        secondary: const Icon(Icons.notifications_active),
-                        title: Text(AppLocalizations.of(context)!.dailyReminders),
-                        subtitle: Text(
-                          AppLocalizations.of(context)!.dailyRemindersDescription,
-                        ),
-                        value: _notificationsEnabled,
-                        onChanged: _toggleNotifications,
-                      ),
-                      if (_notificationsEnabled)
-                        ListTile(
-                          leading: const Icon(Icons.access_time),
-                          title: Text(AppLocalizations.of(context)!.reminderTime),
-                          subtitle: Text(_reminderTime.format(context)),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: _pickReminderTime,
-                        ),
-                    ],
+                child: ListTile(
+                  leading: const Icon(Icons.favorite, color: Colors.pink),
+                  title: Text(AppLocalizations.of(context)!.credits),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const AcknowledgmentsScreen(),
+                    ),
                   ),
                 ),
               ),
