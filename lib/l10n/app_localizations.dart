@@ -40,13 +40,13 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('de'),
-    Locale('fr'),
-    Locale('es'),
-    Locale('it'),
-    Locale('nl'),
-    Locale('pl'),
+    Locale('en', 'US'), // English (United States)
+    Locale('de', 'DE'), // Deutsch (Deutschland)
+    Locale('fr', 'FR'), // Français (France)
+    Locale('es', 'ES'), // Español (España)
+    Locale('it', 'IT'), // Italiano (Italia)
+    Locale('nl', 'NL'), // Nederlands (Nederland)
+    Locale('pl', 'PL'), // Polski (Polska)
   ];
 
   /// App title

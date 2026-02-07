@@ -96,13 +96,13 @@ class _ThemedApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: const [
-              Locale('en'), // English
-              Locale('de'), // German
-              Locale('fr'), // French
-              Locale('es'), // Spanish
-              Locale('it'), // Italian
-              Locale('nl'), // Dutch
-              Locale('pl'), // Polish
+              Locale('en', 'US'), // English (United States)
+              Locale('de', 'DE'), // Deutsch (Deutschland)
+              Locale('fr', 'FR'), // Français (France)
+              Locale('es', 'ES'), // Español (España)
+              Locale('it', 'IT'), // Italiano (Italia)
+              Locale('nl', 'NL'), // Nederlands (Nederland)
+              Locale('pl', 'PL'), // Polski (Polska)
             ],
             home: const AuthenticationWrapper(),
           );
