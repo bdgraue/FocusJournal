@@ -61,7 +61,7 @@ class ThemeService extends ChangeNotifier {
         interactionEffects: true,
         blendOnLevel: 20,
         blendOnColors: false,
-        useTextTheme: true,
+        useMaterial3Typography: true,
       ),
     );
 
@@ -96,7 +96,7 @@ class ThemeService extends ChangeNotifier {
         interactionEffects: true,
         blendOnLevel: 20,
         blendOnColors: false,
-        useTextTheme: true,
+        useMaterial3Typography: true,
       ),
       darkIsTrueBlack: false,
     );
