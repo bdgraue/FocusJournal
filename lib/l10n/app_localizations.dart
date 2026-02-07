@@ -331,6 +331,30 @@ abstract class AppLocalizations {
   /// **'Theme Settings'**
   String get themeSettings;
 
+  /// Language label
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// Language settings title
+  ///
+  /// In en, this message translates to:
+  /// **'Language Settings'**
+  String get languageSettings;
+
+  /// System language default option
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get systemLanguage;
+
+  /// Language settings description
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your preferred language'**
+  String get languageDescription;
+
   /// Dark mode label
   ///
   /// In en, this message translates to:
@@ -504,6 +528,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable Spell Check'**
   String get enableSpellCheck;
+
+  /// View and layout section header
+  ///
+  /// In en, this message translates to:
+  /// **'View & Layout'**
+  String get viewAndLayout;
+
+  /// Display options section header
+  ///
+  /// In en, this message translates to:
+  /// **'Display Options'**
+  String get displayOptions;
+
+  /// Editing section header
+  ///
+  /// In en, this message translates to:
+  /// **'Editing'**
+  String get editing;
+
+  /// Calendar view option
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar View'**
+  String get calendarView;
+
+  /// List view option
+  ///
+  /// In en, this message translates to:
+  /// **'List View'**
+  String get listView;
+
+  /// Timeline view option
+  ///
+  /// In en, this message translates to:
+  /// **'Timeline View'**
+  String get timelineView;
+
+  /// Newest first sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Newest First'**
+  String get newestFirst;
+
+  /// Oldest first sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest First'**
+  String get oldestFirst;
+
+  /// Title ascending sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Title (A-Z)'**
+  String get titleAscending;
+
+  /// Title descending sort option
+  ///
+  /// In en, this message translates to:
+  /// **'Title (Z-A)'**
+  String get titleDescending;
+
+  /// Small font size option
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get fontSizeSmall;
+
+  /// Medium font size option
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get fontSizeMedium;
+
+  /// Large font size option
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get fontSizeLarge;
+
+  /// Extra large font size option
+  ///
+  /// In en, this message translates to:
+  /// **'Extra Large'**
+  String get fontSizeExtraLarge;
+
+  /// Show date headers description
+  ///
+  /// In en, this message translates to:
+  /// **'Display date separators between entries'**
+  String get showDateHeadersDescription;
+
+  /// Show tags description
+  ///
+  /// In en, this message translates to:
+  /// **'Display tags in entry previews'**
+  String get showTagsDescription;
+
+  /// Enable spell check description
+  ///
+  /// In en, this message translates to:
+  /// **'Check spelling while typing'**
+  String get enableSpellCheckDescription;
+
+  /// Privacy and data section title
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Data'**
+  String get privacyAndData;
+
+  /// Privacy controls section header
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Controls'**
+  String get privacyControls;
+
+  /// Data management section header
+  ///
+  /// In en, this message translates to:
+  /// **'Data Management'**
+  String get dataManagement;
+
+  /// Collect analytics toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Collect Analytics'**
+  String get collectAnalytics;
+
+  /// Collect analytics description
+  ///
+  /// In en, this message translates to:
+  /// **'Help improve the app by sharing anonymous usage statistics'**
+  String get collectAnalyticsDescription;
+
+  /// Share usage data description
+  ///
+  /// In en, this message translates to:
+  /// **'Send anonymous usage patterns to help development'**
+  String get shareUsageDataDescription;
+
+  /// Show journal on widget toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Show Journal on Widget'**
+  String get showJournalOnWidget;
+
+  /// Show journal on widget description
+  ///
+  /// In en, this message translates to:
+  /// **'Display recent entries on home screen widget'**
+  String get showJournalOnWidgetDescription;
+
+  /// Allow screenshots description
+  ///
+  /// In en, this message translates to:
+  /// **'Permit taking screenshots of journal entries'**
+  String get allowScreenshotsDescription;
+
+  /// Store location data description
+  ///
+  /// In en, this message translates to:
+  /// **'Attach location information to journal entries'**
+  String get storeLocationDataDescription;
+
+  /// Enable crash reporting toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Crash Reporting'**
+  String get enableCrashReporting;
+
+  /// Enable crash reporting description
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically send crash reports to help fix bugs'**
+  String get enableCrashReportingDescription;
+
+  /// Clear all data option
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Data'**
+  String get clearAllData;
+
+  /// Clear all data description
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete all journal entries and settings'**
+  String get clearAllDataDescription;
+
+  /// Clear all data warning
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. All your journal entries will be permanently deleted.'**
+  String get clearAllDataWarning;
+
+  /// Entries will be deleted message
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entries will be deleted'**
+  String entriesWillBeDeleted(int count);
+
+  /// Delete all button
+  ///
+  /// In en, this message translates to:
+  /// **'Delete All'**
+  String get deleteAll;
+
+  /// Data cleared success message
+  ///
+  /// In en, this message translates to:
+  /// **'All data has been cleared'**
+  String get dataCleared;
+
+  /// Error clearing data message
+  ///
+  /// In en, this message translates to:
+  /// **'Error clearing data'**
+  String get errorClearingData;
+
+  /// Clear data warning note
+  ///
+  /// In en, this message translates to:
+  /// **'Note: Clearing data is permanent and cannot be undone. Please ensure you have backed up any important entries.'**
+  String get clearDataWarningNote;
 
   // --- Authentication screen ---
 

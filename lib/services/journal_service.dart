@@ -242,4 +242,18 @@ class JournalService {
       throw Exception('Invalid journal data format: $e');
     }
   }
+
+  /// Returns the total count of journal entries
+  Future<int> getEntryCount() async {
+    final entries = await getAllEntries();
+    return entries.length;
+  }
+
+  /// Deletes ALL journal entries permanently. Cannot be undone.
+  ///
+  /// This is a destructive operation used for clearing app data.
+  /// Use with caution and always show confirmation to the user.
+  Future<void> clearAllEntries() async {
+    await saveEntries([]);
+  }
 }

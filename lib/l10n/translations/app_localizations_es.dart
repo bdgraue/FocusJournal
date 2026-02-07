@@ -150,6 +150,18 @@ class AppLocalizationsEs extends AppLocalizationsEn {
   String get themeSettings => 'Configuración del tema';
 
   @override
+  String get language => 'Idioma';
+
+  @override
+  String get languageSettings => 'Configuración de idioma';
+
+  @override
+  String get systemLanguage => 'Predeterminado del sistema';
+
+  @override
+  String get languageDescription => 'Elige tu idioma preferido';
+
+  @override
   String get darkMode => 'Modo oscuro';
 
   @override
@@ -217,6 +229,117 @@ class AppLocalizationsEs extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Activar corrector ortográfico';
+
+  @override
+  String get viewAndLayout => 'Vista y diseño';
+
+  @override
+  String get displayOptions => 'Opciones de visualización';
+
+  @override
+  String get editing => 'Edición';
+
+  @override
+  String get calendarView => 'Vista de calendario';
+
+  @override
+  String get listView => 'Vista de lista';
+
+  @override
+  String get timelineView => 'Vista de línea de tiempo';
+
+  @override
+  String get newestFirst => 'Más reciente primero';
+
+  @override
+  String get oldestFirst => 'Más antiguo primero';
+
+  @override
+  String get titleAscending => 'Título (A-Z)';
+
+  @override
+  String get titleDescending => 'Título (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Pequeño';
+
+  @override
+  String get fontSizeMedium => 'Mediano';
+
+  @override
+  String get fontSizeLarge => 'Grande';
+
+  @override
+  String get fontSizeExtraLarge => 'Extra grande';
+
+  @override
+  String get showDateHeadersDescription => 'Mostrar separadores de fecha entre entradas';
+
+  @override
+  String get showTagsDescription => 'Mostrar etiquetas en vistas previas de entradas';
+
+  @override
+  String get enableSpellCheckDescription => 'Verificar ortografía mientras escribe';
+
+  @override
+  String get privacyAndData => 'Privacidad y datos';
+
+  @override
+  String get privacyControls => 'Controles de privacidad';
+
+  @override
+  String get dataManagement => 'Gestión de datos';
+
+  @override
+  String get collectAnalytics => 'Recopilar análisis';
+
+  @override
+  String get collectAnalyticsDescription => 'Ayude a mejorar la aplicación compartiendo estadísticas de uso anónimas';
+
+  @override
+  String get shareUsageDataDescription => 'Enviar patrones de uso anónimos para ayudar al desarrollo';
+
+  @override
+  String get showJournalOnWidget => 'Mostrar diario en widget';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Mostrar entradas recientes en el widget de la pantalla de inicio';
+
+  @override
+  String get allowScreenshotsDescription => 'Permitir capturas de pantalla de entradas del diario';
+
+  @override
+  String get storeLocationDataDescription => 'Adjuntar información de ubicación a las entradas del diario';
+
+  @override
+  String get enableCrashReporting => 'Habilitar informes de fallos';
+
+  @override
+  String get enableCrashReportingDescription => 'Enviar automáticamente informes de fallos para ayudar a corregir errores';
+
+  @override
+  String get clearAllData => 'Borrar todos los datos';
+
+  @override
+  String get clearAllDataDescription => 'Eliminar permanentemente todas las entradas del diario y configuraciones';
+
+  @override
+  String get clearAllDataWarning => 'Esta acción no se puede deshacer. Todas sus entradas del diario se eliminarán permanentemente.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count entradas serán eliminadas';
+
+  @override
+  String get deleteAll => 'Eliminar todo';
+
+  @override
+  String get dataCleared => 'Todos los datos han sido borrados';
+
+  @override
+  String get errorClearingData => 'Error al borrar datos';
+
+  @override
+  String get clearDataWarningNote => 'Nota: Borrar datos es permanente y no se puede deshacer. Asegúrese de haber respaldado las entradas importantes.';
 
   @override
   String get today => 'Hoy';
