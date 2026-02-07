@@ -149,6 +149,18 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get themeSettings => 'Thema-instellingen';
 
   @override
+  String get language => 'Taal';
+
+  @override
+  String get languageSettings => 'Taalinstellingen';
+
+  @override
+  String get systemLanguage => 'Systeemstandaard';
+
+  @override
+  String get languageDescription => 'Kies je voorkeurstaal';
+
+  @override
   String get darkMode => 'Donkere modus';
 
   @override
@@ -216,6 +228,117 @@ class AppLocalizationsNl extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Spellingcontrole inschakelen';
+
+  @override
+  String get viewAndLayout => 'Weergave & Indeling';
+
+  @override
+  String get displayOptions => 'Weergaveopties';
+
+  @override
+  String get editing => 'Bewerken';
+
+  @override
+  String get calendarView => 'Kalenderweergave';
+
+  @override
+  String get listView => 'Lijstweergave';
+
+  @override
+  String get timelineView => 'Tijdlijnweergave';
+
+  @override
+  String get newestFirst => 'Nieuwste eerst';
+
+  @override
+  String get oldestFirst => 'Oudste eerst';
+
+  @override
+  String get titleAscending => 'Titel (A-Z)';
+
+  @override
+  String get titleDescending => 'Titel (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Klein';
+
+  @override
+  String get fontSizeMedium => 'Middel';
+
+  @override
+  String get fontSizeLarge => 'Groot';
+
+  @override
+  String get fontSizeExtraLarge => 'Extra groot';
+
+  @override
+  String get showDateHeadersDescription => 'Datumscheidingstekens tussen items weergeven';
+
+  @override
+  String get showTagsDescription => 'Tags weergeven in itemvoorbeelden';
+
+  @override
+  String get enableSpellCheckDescription => 'Spelling controleren tijdens typen';
+
+  @override
+  String get privacyAndData => 'Privacy & Gegevens';
+
+  @override
+  String get privacyControls => 'Privacycontroles';
+
+  @override
+  String get dataManagement => 'Gegevensbeheer';
+
+  @override
+  String get collectAnalytics => 'Analytics verzamelen';
+
+  @override
+  String get collectAnalyticsDescription => 'Help de app te verbeteren door anonieme gebruiksstatistieken te delen';
+
+  @override
+  String get shareUsageDataDescription => 'Anonieme gebruikspatronen verzenden om ontwikkeling te ondersteunen';
+
+  @override
+  String get showJournalOnWidget => 'Dagboek op widget tonen';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Recente items weergeven op startscherm widget';
+
+  @override
+  String get allowScreenshotsDescription => 'Screenshots van dagboekitems toestaan';
+
+  @override
+  String get storeLocationDataDescription => 'Locatie-informatie toevoegen aan dagboekitems';
+
+  @override
+  String get enableCrashReporting => 'Crashrapportage inschakelen';
+
+  @override
+  String get enableCrashReportingDescription => 'Automatisch crashrapporten verzenden om bugs te helpen oplossen';
+
+  @override
+  String get clearAllData => 'Alle gegevens wissen';
+
+  @override
+  String get clearAllDataDescription => 'Alle dagboekitems en instellingen permanent verwijderen';
+
+  @override
+  String get clearAllDataWarning => 'Deze actie kan niet ongedaan worden gemaakt. Al uw dagboekitems worden permanent verwijderd.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count items worden verwijderd';
+
+  @override
+  String get deleteAll => 'Alles verwijderen';
+
+  @override
+  String get dataCleared => 'Alle gegevens zijn gewist';
+
+  @override
+  String get errorClearingData => 'Fout bij wissen van gegevens';
+
+  @override
+  String get clearDataWarningNote => 'Let op: Het wissen van gegevens is permanent en kan niet ongedaan worden gemaakt. Zorg ervoor dat u een back-up heeft gemaakt van belangrijke items.';
 
   @override
   String get today => 'Vandaag';

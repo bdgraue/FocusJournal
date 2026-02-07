@@ -151,6 +151,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeSettings => 'Theme Settings';
 
   @override
+  String get language => 'Language';
+
+  @override
+  String get languageSettings => 'Language Settings';
+
+  @override
+  String get systemLanguage => 'System Default';
+
+  @override
+  String get languageDescription => 'Choose your preferred language';
+
+  @override
   String get darkMode => 'Dark Mode';
 
   @override
@@ -218,6 +230,117 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enableSpellCheck => 'Enable Spell Check';
+
+  @override
+  String get viewAndLayout => 'View & Layout';
+
+  @override
+  String get displayOptions => 'Display Options';
+
+  @override
+  String get editing => 'Editing';
+
+  @override
+  String get calendarView => 'Calendar View';
+
+  @override
+  String get listView => 'List View';
+
+  @override
+  String get timelineView => 'Timeline View';
+
+  @override
+  String get newestFirst => 'Newest First';
+
+  @override
+  String get oldestFirst => 'Oldest First';
+
+  @override
+  String get titleAscending => 'Title (A-Z)';
+
+  @override
+  String get titleDescending => 'Title (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Small';
+
+  @override
+  String get fontSizeMedium => 'Medium';
+
+  @override
+  String get fontSizeLarge => 'Large';
+
+  @override
+  String get fontSizeExtraLarge => 'Extra Large';
+
+  @override
+  String get showDateHeadersDescription => 'Display date separators between entries';
+
+  @override
+  String get showTagsDescription => 'Display tags in entry previews';
+
+  @override
+  String get enableSpellCheckDescription => 'Check spelling while typing';
+
+  @override
+  String get privacyAndData => 'Privacy & Data';
+
+  @override
+  String get privacyControls => 'Privacy Controls';
+
+  @override
+  String get dataManagement => 'Data Management';
+
+  @override
+  String get collectAnalytics => 'Collect Analytics';
+
+  @override
+  String get collectAnalyticsDescription => 'Help improve the app by sharing anonymous usage statistics';
+
+  @override
+  String get shareUsageDataDescription => 'Send anonymous usage patterns to help development';
+
+  @override
+  String get showJournalOnWidget => 'Show Journal on Widget';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Display recent entries on home screen widget';
+
+  @override
+  String get allowScreenshotsDescription => 'Permit taking screenshots of journal entries';
+
+  @override
+  String get storeLocationDataDescription => 'Attach location information to journal entries';
+
+  @override
+  String get enableCrashReporting => 'Enable Crash Reporting';
+
+  @override
+  String get enableCrashReportingDescription => 'Automatically send crash reports to help fix bugs';
+
+  @override
+  String get clearAllData => 'Clear All Data';
+
+  @override
+  String get clearAllDataDescription => 'Permanently delete all journal entries and settings';
+
+  @override
+  String get clearAllDataWarning => 'This action cannot be undone. All your journal entries will be permanently deleted.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count entries will be deleted';
+
+  @override
+  String get deleteAll => 'Delete All';
+
+  @override
+  String get dataCleared => 'All data has been cleared';
+
+  @override
+  String get errorClearingData => 'Error clearing data';
+
+  @override
+  String get clearDataWarningNote => 'Note: Clearing data is permanent and cannot be undone. Please ensure you have backed up any important entries.';
 
   @override
   String get today => 'Today';

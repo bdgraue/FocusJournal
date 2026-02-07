@@ -10,6 +10,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import '../models/import_strategy.dart';
 
+/// Thrown when backup decryption fails due to wrong password or corrupted data.
+class InvalidBackupPasswordException implements Exception {
+  @override
+  String toString() => 'Invalid password or corrupted backup file';
+}
+
 class BackupService {
   static const _algorithm = 'AES-256-GCM';
   static const _backupVersion = '1.1';
@@ -48,6 +54,12 @@ class BackupService {
     };
   }
 
+  /// Generates a cryptographically secure random salt for PBKDF2.
+  ///
+  /// Returns a 256-bit (32-byte) salt generated using Random.secure() which
+  /// provides cryptographically strong random numbers suitable for security purposes.
+  ///
+  /// Each backup gets a unique salt to prevent rainbow table attacks.
   Uint8List _generateSalt() {
     final random = Random.secure();
     return Uint8List.fromList(
@@ -55,7 +67,21 @@ class BackupService {
     );
   }
 
-  /// Derives a 256-bit key using PBKDF2-HMAC-SHA256.
+  /// Derives a 256-bit AES key from password using PBKDF2-HMAC-SHA256.
+  ///
+  /// Implements PBKDF2 (Password-Based Key Derivation Function 2) with:
+  /// - HMAC-SHA256 as the pseudo-random function
+  /// - 100,000 iterations (sufficient to resist brute-force attacks as of 2024)
+  /// - 256-bit output (32 bytes for AES-256)
+  ///
+  /// **Security**: The high iteration count makes brute-force attacks computationally
+  /// expensive. The salt must be unique per backup to prevent precomputation attacks.
+  ///
+  /// **Parameters**:
+  /// - [password]: User's backup password (UTF-8 encoded)
+  /// - [salt]: 256-bit random salt (must be unique per backup)
+  ///
+  /// **Returns**: A 256-bit cryptographic key suitable for AES-256 encryption
   Key _deriveKey(String password, Uint8List salt) {
     final passwordBytes = utf8.encode(password);
     final hmac = Hmac(sha256, passwordBytes);
@@ -78,6 +104,14 @@ class BackupService {
   }
 
   /// Legacy key derivation for v1.0 backup compatibility.
+  ///
+  /// **DEPRECATED**: This method is insecure and only used for backwards compatibility
+  /// with old backups. It pads the password with zeros to 256 bits without proper
+  /// key derivation.
+  ///
+  /// **Security Warning**: Do NOT use for new backups. Only for importing v1.0 files.
+  ///
+  /// New backups always use [_deriveKey] with PBKDF2.
   Key _deriveKeyLegacy(String password) {
     final bytes = utf8.encode(password);
     final list = Uint8List(_keySize);
@@ -127,10 +161,12 @@ class BackupService {
     );
     await file.writeAsString(json.encode(exportData));
 
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      subject: 'Journal Backup',
-      text: 'FocusJournal Backup File',
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        subject: 'Journal Backup',
+        text: 'FocusJournal Backup File',
+      ),
     );
 
     // Clean up temp file
@@ -197,7 +233,7 @@ class BackupService {
       }
     }
 
-    throw Exception('Invalid password or corrupted backup file');
+    throw InvalidBackupPasswordException();
   }
 
   Map<String, dynamic> mergeJournals(

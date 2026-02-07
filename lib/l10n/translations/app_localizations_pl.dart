@@ -149,6 +149,18 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   String get themeSettings => 'Ustawienia motywu';
 
   @override
+  String get language => 'Język';
+
+  @override
+  String get languageSettings => 'Ustawienia języka';
+
+  @override
+  String get systemLanguage => 'Domyślny system';
+
+  @override
+  String get languageDescription => 'Wybierz preferowany język';
+
+  @override
   String get darkMode => 'Tryb ciemny';
 
   @override
@@ -216,6 +228,117 @@ class AppLocalizationsPl extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Włącz sprawdzanie pisowni';
+
+  @override
+  String get viewAndLayout => 'Widok i układ';
+
+  @override
+  String get displayOptions => 'Opcje wyświetlania';
+
+  @override
+  String get editing => 'Edycja';
+
+  @override
+  String get calendarView => 'Widok kalendarza';
+
+  @override
+  String get listView => 'Widok listy';
+
+  @override
+  String get timelineView => 'Widok osi czasu';
+
+  @override
+  String get newestFirst => 'Najnowsze najpierw';
+
+  @override
+  String get oldestFirst => 'Najstarsze najpierw';
+
+  @override
+  String get titleAscending => 'Tytuł (A-Z)';
+
+  @override
+  String get titleDescending => 'Tytuł (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Mały';
+
+  @override
+  String get fontSizeMedium => 'Średni';
+
+  @override
+  String get fontSizeLarge => 'Duży';
+
+  @override
+  String get fontSizeExtraLarge => 'Bardzo duży';
+
+  @override
+  String get showDateHeadersDescription => 'Wyświetlaj separatory dat między wpisami';
+
+  @override
+  String get showTagsDescription => 'Wyświetlaj tagi w podglądach wpisów';
+
+  @override
+  String get enableSpellCheckDescription => 'Sprawdzaj pisownię podczas pisania';
+
+  @override
+  String get privacyAndData => 'Prywatność i dane';
+
+  @override
+  String get privacyControls => 'Kontrole prywatności';
+
+  @override
+  String get dataManagement => 'Zarządzanie danymi';
+
+  @override
+  String get collectAnalytics => 'Zbieraj analitykę';
+
+  @override
+  String get collectAnalyticsDescription => 'Pomóż ulepszyć aplikację, udostępniając anonimowe statystyki użytkowania';
+
+  @override
+  String get shareUsageDataDescription => 'Wysyłaj anonimowe wzorce użytkowania, aby wspomóc rozwój';
+
+  @override
+  String get showJournalOnWidget => 'Pokaż dziennik w widżecie';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Wyświetlaj ostatnie wpisy w widżecie ekranu głównego';
+
+  @override
+  String get allowScreenshotsDescription => 'Zezwalaj na zrzuty ekranu wpisów dziennika';
+
+  @override
+  String get storeLocationDataDescription => 'Dołączaj informacje o lokalizacji do wpisów dziennika';
+
+  @override
+  String get enableCrashReporting => 'Włącz raportowanie awarii';
+
+  @override
+  String get enableCrashReportingDescription => 'Automatycznie wysyłaj raporty awarii, aby pomóc naprawić błędy';
+
+  @override
+  String get clearAllData => 'Wyczyść wszystkie dane';
+
+  @override
+  String get clearAllDataDescription => 'Trwale usuń wszystkie wpisy dziennika i ustawienia';
+
+  @override
+  String get clearAllDataWarning => 'Ta czynność nie może być cofnięta. Wszystkie wpisy dziennika zostaną trwale usunięte.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count wpisów zostanie usuniętych';
+
+  @override
+  String get deleteAll => 'Usuń wszystko';
+
+  @override
+  String get dataCleared => 'Wszystkie dane zostały wyczyszczone';
+
+  @override
+  String get errorClearingData => 'Błąd podczas czyszczenia danych';
+
+  @override
+  String get clearDataWarningNote => 'Uwaga: Czyszczenie danych jest trwałe i nie można go cofnąć. Upewnij się, że wykonałeś kopię zapasową ważnych wpisów.';
 
   @override
   String get today => 'Dzisiaj';

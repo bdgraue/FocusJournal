@@ -7,6 +7,8 @@ import '../widgets/material3_card.dart';
 import 'acknowledgments_screen.dart';
 import 'backup_screen.dart';
 import 'security_settings_screen.dart';
+import 'settings/journal_preferences_screen.dart';
+import 'settings/privacy_settings_screen.dart';
 import 'theme_settings_screen.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
@@ -37,14 +39,14 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   final bool _showSecuritySection = true;
   String _currentAuthMethod = AuthenticationService.authMethodPassword;
 
-  // TODO(settings): Implement journal preferences (default view, sorting, font size)
-  final bool _showJournalPreferencesSection = false;
+  // Journal preferences feature is now implemented
+  final bool _showJournalPreferencesSection = true;
 
   // TODO(settings): Implement language selector and additional customization options
   final bool _showCustomizationSection = true;
 
-  // TODO(settings): Implement privacy & data (retention policy, analytics toggle, clear data flow)
-  final bool _showPrivacySection = false;
+  // Privacy & Data feature is now implemented
+  final bool _showPrivacySection = true;
 
   @override
   void initState() {
@@ -249,47 +251,17 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Journal Preferences Section (hidden until implemented)
+              // Journal Preferences Section
               if (_showJournalPreferencesSection)
                 Material3Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Journal Preferences',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        ListTile(
-                          leading: const Icon(Icons.view_agenda),
-                          title: const Text('Default View'),
-                          subtitle: const Text('Calendar View'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open view selector
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.sort),
-                          title: const Text('Entry Sorting'),
-                          subtitle: const Text('Newest First'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open sorting options
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.text_fields),
-                          title: const Text('Default Font Size'),
-                          subtitle: const Text('Medium'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open font size selector
-                          },
-                        ),
-                      ],
+                  child: ListTile(
+                    leading: const Icon(Icons.tune),
+                    title: Text(AppLocalizations.of(context)!.journalPreferences),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const JournalPreferencesScreen(),
+                      ),
                     ),
                   ),
                 ),
@@ -323,51 +295,17 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               const SizedBox(height: 16),
-              // Privacy & Data Section (hidden until implemented)
+              // Privacy & Data Section
               if (_showPrivacySection)
                 Material3Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Privacy & Data',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 16),
-                        ListTile(
-                          leading: const Icon(Icons.auto_delete),
-                          title: const Text('Data Retention'),
-                          subtitle: const Text('Keep entries forever'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open data retention settings
-                          },
-                        ),
-                        SwitchListTile(
-                          title: const Text('Analytics'),
-                          subtitle: const Text(
-                            'Help improve the app by sharing usage data',
-                          ),
-                          secondary: const Icon(Icons.analytics),
-                          value: false, // Replace with actual state
-                          onChanged: (bool value) {
-                            // TODO: Handle analytics toggle
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.folder_delete),
-                          title: const Text('Clear App Data'),
-                          subtitle: const Text(
-                            'Remove all app data and settings',
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Show clear data confirmation dialog
-                          },
-                        ),
-                      ],
+                  child: ListTile(
+                    leading: const Icon(Icons.privacy_tip),
+                    title: Text(AppLocalizations.of(context)!.privacyAndData),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacySettingsScreen(),
+                      ),
                     ),
                   ),
                 ),

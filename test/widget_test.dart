@@ -1,9 +1,6 @@
-// This is a basic Flutter widget test.
+// Basic Flutter widget test for Focus Journal
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Smoke test to verify the app launches without crashing.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,20 +8,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:focus_journal/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App launches without crashing', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Pump a few frames to allow initial rendering
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the app loads without crashing (first shows loading screen)
+    expect(find.byType(MaterialApp), findsOneWidget);
+  });
+
+  testWidgets('App loads theme service and shows UI', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+
+    // Pump frames to allow ThemeService to load
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+
+    // Should show scaffolds after theme loads (auth or main screen)
+    expect(find.byType(Scaffold), findsAtLeastNWidgets(1));
   });
 }

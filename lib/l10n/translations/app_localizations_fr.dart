@@ -153,6 +153,18 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get themeSettings => 'Paramètres du thème';
 
   @override
+  String get language => 'Langue';
+
+  @override
+  String get languageSettings => 'Paramètres de langue';
+
+  @override
+  String get systemLanguage => 'Par défaut du système';
+
+  @override
+  String get languageDescription => 'Choisissez votre langue préférée';
+
+  @override
   String get darkMode => 'Mode sombre';
 
   @override
@@ -220,6 +232,117 @@ class AppLocalizationsFr extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Activer la vérification orthographique';
+
+  @override
+  String get viewAndLayout => 'Affichage & Disposition';
+
+  @override
+  String get displayOptions => 'Options d\'affichage';
+
+  @override
+  String get editing => 'Édition';
+
+  @override
+  String get calendarView => 'Vue calendrier';
+
+  @override
+  String get listView => 'Vue liste';
+
+  @override
+  String get timelineView => 'Vue chronologique';
+
+  @override
+  String get newestFirst => 'Plus récent d\'abord';
+
+  @override
+  String get oldestFirst => 'Plus ancien d\'abord';
+
+  @override
+  String get titleAscending => 'Titre (A-Z)';
+
+  @override
+  String get titleDescending => 'Titre (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Petit';
+
+  @override
+  String get fontSizeMedium => 'Moyen';
+
+  @override
+  String get fontSizeLarge => 'Grand';
+
+  @override
+  String get fontSizeExtraLarge => 'Très grand';
+
+  @override
+  String get showDateHeadersDescription => 'Afficher les séparateurs de date entre les entrées';
+
+  @override
+  String get showTagsDescription => 'Afficher les tags dans les aperçus d\'entrée';
+
+  @override
+  String get enableSpellCheckDescription => 'Vérifier l\'orthographe pendant la saisie';
+
+  @override
+  String get privacyAndData => 'Confidentialité et données';
+
+  @override
+  String get privacyControls => 'Contrôles de confidentialité';
+
+  @override
+  String get dataManagement => 'Gestion des données';
+
+  @override
+  String get collectAnalytics => 'Collecter les analyses';
+
+  @override
+  String get collectAnalyticsDescription => 'Aidez à améliorer l\'application en partageant des statistiques d\'utilisation anonymes';
+
+  @override
+  String get shareUsageDataDescription => 'Envoyer des modèles d\'utilisation anonymes pour aider au développement';
+
+  @override
+  String get showJournalOnWidget => 'Afficher le journal sur le widget';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Afficher les entrées récentes sur le widget de l\'écran d\'accueil';
+
+  @override
+  String get allowScreenshotsDescription => 'Autoriser la capture d\'écran des entrées de journal';
+
+  @override
+  String get storeLocationDataDescription => 'Joindre des informations de localisation aux entrées de journal';
+
+  @override
+  String get enableCrashReporting => 'Activer les rapports de crash';
+
+  @override
+  String get enableCrashReportingDescription => 'Envoyer automatiquement des rapports de crash pour corriger les bogues';
+
+  @override
+  String get clearAllData => 'Effacer toutes les données';
+
+  @override
+  String get clearAllDataDescription => 'Supprimer définitivement toutes les entrées de journal et les paramètres';
+
+  @override
+  String get clearAllDataWarning => 'Cette action ne peut pas être annulée. Toutes vos entrées de journal seront définitivement supprimées.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count entrées seront supprimées';
+
+  @override
+  String get deleteAll => 'Tout supprimer';
+
+  @override
+  String get dataCleared => 'Toutes les données ont été effacées';
+
+  @override
+  String get errorClearingData => 'Erreur lors de l\'effacement des données';
+
+  @override
+  String get clearDataWarningNote => 'Remarque : L\'effacement des données est permanent et ne peut pas être annulé. Veuillez vous assurer d\'avoir sauvegardé toutes les entrées importantes.';
 
   @override
   String get today => 'Aujourd\'hui';

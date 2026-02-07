@@ -155,6 +155,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get themeSettings => 'Design-Einstellungen';
 
   @override
+  String get language => 'Sprache';
+
+  @override
+  String get languageSettings => 'Spracheinstellungen';
+
+  @override
+  String get systemLanguage => 'Systemstandard';
+
+  @override
+  String get languageDescription => 'Wählen Sie Ihre bevorzugte Sprache';
+
+  @override
   String get darkMode => 'Dunkler Modus';
 
   @override
@@ -222,6 +234,117 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get enableSpellCheck => 'Rechtschreibprüfung aktivieren';
+
+  @override
+  String get viewAndLayout => 'Ansicht & Layout';
+
+  @override
+  String get displayOptions => 'Anzeigeoptionen';
+
+  @override
+  String get editing => 'Bearbeitung';
+
+  @override
+  String get calendarView => 'Kalenderansicht';
+
+  @override
+  String get listView => 'Listenansicht';
+
+  @override
+  String get timelineView => 'Zeitstrahl';
+
+  @override
+  String get newestFirst => 'Neueste zuerst';
+
+  @override
+  String get oldestFirst => 'Älteste zuerst';
+
+  @override
+  String get titleAscending => 'Titel (A-Z)';
+
+  @override
+  String get titleDescending => 'Titel (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Klein';
+
+  @override
+  String get fontSizeMedium => 'Mittel';
+
+  @override
+  String get fontSizeLarge => 'Groß';
+
+  @override
+  String get fontSizeExtraLarge => 'Sehr groß';
+
+  @override
+  String get showDateHeadersDescription => 'Datumstrennzeichen zwischen Einträgen anzeigen';
+
+  @override
+  String get showTagsDescription => 'Tags in Eintragsvorschauen anzeigen';
+
+  @override
+  String get enableSpellCheckDescription => 'Rechtschreibung während der Eingabe prüfen';
+
+  @override
+  String get privacyAndData => 'Datenschutz & Daten';
+
+  @override
+  String get privacyControls => 'Datenschutz-Einstellungen';
+
+  @override
+  String get dataManagement => 'Datenverwaltung';
+
+  @override
+  String get collectAnalytics => 'Analytics erfassen';
+
+  @override
+  String get collectAnalyticsDescription => 'Helfen Sie, die App durch anonyme Nutzungsstatistiken zu verbessern';
+
+  @override
+  String get shareUsageDataDescription => 'Anonyme Nutzungsmuster zur Unterstützung der Entwicklung senden';
+
+  @override
+  String get showJournalOnWidget => 'Journal im Widget anzeigen';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Aktuelle Einträge im Homescreen-Widget anzeigen';
+
+  @override
+  String get allowScreenshotsDescription => 'Screenshots von Journaleinträgen erlauben';
+
+  @override
+  String get storeLocationDataDescription => 'Standortinformationen an Journaleinträge anhängen';
+
+  @override
+  String get enableCrashReporting => 'Absturzberichte aktivieren';
+
+  @override
+  String get enableCrashReportingDescription => 'Absturzberichte automatisch senden, um Fehler zu beheben';
+
+  @override
+  String get clearAllData => 'Alle Daten löschen';
+
+  @override
+  String get clearAllDataDescription => 'Alle Journaleinträge und Einstellungen dauerhaft löschen';
+
+  @override
+  String get clearAllDataWarning => 'Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Journaleinträge werden dauerhaft gelöscht.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count Einträge werden gelöscht';
+
+  @override
+  String get deleteAll => 'Alle löschen';
+
+  @override
+  String get dataCleared => 'Alle Daten wurden gelöscht';
+
+  @override
+  String get errorClearingData => 'Fehler beim Löschen der Daten';
+
+  @override
+  String get clearDataWarningNote => 'Hinweis: Das Löschen von Daten ist dauerhaft und kann nicht rückgängig gemacht werden. Bitte stellen Sie sicher, dass Sie wichtige Einträge gesichert haben.';
 
   @override
   String get today => 'Heute';

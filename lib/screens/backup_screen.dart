@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../main.dart' show LockSuppression;
 import '../services/backup_service.dart';
+import '../services/export_service.dart';
 import '../services/journal_service.dart';
 import '../models/import_strategy.dart';
 import '../services/event_bus.dart';
@@ -14,35 +17,71 @@ class BackupScreen extends StatefulWidget {
   State<BackupScreen> createState() => _BackupScreenState();
 }
 
-class _BackupScreenState extends State<BackupScreen> {
+class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   ImportStrategy _selectedImportStrategy = ImportStrategy.smartMerge;
   late final Future<JournalService> _journalService = JournalService.create();
+  ExportService? _exportService;
+
+  static const _minBackupPasswordLength = 6;
+
+  Future<ExportService> get _getExportService async {
+    if (_exportService != null) return _exportService!;
+    final journalService = await _journalService;
+    _exportService = ExportService(journalService: journalService);
+    return _exportService!;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _passwordController.dispose();
+    // Ensure lock suppression is reset when leaving the screen
+    try {
+      context.read<LockSuppression>().value = false;
+    } catch (_) {
+      // Context might not be available during dispose
+    }
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Clear password when app goes to background for security
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _passwordController.clear();
+      setState(() => _isPasswordVisible = false);
+    }
   }
 
   Future<void> _exportJournal() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final lockSuppression = context.read<LockSuppression>();
+
     try {
-      final service = await _journalService;
-      final journalData = await service.exportData();
-      await BackupService().exportJournal(
-        journalData,
-        _passwordController.text,
-      );
+      lockSuppression.value = true; // Prevent lock during file operations
+      final exportService = await _getExportService;
+      await exportService.exportData(_passwordController.text);
+      lockSuppression.value = false;
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.journalExportedSuccessfully)),
         );
+        _passwordController.clear();
+        setState(() => _isPasswordVisible = false);
       }
     } catch (e) {
+      lockSuppression.value = false;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed(e.toString()))),
@@ -53,13 +92,14 @@ class _BackupScreenState extends State<BackupScreen> {
 
   Future<void> _saveJournalLocally() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final lockSuppression = context.read<LockSuppression>();
+
     try {
-      final service = await _journalService;
-      final journalData = await service.exportData();
-      final savedPath = await BackupService().saveJournalLocally(
-        journalData,
-        _passwordController.text,
-      );
+      lockSuppression.value = true; // Prevent lock during file picker
+      final exportService = await _getExportService;
+      final savedPath = await exportService.exportDataToLocal(_passwordController.text);
+      lockSuppression.value = false;
 
       if (mounted) {
         if (savedPath != null) {
@@ -71,8 +111,11 @@ class _BackupScreenState extends State<BackupScreen> {
             SnackBar(content: Text(AppLocalizations.of(context)!.noFileSelected)),
           );
         }
+        _passwordController.clear();
+        setState(() => _isPasswordVisible = false);
       }
     } catch (e) {
+      lockSuppression.value = false;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed(e.toString()))),
@@ -84,13 +127,15 @@ class _BackupScreenState extends State<BackupScreen> {
   Future<void> _importJournal(String filePath) async {
     try {
       final service = await _journalService;
+      final exportService = await _getExportService;
+
       final currentData = await service.exportData();
-      final importedData = await BackupService().importJournal(
+
+      // Auto-detect backup format and import
+      final importedData = await exportService.importDataAuto(
         _passwordController.text,
         filePath,
       );
-
-      BackupService().validateJournalData(importedData['data'] as Map<String, dynamic>);
 
       final mergedData = BackupService().mergeJournals(
         currentData,
@@ -113,7 +158,16 @@ class _BackupScreenState extends State<BackupScreen> {
         final msg = AppLocalizations.of(context)!.importSuccessMessage(added, possiblyUpdated, mergedCount);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         _passwordController.clear();
-        _isPasswordVisible = false;
+        setState(() => _isPasswordVisible = false);
+      }
+    } on InvalidBackupPasswordException {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.importFailed('Invalid password or corrupted backup file')),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -134,37 +188,46 @@ class _BackupScreenState extends State<BackupScreen> {
           title: Text(l10n.importStrategy),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  RadioListTile<ImportStrategy>(
-                    title: Text(l10n.completeOverwrite),
-                    subtitle: Text(l10n.replaceAllData),
-                    value: ImportStrategy.completeOverwrite,
-                    groupValue: _selectedImportStrategy,
-                    onChanged: (ImportStrategy? value) {
-                      setState(() => _selectedImportStrategy = value!);
-                    },
-                  ),
-                  RadioListTile<ImportStrategy>(
-                    title: Text(l10n.smartMerge),
-                    subtitle: Text(l10n.mergeWithConflicts),
-                    value: ImportStrategy.smartMerge,
-                    groupValue: _selectedImportStrategy,
-                    onChanged: (ImportStrategy? value) {
-                      setState(() => _selectedImportStrategy = value!);
-                    },
-                  ),
-                  RadioListTile<ImportStrategy>(
-                    title: Text(l10n.addNewOnly),
-                    subtitle: Text(l10n.onlyImportNew),
-                    value: ImportStrategy.addNewOnly,
-                    groupValue: _selectedImportStrategy,
-                    onChanged: (ImportStrategy? value) {
-                      setState(() => _selectedImportStrategy = value!);
-                    },
-                  ),
-                ],
+              return RadioGroup<ImportStrategy>(
+                groupValue: _selectedImportStrategy,
+                onChanged: (ImportStrategy? value) {
+                  setState(() => _selectedImportStrategy = value!);
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(l10n.completeOverwrite),
+                      subtitle: Text(l10n.replaceAllData),
+                      leading: Radio<ImportStrategy>(
+                        value: ImportStrategy.completeOverwrite,
+                      ),
+                      onTap: () {
+                        setState(() => _selectedImportStrategy = ImportStrategy.completeOverwrite);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(l10n.smartMerge),
+                      subtitle: Text(l10n.mergeWithConflicts),
+                      leading: Radio<ImportStrategy>(
+                        value: ImportStrategy.smartMerge,
+                      ),
+                      onTap: () {
+                        setState(() => _selectedImportStrategy = ImportStrategy.smartMerge);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(l10n.addNewOnly),
+                      subtitle: Text(l10n.onlyImportNew),
+                      leading: Radio<ImportStrategy>(
+                        value: ImportStrategy.addNewOnly,
+                      ),
+                      onTap: () {
+                        setState(() => _selectedImportStrategy = ImportStrategy.addNewOnly);
+                      },
+                    ),
+                  ],
+                ),
               );
             },
           ),
@@ -176,13 +239,17 @@ class _BackupScreenState extends State<BackupScreen> {
             TextButton(
               child: Text(l10n.proceed),
               onPressed: () async {
+                final lockSuppression = context.read<LockSuppression>();
                 Navigator.of(context).pop();
+
                 try {
+                  lockSuppression.value = true; // Prevent lock during file picker
                   final result = await FilePicker.platform.pickFiles(
                     type: FileType.custom,
                     allowedExtensions: ['fjb'],
                     allowMultiple: false,
                   );
+                  lockSuppression.value = false;
 
                   if (result != null && result.files.isNotEmpty) {
                     final file = result.files.first;
@@ -205,6 +272,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     }
                   }
                 } catch (e) {
+                  lockSuppression.value = false;
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -263,6 +331,9 @@ class _BackupScreenState extends State<BackupScreen> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return AppLocalizations.of(context)!.passwordRequired;
+                      }
+                      if (value.length < _minBackupPasswordLength) {
+                        return 'Password must be at least $_minBackupPasswordLength characters';
                       }
                       return null;
                     },

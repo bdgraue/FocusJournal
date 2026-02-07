@@ -150,6 +150,18 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   String get themeSettings => 'Impostazioni tema';
 
   @override
+  String get language => 'Lingua';
+
+  @override
+  String get languageSettings => 'Impostazioni lingua';
+
+  @override
+  String get systemLanguage => 'Predefinito del sistema';
+
+  @override
+  String get languageDescription => 'Scegli la tua lingua preferita';
+
+  @override
   String get darkMode => 'Modalità scura';
 
   @override
@@ -217,6 +229,117 @@ class AppLocalizationsIt extends AppLocalizationsEn {
 
   @override
   String get enableSpellCheck => 'Attiva controllo ortografico';
+
+  @override
+  String get viewAndLayout => 'Vista e layout';
+
+  @override
+  String get displayOptions => 'Opzioni di visualizzazione';
+
+  @override
+  String get editing => 'Modifica';
+
+  @override
+  String get calendarView => 'Vista calendario';
+
+  @override
+  String get listView => 'Vista elenco';
+
+  @override
+  String get timelineView => 'Vista cronologica';
+
+  @override
+  String get newestFirst => 'Più recente prima';
+
+  @override
+  String get oldestFirst => 'Più vecchio prima';
+
+  @override
+  String get titleAscending => 'Titolo (A-Z)';
+
+  @override
+  String get titleDescending => 'Titolo (Z-A)';
+
+  @override
+  String get fontSizeSmall => 'Piccolo';
+
+  @override
+  String get fontSizeMedium => 'Medio';
+
+  @override
+  String get fontSizeLarge => 'Grande';
+
+  @override
+  String get fontSizeExtraLarge => 'Extra grande';
+
+  @override
+  String get showDateHeadersDescription => 'Visualizza separatori di data tra le voci';
+
+  @override
+  String get showTagsDescription => 'Visualizza tag nelle anteprime delle voci';
+
+  @override
+  String get enableSpellCheckDescription => 'Controlla ortografia durante la digitazione';
+
+  @override
+  String get privacyAndData => 'Privacy e dati';
+
+  @override
+  String get privacyControls => 'Controlli privacy';
+
+  @override
+  String get dataManagement => 'Gestione dati';
+
+  @override
+  String get collectAnalytics => 'Raccogli analisi';
+
+  @override
+  String get collectAnalyticsDescription => 'Aiuta a migliorare l\'app condividendo statistiche d\'uso anonime';
+
+  @override
+  String get shareUsageDataDescription => 'Invia modelli d\'uso anonimi per aiutare lo sviluppo';
+
+  @override
+  String get showJournalOnWidget => 'Mostra diario su widget';
+
+  @override
+  String get showJournalOnWidgetDescription => 'Visualizza voci recenti sul widget della schermata principale';
+
+  @override
+  String get allowScreenshotsDescription => 'Consenti screenshot delle voci del diario';
+
+  @override
+  String get storeLocationDataDescription => 'Allega informazioni sulla posizione alle voci del diario';
+
+  @override
+  String get enableCrashReporting => 'Abilita segnalazione errori';
+
+  @override
+  String get enableCrashReportingDescription => 'Invia automaticamente segnalazioni di errori per correggere bug';
+
+  @override
+  String get clearAllData => 'Cancella tutti i dati';
+
+  @override
+  String get clearAllDataDescription => 'Elimina permanentemente tutte le voci del diario e le impostazioni';
+
+  @override
+  String get clearAllDataWarning => 'Questa azione non può essere annullata. Tutte le voci del diario saranno eliminate permanentemente.';
+
+  @override
+  String entriesWillBeDeleted(int count) => '$count voci saranno eliminate';
+
+  @override
+  String get deleteAll => 'Elimina tutto';
+
+  @override
+  String get dataCleared => 'Tutti i dati sono stati cancellati';
+
+  @override
+  String get errorClearingData => 'Errore durante la cancellazione dei dati';
+
+  @override
+  String get clearDataWarningNote => 'Nota: La cancellazione dei dati è permanente e non può essere annullata. Assicurati di aver eseguito il backup di eventuali voci importanti.';
 
   @override
   String get today => 'Oggi';
