@@ -76,23 +76,28 @@ class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
-        RadioListTile<ThemeMode>(
-          title: Text(l10n.systemTheme),
-          value: ThemeMode.system,
+        RadioGroup<ThemeMode>(
           groupValue: themeMode,
           onChanged: (value) => _updateThemeMode(value!),
-        ),
-        RadioListTile<ThemeMode>(
-          title: Text(l10n.lightMode),
-          value: ThemeMode.light,
-          groupValue: themeMode,
-          onChanged: (value) => _updateThemeMode(value!),
-        ),
-        RadioListTile<ThemeMode>(
-          title: Text(l10n.darkMode),
-          value: ThemeMode.dark,
-          groupValue: themeMode,
-          onChanged: (value) => _updateThemeMode(value!),
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(l10n.systemTheme),
+                leading: Radio<ThemeMode>(value: ThemeMode.system),
+                onTap: () => _updateThemeMode(ThemeMode.system),
+              ),
+              ListTile(
+                title: Text(l10n.lightMode),
+                leading: Radio<ThemeMode>(value: ThemeMode.light),
+                onTap: () => _updateThemeMode(ThemeMode.light),
+              ),
+              ListTile(
+                title: Text(l10n.darkMode),
+                leading: Radio<ThemeMode>(value: ThemeMode.dark),
+                onTap: () => _updateThemeMode(ThemeMode.dark),
+              ),
+            ],
+          ),
         ),
       ],
     );
