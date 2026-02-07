@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,8 +45,20 @@ class NotificationService {
     'A daily reflection brings clarity.',
   ];
 
+  /// Check if notifications are supported on this platform
+  bool get isPlatformSupported {
+    // Only Android and iOS are supported
+    return Platform.isAndroid || Platform.isIOS;
+  }
+
   Future<void> initialize() async {
     if (_initialized) return;
+
+    // Skip initialization on unsupported platforms
+    if (!isPlatformSupported) {
+      _initialized = true;
+      return;
+    }
 
     const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_foreground');
     const initSettings = InitializationSettings(android: androidSettings);
@@ -66,6 +79,8 @@ class NotificationService {
   }
 
   Future<void> setEnabled(bool enabled) async {
+    if (!isPlatformSupported) return;
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_enabledKey, enabled);
 
@@ -85,6 +100,8 @@ class NotificationService {
   }
 
   Future<void> setScheduledTime(int hour, int minute) async {
+    if (!isPlatformSupported) return;
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_hourKey, hour);
     await prefs.setInt(_minuteKey, minute);
@@ -95,6 +112,7 @@ class NotificationService {
   }
 
   Future<void> scheduleDailyReminder(int hour, int minute) async {
+    if (!isPlatformSupported) return;
     if (!_initialized) await initialize();
 
     await _notifications.cancel(id: _notificationId);
@@ -123,6 +141,7 @@ class NotificationService {
   }
 
   Future<void> cancelReminder() async {
+    if (!isPlatformSupported) return;
     await _notifications.cancel(id: _notificationId);
   }
 
@@ -133,6 +152,7 @@ class NotificationService {
 
   /// Request notification permission (Android 13+)
   Future<bool> requestPermission() async {
+    if (!isPlatformSupported) return false;
     if (!_initialized) await initialize();
 
     final android = _notifications.resolvePlatformSpecificImplementation<
