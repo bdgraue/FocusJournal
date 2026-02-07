@@ -117,7 +117,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive) {
+    // Lock when app goes to background (inactive or paused)
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
       // In some cases, inactive may arrive before didChangeMetrics on rotation.
       // Detect orientation change here as well and skip locking if it changed.
       final currentOrientation = MediaQuery.of(context).orientation;
