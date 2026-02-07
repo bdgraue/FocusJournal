@@ -587,6 +587,12 @@ abstract class AppLocalizations {
   String get noSearchResults;
   String get calendarOverview;
   String get noEntriesForDay;
+
+  // --- Security ---
+  String tooManyAttempts(int seconds);
+  String attemptsRemaining(int count);
+  String get passwordComplexityError;
+  String get unexpectedError;
 }
 
 /// The delegate class which loads AppLocalizations.

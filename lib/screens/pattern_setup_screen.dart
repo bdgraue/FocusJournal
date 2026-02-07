@@ -72,9 +72,9 @@ class _PatternSetupScreenState extends State<PatternSetupScreen> {
         await _offerBiometrics(authService);
         widget.onSetupComplete?.call();
       }
-    } catch (e) {
+    } catch (_) {
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = AppLocalizations.of(context)!.unexpectedError;
         _isLoading = false;
       });
     }
@@ -303,7 +303,7 @@ class _PatternGridState extends State<PatternGrid> {
                   shape: BoxShape.circle,
                   color: isSelected 
                       ? Theme.of(context).primaryColor
-                      : Theme.of(context).primaryColor.withOpacity(0.3),
+                      : Theme.of(context).primaryColor.withValues(alpha: 0.3),
                   border: Border.all(
                     color: Theme.of(context).primaryColor,
                     width: 2,

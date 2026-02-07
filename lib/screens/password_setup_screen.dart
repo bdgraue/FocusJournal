@@ -108,8 +108,11 @@ class _PasswordSetupScreenState extends State<PasswordSetupScreen> {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!.pleaseEnterAPassword;
                   }
-                  if (value.length < 6) {
-                    return AppLocalizations.of(context)!.passwordMinLength(6);
+                  if (value.length < 8) {
+                    return AppLocalizations.of(context)!.passwordMinLength(8);
+                  }
+                  if (!AuthenticationService().isValidPassword(value)) {
+                    return AppLocalizations.of(context)!.passwordComplexityError;
                   }
                   return null;
                 },

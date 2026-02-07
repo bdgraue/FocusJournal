@@ -367,4 +367,14 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get calendarOverview => 'Kalender';
   @override
   String get noEntriesForDay => 'Geen items voor deze dag';
+
+  // --- Security ---
+  @override
+  String tooManyAttempts(int seconds) => 'Te veel pogingen. Wacht $seconds seconden.';
+  @override
+  String attemptsRemaining(int count) => 'Nog $count pogingen over';
+  @override
+  String get passwordComplexityError => 'Moet hoofdletter, kleine letter, cijfer en speciaal teken bevatten';
+  @override
+  String get unexpectedError => 'Er is een onverwachte fout opgetreden. Probeer het opnieuw.';
 }

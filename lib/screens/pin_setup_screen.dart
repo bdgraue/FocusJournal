@@ -51,9 +51,9 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
           await _offerBiometrics(authService);
           widget.onSetupComplete?.call();
         }
-      } catch (e) {
+      } catch (_) {
         setState(() {
-          _errorMessage = e.toString();
+          _errorMessage = AppLocalizations.of(context)!.unexpectedError;
         });
       } finally {
         setState(() {
