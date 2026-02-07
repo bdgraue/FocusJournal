@@ -356,4 +356,16 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   String get dailyRemindersDescription => 'Ricevi un promemoria amichevole per scrivere nel tuo diario';
   @override
   String get reminderTime => 'Orario promemoria';
+
+  // --- Search & Calendar ---
+  @override
+  String get search => 'Cerca';
+  @override
+  String get searchEntries => 'Cerca voci...';
+  @override
+  String get noSearchResults => 'Nessuna voce trovata';
+  @override
+  String get calendarOverview => 'Calendario';
+  @override
+  String get noEntriesForDay => 'Nessuna voce per questo giorno';
 }

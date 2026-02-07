@@ -359,4 +359,16 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get dailyRemindersDescription => 'Recevez un rappel amical pour écrire dans votre journal';
   @override
   String get reminderTime => 'Heure du rappel';
+
+  // --- Search & Calendar ---
+  @override
+  String get search => 'Rechercher';
+  @override
+  String get searchEntries => 'Rechercher des entrées...';
+  @override
+  String get noSearchResults => 'Aucune entrée trouvée';
+  @override
+  String get calendarOverview => 'Calendrier';
+  @override
+  String get noEntriesForDay => 'Aucune entrée pour ce jour';
 }

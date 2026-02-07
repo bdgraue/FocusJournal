@@ -415,4 +415,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dailyRemindersDescription => 'Erhalte eine freundliche Erinnerung, in dein Tagebuch zu schreiben';
   @override
   String get reminderTime => 'Erinnerungszeit';
+
+  // --- Search & Calendar ---
+  @override
+  String get search => 'Suche';
+  @override
+  String get searchEntries => 'Einträge durchsuchen...';
+  @override
+  String get noSearchResults => 'Keine Einträge gefunden';
+  @override
+  String get calendarOverview => 'Kalender';
+  @override
+  String get noEntriesForDay => 'Keine Einträge für diesen Tag';
 }

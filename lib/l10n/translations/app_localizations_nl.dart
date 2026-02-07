@@ -355,4 +355,16 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get dailyRemindersDescription => 'Ontvang een vriendelijke herinnering om in je dagboek te schrijven';
   @override
   String get reminderTime => 'Herinneringstijd';
+
+  // --- Search & Calendar ---
+  @override
+  String get search => 'Zoeken';
+  @override
+  String get searchEntries => 'Zoek in items...';
+  @override
+  String get noSearchResults => 'Geen items gevonden';
+  @override
+  String get calendarOverview => 'Kalender';
+  @override
+  String get noEntriesForDay => 'Geen items voor deze dag';
 }

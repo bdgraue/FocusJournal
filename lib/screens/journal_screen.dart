@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import 'package:focus_journal/services/journal_service.dart';
+import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:intl/intl.dart';
 import 'journal_entry_screen.dart';
 import 'package:focus_journal/services/event_bus.dart';
@@ -58,101 +59,23 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Widget _buildEntryCard(JournalEntry entry) {
-    // Locale-aware time-only formatting for the entry row (explicit locale)
-    final locale = Localizations.localeOf(context).toString();
-    final timeFormat = DateFormat.jm(locale);
+    Future<void> openEntry() async {
+      final result = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (context) => JournalEntryScreen(entry: entry),
+        ),
+      );
+      if (result == true) {
+        await _loadEntries();
+      }
+    }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: widget.isEditMode
-          ? InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () async {
-                final result = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(
-                    builder: (context) => JournalEntryScreen(entry: entry),
-                  ),
-                );
-                if (result == true) {
-                  await _loadEntries();
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.content,
-                            softWrap: true,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            timeFormat.format(entry.createdAt),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit_outlined, size: 20),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          visualDensity: VisualDensity.compact,
-                          onPressed: () async {
-                            final result =
-                                await Navigator.of(context).push<bool>(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    JournalEntryScreen(entry: entry),
-                              ),
-                            );
-                            if (result == true) {
-                              await _loadEntries();
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        IconButton(
-                          icon: Icon(Icons.delete_outline,
-                              size: 20,
-                              color: Theme.of(context).colorScheme.error),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          visualDensity: VisualDensity.compact,
-                          onPressed: () => _deleteEntry(entry.id),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    entry.content,
-                    softWrap: true,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    timeFormat.format(entry.createdAt),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
+    return JournalEntryCard(
+      entry: entry,
+      isEditMode: widget.isEditMode,
+      onTap: widget.isEditMode ? openEntry : null,
+      onEdit: widget.isEditMode ? openEntry : null,
+      onDelete: widget.isEditMode ? () => _deleteEntry(entry.id) : null,
     );
   }
 
