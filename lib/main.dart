@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:provider/provider.dart';
 import 'screens/authentication_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'screens/method_selection_screen.dart';
@@ -7,6 +8,13 @@ import 'services/authentication_service.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
+
+/// ValueNotifier to suppress automatic screen locking during sensitive operations
+/// like file picker dialogs, to prevent UX issues where lock screen appears over
+/// native system dialogs.
+class LockSuppression extends ValueNotifier<bool> {
+  LockSuppression() : super(false);
+}
 
 void main() {
   runApp(const MyApp());
@@ -17,49 +25,52 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DynamicColorBuilder(
-      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        ColorScheme lightColorScheme;
-        ColorScheme darkColorScheme;
+    return ChangeNotifierProvider(
+      create: (_) => LockSuppression(),
+      child: DynamicColorBuilder(
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+          ColorScheme lightColorScheme;
+          ColorScheme darkColorScheme;
 
-        if (lightDynamic != null && darkDynamic != null) {
-          lightColorScheme = lightDynamic.harmonized();
-          darkColorScheme = darkDynamic.harmonized();
-        } else {
-          // Fallback colors if dynamic color is not available.
-          lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
-          darkColorScheme = ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
-            brightness: Brightness.dark,
+          if (lightDynamic != null && darkDynamic != null) {
+            lightColorScheme = lightDynamic.harmonized();
+            darkColorScheme = darkDynamic.harmonized();
+          } else {
+            // Fallback colors if dynamic color is not available.
+            lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+            darkColorScheme = ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.dark,
+            );
+          }
+
+          return MaterialApp(
+            title: 'Focus Journal',
+            theme: ThemeData(colorScheme: lightColorScheme, useMaterial3: true),
+            darkTheme: ThemeData(
+              colorScheme: darkColorScheme,
+              useMaterial3: true,
+            ),
+            // Add localization support
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'), // English
+              Locale('de'), // German
+              Locale('fr'), // French
+              Locale('es'), // Spanish
+              Locale('it'), // Italian
+              Locale('nl'), // Dutch
+              Locale('pl'), // Polish
+            ],
+            home: const AuthenticationWrapper(),
           );
-        }
-
-        return MaterialApp(
-          title: 'Focus Journal',
-          theme: ThemeData(colorScheme: lightColorScheme, useMaterial3: true),
-          darkTheme: ThemeData(
-            colorScheme: darkColorScheme,
-            useMaterial3: true,
-          ),
-          // Add localization support
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en'), // English
-            Locale('de'), // German
-            Locale('fr'), // French
-            Locale('es'), // Spanish
-            Locale('it'), // Italian
-            Locale('nl'), // Dutch
-            Locale('pl'), // Polish
-          ],
-          home: const AuthenticationWrapper(),
-        );
-      },
+        },
+      ),
     );
   }
 }
@@ -119,6 +130,13 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Lock when app goes to background (inactive or paused)
     if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      // Check if lock suppression is active (e.g., during file picker operations)
+      final lockSuppression = context.read<LockSuppression>();
+      if (lockSuppression.value) {
+        // Don't lock during sensitive operations like file picker
+        return;
+      }
+
       // In some cases, inactive may arrive before didChangeMetrics on rotation.
       // Detect orientation change here as well and skip locking if it changed.
       final currentOrientation = MediaQuery.of(context).orientation;

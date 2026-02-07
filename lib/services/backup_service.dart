@@ -10,6 +10,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import '../models/import_strategy.dart';
 
+/// Thrown when backup decryption fails due to wrong password or corrupted data.
+class InvalidBackupPasswordException implements Exception {
+  @override
+  String toString() => 'Invalid password or corrupted backup file';
+}
+
 class BackupService {
   static const _algorithm = 'AES-256-GCM';
   static const _backupVersion = '1.1';
@@ -197,7 +203,7 @@ class BackupService {
       }
     }
 
-    throw Exception('Invalid password or corrupted backup file');
+    throw InvalidBackupPasswordException();
   }
 
   Map<String, dynamic> mergeJournals(

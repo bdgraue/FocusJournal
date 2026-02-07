@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../main.dart' show LockSuppression;
 import '../services/backup_service.dart';
 import '../services/journal_service.dart';
 import '../models/import_strategy.dart';
@@ -31,6 +33,12 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _passwordController.dispose();
+    // Ensure lock suppression is reset when leaving the screen
+    try {
+      context.read<LockSuppression>().value = false;
+    } catch (_) {
+      // Context might not be available during dispose
+    }
     super.dispose();
   }
 
@@ -45,13 +53,18 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
 
   Future<void> _exportJournal() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final lockSuppression = context.read<LockSuppression>();
+
     try {
+      lockSuppression.value = true; // Prevent lock during file operations
       final service = await _journalService;
       final journalData = await service.exportData();
       await BackupService().exportJournal(
         journalData,
         _passwordController.text,
       );
+      lockSuppression.value = false;
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -61,6 +74,7 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
         setState(() => _isPasswordVisible = false);
       }
     } catch (e) {
+      lockSuppression.value = false;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed(e.toString()))),
@@ -71,13 +85,18 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
 
   Future<void> _saveJournalLocally() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final lockSuppression = context.read<LockSuppression>();
+
     try {
+      lockSuppression.value = true; // Prevent lock during file picker
       final service = await _journalService;
       final journalData = await service.exportData();
       final savedPath = await BackupService().saveJournalLocally(
         journalData,
         _passwordController.text,
       );
+      lockSuppression.value = false;
 
       if (mounted) {
         if (savedPath != null) {
@@ -93,6 +112,7 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
         setState(() => _isPasswordVisible = false);
       }
     } catch (e) {
+      lockSuppression.value = false;
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed(e.toString()))),
@@ -133,7 +153,16 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
         final msg = AppLocalizations.of(context)!.importSuccessMessage(added, possiblyUpdated, mergedCount);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
         _passwordController.clear();
-        _isPasswordVisible = false;
+        setState(() => _isPasswordVisible = false);
+      }
+    } on InvalidBackupPasswordException {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.importFailed('Invalid password or corrupted backup file')),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -196,13 +225,17 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
             TextButton(
               child: Text(l10n.proceed),
               onPressed: () async {
+                final lockSuppression = context.read<LockSuppression>();
                 Navigator.of(context).pop();
+
                 try {
+                  lockSuppression.value = true; // Prevent lock during file picker
                   final result = await FilePicker.platform.pickFiles(
                     type: FileType.custom,
                     allowedExtensions: ['fjb'],
                     allowMultiple: false,
                   );
+                  lockSuppression.value = false;
 
                   if (result != null && result.files.isNotEmpty) {
                     final file = result.files.first;
@@ -225,6 +258,7 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
                     }
                   }
                 } catch (e) {
+                  lockSuppression.value = false;
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
