@@ -3,6 +3,19 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/settings/app_settings.dart';
 
+/// Central settings management service with reactive updates.
+///
+/// Manages all app-wide settings including theme, security, and notifications.
+/// Settings are persisted to SharedPreferences and automatically synced across
+/// the app via ChangeNotifier.
+///
+/// Settings categories:
+/// - `themeSettings`: Theme mode and dynamic color toggle
+/// - `securitySettings`: Authentication method and screen lock preferences
+/// - `notificationSettings`: Reminder scheduling and preferences
+///
+/// Singleton pattern with async initialization via `getInstance()`.
+/// Notifies listeners on settings changes for automatic UI updates.
 class SettingsService extends ChangeNotifier {
   static const String _settingsKey = 'app_settings';
   final SharedPreferences _prefs;

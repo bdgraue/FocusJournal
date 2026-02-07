@@ -6,6 +6,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+/// Represents a single journal entry with content and timestamps.
+///
+/// Each entry has a unique ID (UUID), creation timestamp, and last modified
+/// timestamp. Entries are immutable after creation (use copyWith for updates).
+///
+/// The `isEditableToday` property restricts editing to entries created today,
+/// preserving historical journal integrity.
 class JournalEntry {
   final String id;
   final String content;
@@ -56,6 +63,19 @@ class JournalEntry {
   }
 }
 
+/// Manages journal entry storage with AES-256-GCM encryption.
+///
+/// Provides CRUD operations for journal entries with automatic encryption/decryption.
+/// Uses a Data Encryption Key (DEK) stored in flutter_secure_storage, with entry
+/// data encrypted and stored in SharedPreferences.
+///
+/// Security features:
+/// - AES-256-GCM encryption for all entry content
+/// - Unique IV per entry (stored alongside ciphertext)
+/// - DEK generated once and stored securely
+/// - Automatic encryption on save, decryption on load
+///
+/// Singleton pattern with async initialization via `getInstance()`.
 class JournalService {
   static const String _storageKey = 'journal_entries';
   static const String _dekKey = 'journal_dek';

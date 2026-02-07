@@ -2,6 +2,19 @@ import 'dart:math';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Manages daily journal reminders using local notifications.
+///
+/// Provides customizable notification timing with a selection of friendly
+/// reminder messages. Users can enable/disable notifications and choose
+/// their preferred reminder time.
+///
+/// Features:
+/// - Daily repeating notifications at user-defined time
+/// - Random rotation through 10 mindful reminder messages
+/// - Notification permission handling (Android 13+)
+/// - Persistent settings via SharedPreferences
+///
+/// Singleton pattern ensures single notification scheduler across app.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;

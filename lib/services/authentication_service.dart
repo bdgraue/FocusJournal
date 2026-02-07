@@ -9,6 +9,21 @@ import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
+/// Manages user authentication for the journal app.
+///
+/// Supports multiple authentication methods:
+/// - Password: PBKDF2-HMAC-SHA256 with 100,000 iterations
+/// - PIN: 6+ digit numeric code
+/// - Pattern: Custom pattern drawing
+/// - Biometric: Fingerprint/Face ID (platform-dependent)
+///
+/// Security features:
+/// - Secure storage via flutter_secure_storage
+/// - Lockout after 5 failed attempts (5 minute cooldown)
+/// - Screen lock on app backgrounding
+/// - Platform biometric integration
+///
+/// Singleton pattern ensures single instance across app lifecycle.
 class AuthenticationService {
   static const String _passwordKey = 'password';
   static const String _pinKey = 'pin';
