@@ -356,6 +356,10 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   @override
   String get reminderTime => 'Godzina przypomnienia';
 
+  // --- View entry ---
+  @override
+  String get viewEntry => 'Zobacz wpis';
+
   // --- Search & Calendar ---
   @override
   String get search => 'Szukaj';
@@ -376,5 +380,11 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   @override
   String get passwordComplexityError => 'Musi zawierać wielką, małą literę, cyfrę i znak specjalny';
   @override
-  String get unexpectedError => 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie.';
+  String get unexpectedError => 'Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d. Spr\u00f3buj ponownie.';
+
+  // --- Podziękowania ---
+  @override
+  String get credits => 'Podzi\u0119kowania';
+  @override
+  String get creditsDeike => 'Za jej wspania\u0142e pomys\u0142y i wk\u0142ad w sukces tej aplikacji. A tak\u017ce za cudowne rozmowy o ka\u017cdej porze, czu\u0142o\u015b\u0107 i uczucie, kt\u00f3re otrzymuj\u0119.';
 }

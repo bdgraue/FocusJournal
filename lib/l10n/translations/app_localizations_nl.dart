@@ -356,6 +356,10 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   @override
   String get reminderTime => 'Herinneringstijd';
 
+  // --- View entry ---
+  @override
+  String get viewEntry => 'Item bekijken';
+
   // --- Search & Calendar ---
   @override
   String get search => 'Zoeken';
@@ -377,4 +381,10 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get passwordComplexityError => 'Moet hoofdletter, kleine letter, cijfer en speciaal teken bevatten';
   @override
   String get unexpectedError => 'Er is een onverwachte fout opgetreden. Probeer het opnieuw.';
+
+  // --- Dankwoord ---
+  @override
+  String get credits => 'Dankwoord';
+  @override
+  String get creditsDeike => 'Voor haar geweldige idee\u00ebn en haar bijdrage aan het succes van deze app. En voor de prachtige gesprekken op elk moment, de tederheid en de genegenheid die ik ontvang.';
 }

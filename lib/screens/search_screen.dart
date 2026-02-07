@@ -5,7 +5,6 @@ import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/services/event_bus.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:intl/intl.dart';
-import 'journal_entry_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -162,16 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
         JournalEntryCard(
           entry: entry,
           highlightQuery: _searchController.text,
-          onTap: () async {
-            final result = await Navigator.of(context).push<bool>(
-              MaterialPageRoute(
-                builder: (context) => JournalEntryScreen(entry: entry),
-              ),
-            );
-            if (result == true) {
-              _performSearch(_searchController.text);
-            }
-          },
+          onTap: () => Navigator.of(context).pop(entry.id),
         ),
       );
     }

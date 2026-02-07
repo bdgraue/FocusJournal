@@ -360,6 +360,10 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   @override
   String get reminderTime => 'Heure du rappel';
 
+  // --- View entry ---
+  @override
+  String get viewEntry => 'Voir l\'entr\u00e9e';
+
   // --- Search & Calendar ---
   @override
   String get search => 'Rechercher';
@@ -380,5 +384,11 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   @override
   String get passwordComplexityError => 'Doit contenir majuscule, minuscule, chiffre et caractère spécial';
   @override
-  String get unexpectedError => 'Une erreur inattendue s\'est produite. Veuillez réessayer.';
+  String get unexpectedError => 'Une erreur inattendue s\'est produite. Veuillez r\u00e9essayer.';
+
+  // --- Remerciements ---
+  @override
+  String get credits => 'Remerciements';
+  @override
+  String get creditsDeike => 'Pour ses id\u00e9es formidables et sa contribution au succ\u00e8s de cette app. Et pour les merveilleuses conversations \u00e0 tout moment, la tendresse et l\'affection que je re\u00e7ois.';
 }

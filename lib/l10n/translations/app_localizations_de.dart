@@ -416,6 +416,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get reminderTime => 'Erinnerungszeit';
 
+  // --- View entry ---
+  @override
+  String get viewEntry => 'Eintrag ansehen';
+
   // --- Search & Calendar ---
   @override
   String get search => 'Suche';
@@ -437,4 +441,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get passwordComplexityError => 'Muss Groß-, Kleinbuchstaben, Zahl und Sonderzeichen enthalten';
   @override
   String get unexpectedError => 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
+
+  // --- Danksagung ---
+  @override
+  String get credits => 'Danksagung';
+  @override
+  String get creditsDeike => 'F\u00fcr ihre tollen Ideen und ihren Beitrag zum Gelingen der App. Au\u00dferdem f\u00fcr die wundervollen Gespr\u00e4che jederzeit, die Z\u00e4rtlichkeit und die Zuneigung die ich erhalte.';
 }

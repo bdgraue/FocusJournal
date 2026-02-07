@@ -479,6 +479,31 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ),
+              // Credits Section
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.credits,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 12),
+                      ListTile(
+                        leading: const Icon(Icons.favorite, color: Colors.pink),
+                        title: const Text('Deike',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.creditsDeike,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               // Journal Preferences Section (hidden until implemented)
               if (_showJournalPreferencesSection)

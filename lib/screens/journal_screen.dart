@@ -10,8 +10,9 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class JournalScreen extends StatefulWidget {
   final bool isEditMode;
+  final String? scrollToEntryId;
 
-  const JournalScreen({super.key, this.isEditMode = false});
+  const JournalScreen({super.key, this.isEditMode = false, this.scrollToEntryId});
 
   @override
   State<JournalScreen> createState() => _JournalScreenState();
@@ -21,19 +22,38 @@ class _JournalScreenState extends State<JournalScreen> {
   late final Future<JournalService> _journalService;
   List<JournalEntry>? _entries;
   StreamSubscription<String>? _sub;
-  // No global sticky header; we use per-day pinned headers only.
+  final Map<String, GlobalKey> _entryKeys = {};
+  String? _highlightedEntryId;
+  final ScrollController _scrollController = ScrollController();
+  bool _isScrolledAway = false;
 
   @override
   void initState() {
     super.initState();
     _journalService = JournalService.create();
     _loadEntries();
-    // Listen for journal changes (e.g., after import) and refresh
     _sub = AppEventBus().stream.listen((event) {
       if (event == AppEvents.journalChanged) {
         _loadEntries();
       }
     });
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final scrolled = _scrollController.offset > 200;
+    if (scrolled != _isScrolledAway) {
+      setState(() => _isScrolledAway = scrolled);
+    }
+  }
+
+  @override
+  void didUpdateWidget(JournalScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.scrollToEntryId != null &&
+        widget.scrollToEntryId != oldWidget.scrollToEntryId) {
+      _scrollToEntry(widget.scrollToEntryId!);
+    }
   }
 
   Future<void> _loadEntries() async {
@@ -43,12 +63,37 @@ class _JournalScreenState extends State<JournalScreen> {
       setState(() {
         _entries = entries;
       });
+      if (widget.scrollToEntryId != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToEntry(widget.scrollToEntryId!);
+        });
+      }
+    }
+  }
+
+  void _scrollToEntry(String entryId) {
+    final key = _entryKeys[entryId];
+    if (key?.currentContext != null) {
+      Scrollable.ensureVisible(
+        key!.currentContext!,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+        alignment: 0.3,
+      );
+      setState(() => _highlightedEntryId = entryId);
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() => _highlightedEntryId = null);
+        }
+      });
     }
   }
 
   @override
   void dispose() {
     _sub?.cancel();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -59,6 +104,9 @@ class _JournalScreenState extends State<JournalScreen> {
   }
 
   Widget _buildEntryCard(JournalEntry entry) {
+    _entryKeys.putIfAbsent(entry.id, () => GlobalKey());
+    final entryKey = _entryKeys[entry.id]!;
+
     Future<void> openEntry() async {
       final result = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
@@ -70,12 +118,16 @@ class _JournalScreenState extends State<JournalScreen> {
       }
     }
 
-    return JournalEntryCard(
-      entry: entry,
-      isEditMode: widget.isEditMode,
-      onTap: widget.isEditMode ? openEntry : null,
-      onEdit: widget.isEditMode ? openEntry : null,
-      onDelete: widget.isEditMode ? () => _deleteEntry(entry.id) : null,
+    return KeyedSubtree(
+      key: entryKey,
+      child: JournalEntryCard(
+        entry: entry,
+        isEditMode: widget.isEditMode,
+        isHighlighted: _highlightedEntryId == entry.id,
+        onTap: widget.isEditMode ? openEntry : null,
+        onEdit: widget.isEditMode ? openEntry : null,
+        onDelete: widget.isEditMode ? () => _deleteEntry(entry.id) : null,
+      ),
     );
   }
 
@@ -204,13 +256,25 @@ class _JournalScreenState extends State<JournalScreen> {
                 }
                 flushDay();
 
-                return CustomScrollView(slivers: slivers);
+                return CustomScrollView(
+                  controller: _scrollController,
+                  slivers: slivers,
+                );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _createNewEntry,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _isScrolledAway
+          ? FloatingActionButton(
+              onPressed: () => _scrollController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
+              child: const Icon(Icons.arrow_upward),
+            )
+          : FloatingActionButton(
+              onPressed: _createNewEntry,
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/services/event_bus.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'journal_entry_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -138,18 +137,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       final entry = _selectedDayEntries[index];
                       return JournalEntryCard(
                         entry: entry,
-                        onTap: () async {
-                          final result =
-                              await Navigator.of(context).push<bool>(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  JournalEntryScreen(entry: entry),
-                            ),
-                          );
-                          if (result == true) {
-                            _loadEntries();
-                          }
-                        },
+                        onTap: () => Navigator.of(context).pop(entry.id),
                       );
                     },
                   ),

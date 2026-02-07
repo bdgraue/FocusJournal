@@ -39,6 +39,13 @@ class JournalEntry {
     );
   }
 
+  bool get isEditableToday {
+    final now = DateTime.now();
+    return createdAt.year == now.year &&
+        createdAt.month == now.month &&
+        createdAt.day == now.day;
+  }
+
   JournalEntry copyWith({String? content}) {
     return JournalEntry(
       id: id,

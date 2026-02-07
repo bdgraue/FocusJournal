@@ -412,6 +412,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderTime => 'Reminder Time';
 
+  // --- View entry ---
+  @override
+  String get viewEntry => 'View Entry';
+
   // --- Search & Calendar ---
   @override
   String get search => 'Search';
@@ -433,4 +437,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordComplexityError => 'Must contain uppercase, lowercase, number, and special character';
   @override
   String get unexpectedError => 'An unexpected error occurred. Please try again.';
+
+  // --- Acknowledgments ---
+  @override
+  String get credits => 'Acknowledgments';
+  @override
+  String get creditsDeike => 'For her wonderful ideas and her contribution to making this app a success. And for the wonderful conversations at any time, the tenderness and the affection I receive.';
 }
