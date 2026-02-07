@@ -240,6 +240,10 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
               child: Text(l10n.proceed),
               onPressed: () async {
                 final lockSuppression = context.read<LockSuppression>();
+
+                // CRITICAL: Save password BEFORE dialog closes and lifecycle clears it
+                final savedPassword = _passwordController.text;
+
                 Navigator.of(context).pop();
 
                 try {
@@ -254,6 +258,8 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
                   if (result != null && result.files.isNotEmpty) {
                     final file = result.files.first;
                     if (file.path != null) {
+                      // Restore password before import
+                      _passwordController.text = savedPassword;
                       await _importJournal(file.path!);
                     } else {
                       if (mounted) {
