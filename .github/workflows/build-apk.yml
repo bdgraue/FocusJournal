@@ -28,10 +28,13 @@ jobs:
       - name: Restore signing keystore
         run: |
           if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/debug.keystore
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+            printf 'storeFile=release.keystore\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+              '${{ secrets.STORE_PASSWORD }}' '${{ secrets.KEY_ALIAS }}' '${{ secrets.KEY_PASSWORD }}' \
+              > android/key.properties
           else
             keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
-            echo "::warning::No KEYSTORE_BASE64 secret set — generated a temporary keystore. APK signature will differ between builds."
+            echo "::warning::No KEYSTORE_BASE64 secret set — generated a temporary debug keystore. APK signature will differ between builds."
           fi
 
       - name: Override local Java home for CI
@@ -45,16 +48,13 @@ jobs:
           dart --version
 
       - name: Build release APK
-        run: flutter build apk --release --verbose
+        run: flutter build apk --release --build-number=${{ github.run_number }} --verbose
 
       - name: Rename APK to include version
         run: |
           VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
           APK_DIR=build/app/outputs/flutter-apk
-          for f in "$APK_DIR"/*.apk; do
-            mv "$f" "$APK_DIR/FocusJournal-v${VERSION}.apk"
-            break
-          done
+          mv "$APK_DIR/app-release.apk" "$APK_DIR/FocusJournal-v${VERSION}-build${{ github.run_number }}.apk"
 
       - uses: actions/upload-artifact@v4
         with:
