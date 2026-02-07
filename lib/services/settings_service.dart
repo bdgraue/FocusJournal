@@ -69,13 +69,6 @@ class SettingsService extends ChangeNotifier {
   }
 
   // Convenience methods for updating individual settings sections
-  Future<void> updateJournalPreferences(
-    AppSettings Function(AppSettings) updateFunction,
-  ) async {
-    final newSettings = updateFunction(_settings);
-    await saveSettings(newSettings);
-  }
-
   Future<void> updateBackupSettings(
     AppSettings Function(AppSettings) updateFunction,
   ) async {

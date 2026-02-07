@@ -7,7 +7,6 @@ import '../widgets/material3_card.dart';
 import 'acknowledgments_screen.dart';
 import 'backup_screen.dart';
 import 'security_settings_screen.dart';
-import 'settings/journal_preferences_screen.dart';
 import 'theme_settings_screen.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
@@ -37,9 +36,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   // Feature flags to temporarily hide inactive settings until implemented.
   final bool _showSecuritySection = true;
   String _currentAuthMethod = AuthenticationService.authMethodPassword;
-
-  // Journal preferences feature is now implemented
-  final bool _showJournalPreferencesSection = true;
 
   // TODO(settings): Implement language selector and additional customization options
   final bool _showCustomizationSection = true;
@@ -247,21 +243,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              // Journal Preferences Section
-              if (_showJournalPreferencesSection)
-                Material3Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.tune),
-                    title: Text(AppLocalizations.of(context)!.journalPreferences),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const JournalPreferencesScreen(),
-                      ),
-                    ),
-                  ),
-                ),
               const SizedBox(height: 16),
               // Customization Section
               if (_showCustomizationSection)
