@@ -97,13 +97,6 @@ class SettingsService extends ChangeNotifier {
     await saveSettings(newSettings);
   }
 
-  Future<void> updatePrivacySettings(
-    AppSettings Function(AppSettings) updateFunction,
-  ) async {
-    final newSettings = updateFunction(_settings);
-    await saveSettings(newSettings);
-  }
-
   // Reset settings to defaults
   Future<void> resetToDefaults() async {
     await saveSettings(const AppSettings());

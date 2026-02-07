@@ -8,7 +8,6 @@ import 'acknowledgments_screen.dart';
 import 'backup_screen.dart';
 import 'security_settings_screen.dart';
 import 'settings/journal_preferences_screen.dart';
-import 'settings/privacy_settings_screen.dart';
 import 'theme_settings_screen.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
@@ -45,8 +44,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   // TODO(settings): Implement language selector and additional customization options
   final bool _showCustomizationSection = true;
 
-  // Privacy & Data feature is now implemented
-  final bool _showPrivacySection = true;
 
   @override
   void initState() {
@@ -291,21 +288,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                           ).then((_) => _loadThemeMode()),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 16),
-              // Privacy & Data Section
-              if (_showPrivacySection)
-                Material3Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.privacy_tip),
-                    title: Text(AppLocalizations.of(context)!.privacyAndData),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const PrivacySettingsScreen(),
-                      ),
                     ),
                   ),
                 ),
