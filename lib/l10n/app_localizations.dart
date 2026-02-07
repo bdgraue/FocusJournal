@@ -581,6 +581,9 @@ abstract class AppLocalizations {
   String get dailyRemindersDescription;
   String get reminderTime;
 
+  // --- View entry ---
+  String get viewEntry;
+
   // --- Search & Calendar ---
   String get search;
   String get searchEntries;
@@ -593,6 +596,10 @@ abstract class AppLocalizations {
   String attemptsRemaining(int count);
   String get passwordComplexityError;
   String get unexpectedError;
+
+  // --- Credits ---
+  String get credits;
+  String get creditsDeike;
 }
 
 /// The delegate class which loads AppLocalizations.

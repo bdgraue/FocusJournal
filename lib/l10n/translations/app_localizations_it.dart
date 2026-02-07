@@ -357,6 +357,10 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   @override
   String get reminderTime => 'Orario promemoria';
 
+  // --- View entry ---
+  @override
+  String get viewEntry => 'Visualizza voce';
+
   // --- Search & Calendar ---
   @override
   String get search => 'Cerca';
@@ -377,5 +381,11 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   @override
   String get passwordComplexityError => 'Deve contenere maiuscola, minuscola, numero e carattere speciale';
   @override
-  String get unexpectedError => 'Si è verificato un errore imprevisto. Riprova.';
+  String get unexpectedError => 'Si \u00e8 verificato un errore imprevisto. Riprova.';
+
+  // --- Ringraziamenti ---
+  @override
+  String get credits => 'Ringraziamenti';
+  @override
+  String get creditsDeike => 'Per le sue meravigliose idee e il suo contributo al successo di questa app. E per le conversazioni meravigliose in ogni momento, la tenerezza e l\'affetto che ricevo.';
 }

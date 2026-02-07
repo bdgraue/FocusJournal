@@ -9,6 +9,7 @@ class JournalEntryCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final String? highlightQuery;
+  final bool isHighlighted;
 
   const JournalEntryCard({
     super.key,
@@ -18,6 +19,7 @@ class JournalEntryCard extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.highlightQuery,
+    this.isHighlighted = false,
   });
 
   Widget _buildContent(BuildContext context) {
@@ -53,11 +55,15 @@ class JournalEntryCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 20),
+                    icon: Icon(Icons.edit_outlined,
+                        size: 20,
+                        color: entry.isEditableToday
+                            ? null
+                            : Theme.of(context).colorScheme.outline.withAlpha(100)),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                     visualDensity: VisualDensity.compact,
-                    onPressed: onEdit,
+                    onPressed: entry.isEditableToday ? onEdit : null,
                   ),
                   const SizedBox(height: 12),
                   IconButton(
@@ -130,6 +136,9 @@ class JournalEntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      color: isHighlighted
+          ? Theme.of(context).colorScheme.primaryContainer.withAlpha(120)
+          : null,
       child: _buildContent(context),
     );
   }

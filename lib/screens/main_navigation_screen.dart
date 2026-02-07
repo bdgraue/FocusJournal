@@ -16,6 +16,31 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isEditMode = false;
+  String? _scrollToEntryId;
+
+  Future<void> _openSearch() async {
+    final entryId = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (context) => const SearchScreen()),
+    );
+    if (entryId != null && mounted) {
+      setState(() => _scrollToEntryId = entryId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _scrollToEntryId = null);
+      });
+    }
+  }
+
+  Future<void> _openCalendar() async {
+    final entryId = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (context) => const CalendarScreen()),
+    );
+    if (entryId != null && mounted) {
+      setState(() => _scrollToEntryId = entryId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _scrollToEntryId = null);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,41 +59,44 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 ),
               ]
             : [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  tooltip: l10n.search,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreen(),
-                      ),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.calendar_month),
-                  tooltip: l10n.calendarOverview,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const CalendarScreen(),
-                      ),
-                    );
-                  },
-                ),
                 PopupMenuButton<String>(
                   onSelected: (value) {
-                    if (value == 'edit') {
-                      setState(() => _isEditMode = true);
-                    } else if (value == 'settings') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const GeneralSettingsScreen(),
-                        ),
-                      );
+                    switch (value) {
+                      case 'search':
+                        _openSearch();
+                      case 'calendar':
+                        _openCalendar();
+                      case 'edit':
+                        setState(() => _isEditMode = true);
+                      case 'settings':
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const GeneralSettingsScreen(),
+                          ),
+                        );
                     }
                   },
                   itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'search',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search),
+                          const SizedBox(width: 12),
+                          Text(l10n.search),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'calendar',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_month),
+                          const SizedBox(width: 12),
+                          Text(l10n.calendarOverview),
+                        ],
+                      ),
+                    ),
                     PopupMenuItem(
                       value: 'edit',
                       child: Row(
@@ -93,7 +121,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 ),
               ],
       ),
-      body: JournalScreen(isEditMode: _isEditMode),
+      body: JournalScreen(
+        isEditMode: _isEditMode,
+        scrollToEntryId: _scrollToEntryId,
+      ),
     );
   }
 }

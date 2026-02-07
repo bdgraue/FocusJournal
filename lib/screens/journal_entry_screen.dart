@@ -16,6 +16,9 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   late final Future<JournalService> _journalService;
   bool _isProcessing = false;
 
+  bool get _isReadOnly =>
+      widget.entry != null && !widget.entry!.isEditableToday;
+
   @override
   void initState() {
     super.initState();
@@ -78,19 +81,23 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
         title: Text(
           widget.entry == null
               ? AppLocalizations.of(context)!.newEntry
-              : AppLocalizations.of(context)!.editEntry,
+              : _isReadOnly
+                  ? AppLocalizations.of(context)!.viewEntry
+                  : AppLocalizations.of(context)!.editEntry,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _isProcessing ? null : _saveEntry,
-          ),
+          if (!_isReadOnly)
+            IconButton(
+              icon: const Icon(Icons.save),
+              onPressed: _isProcessing ? null : _saveEntry,
+            ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: TextField(
           controller: _contentController,
+          readOnly: _isReadOnly,
           decoration: InputDecoration(
             hintText: AppLocalizations.of(context)!.writeYourThoughts,
             border: const OutlineInputBorder(),
@@ -98,7 +105,7 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
           textCapitalization: TextCapitalization.sentences,
           maxLines: null,
           minLines: 10,
-          autofocus: true,
+          autofocus: !_isReadOnly,
         ),
       ),
     );
