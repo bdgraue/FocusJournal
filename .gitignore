@@ -89,3 +89,9 @@ coverage/
 .env
 .env.local
 .env.*.local
+
+# Claude Code session data
+.claude/
+
+# Android build reports
+android/build/reports/
