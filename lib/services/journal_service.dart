@@ -97,6 +97,29 @@ class JournalService {
     await saveEntries(entries);
   }
 
+  Future<List<JournalEntry>> searchEntries(String query) async {
+    if (query.trim().isEmpty) return [];
+    final entries = await getAllEntries();
+    final lowerQuery = query.toLowerCase();
+    return entries
+        .where((e) => e.content.toLowerCase().contains(lowerQuery))
+        .toList();
+  }
+
+  Future<Map<DateTime, List<JournalEntry>>> getEntriesGroupedByDay() async {
+    final entries = await getAllEntries();
+    final Map<DateTime, List<JournalEntry>> grouped = {};
+    for (final entry in entries) {
+      final day = DateTime(
+        entry.createdAt.year,
+        entry.createdAt.month,
+        entry.createdAt.day,
+      );
+      grouped.putIfAbsent(day, () => []).add(entry);
+    }
+    return grouped;
+  }
+
   Future<Map<String, dynamic>> exportData() async {
     final entries = await getAllEntries();
     return {

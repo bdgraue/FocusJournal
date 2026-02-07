@@ -356,4 +356,16 @@ class AppLocalizationsEs extends AppLocalizationsEn {
   String get dailyRemindersDescription => 'Recibe un recordatorio amigable para escribir en tu diario';
   @override
   String get reminderTime => 'Hora del recordatorio';
+
+  // --- Search & Calendar ---
+  @override
+  String get search => 'Buscar';
+  @override
+  String get searchEntries => 'Buscar entradas...';
+  @override
+  String get noSearchResults => 'No se encontraron entradas';
+  @override
+  String get calendarOverview => 'Calendario';
+  @override
+  String get noEntriesForDay => 'No hay entradas para este día';
 }

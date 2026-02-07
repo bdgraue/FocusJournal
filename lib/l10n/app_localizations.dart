@@ -580,6 +580,13 @@ abstract class AppLocalizations {
   String get dailyReminders;
   String get dailyRemindersDescription;
   String get reminderTime;
+
+  // --- Search & Calendar ---
+  String get search;
+  String get searchEntries;
+  String get noSearchResults;
+  String get calendarOverview;
+  String get noEntriesForDay;
 }
 
 /// The delegate class which loads AppLocalizations.

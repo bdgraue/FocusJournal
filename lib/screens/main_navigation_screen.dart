@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
+import 'calendar_screen.dart';
 import 'general_settings_screen.dart';
 import 'journal_screen.dart';
+import 'search_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final VoidCallback onLogout;
@@ -32,6 +34,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 ),
               ]
             : [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  tooltip: l10n.search,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SearchScreen(),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.calendar_month),
+                  tooltip: l10n.calendarOverview,
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const CalendarScreen(),
+                      ),
+                    );
+                  },
+                ),
                 PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'edit') {

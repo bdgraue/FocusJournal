@@ -411,4 +411,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyRemindersDescription => 'Get a friendly reminder to write in your journal';
   @override
   String get reminderTime => 'Reminder Time';
+
+  // --- Search & Calendar ---
+  @override
+  String get search => 'Search';
+  @override
+  String get searchEntries => 'Search entries...';
+  @override
+  String get noSearchResults => 'No entries found';
+  @override
+  String get calendarOverview => 'Calendar';
+  @override
+  String get noEntriesForDay => 'No entries for this day';
 }
