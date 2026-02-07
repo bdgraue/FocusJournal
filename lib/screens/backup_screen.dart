@@ -14,7 +14,7 @@ class BackupScreen extends StatefulWidget {
   State<BackupScreen> createState() => _BackupScreenState();
 }
 
-class _BackupScreenState extends State<BackupScreen> {
+class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
@@ -22,9 +22,25 @@ class _BackupScreenState extends State<BackupScreen> {
   late final Future<JournalService> _journalService = JournalService.create();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _passwordController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Clear password when app goes to background for security
+    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      _passwordController.clear();
+      setState(() => _isPasswordVisible = false);
+    }
   }
 
   Future<void> _exportJournal() async {
@@ -41,6 +57,8 @@ class _BackupScreenState extends State<BackupScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.journalExportedSuccessfully)),
         );
+        _passwordController.clear();
+        setState(() => _isPasswordVisible = false);
       }
     } catch (e) {
       if (mounted) {
@@ -71,6 +89,8 @@ class _BackupScreenState extends State<BackupScreen> {
             SnackBar(content: Text(AppLocalizations.of(context)!.noFileSelected)),
           );
         }
+        _passwordController.clear();
+        setState(() => _isPasswordVisible = false);
       }
     } catch (e) {
       if (mounted) {
