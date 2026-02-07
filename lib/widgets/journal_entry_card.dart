@@ -50,33 +50,31 @@ class JournalEntryCard extends StatelessWidget {
                   children: [contentWidget, const SizedBox(height: 4), timeWidget],
                 ),
               ),
-              const SizedBox(width: 8),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.edit_outlined,
-                        size: 20,
-                        color: entry.isEditableToday
-                            ? null
-                            : Theme.of(context).colorScheme.outline.withAlpha(100)),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: entry.isEditableToday ? onEdit : null,
-                  ),
-                  const SizedBox(height: 12),
-                  IconButton(
-                    icon: Icon(Icons.delete_outline,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.error),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: onDelete,
-                  ),
-                ],
-              ),
+              if (entry.isEditableToday) ...[
+                const SizedBox(width: 8),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 20),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: onEdit,
+                    ),
+                    const SizedBox(height: 12),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.error),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: onDelete,
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
