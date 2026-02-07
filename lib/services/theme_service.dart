@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/settings/theme_settings.dart';
 import 'settings_service.dart';
 
+/// Simplified theme service - only handles themeMode and dynamic theming toggle
 class ThemeService extends ChangeNotifier {
   final SettingsService _settingsService;
 
@@ -42,124 +41,21 @@ class ThemeService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Get the ThemeData for light mode
-  ThemeData getLightTheme() {
-    final settings = themeSettings;
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: settings.primaryColor,
-      primary: settings.primaryColor,
-      secondary: settings.accentColor,
-      brightness: Brightness.light,
-    );
-
-    var theme = FlexThemeData.light(
-      scheme: FlexScheme.material,
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      appBarElevation: 0.5,
-      subThemesData: const FlexSubThemesData(
-        interactionEffects: true,
-        blendOnLevel: 20,
-        blendOnColors: false,
-        useMaterial3Typography: true,
-      ),
-    );
-
-    if (settings.useCustomFont && settings.customFontFamily != null) {
-      theme = theme.copyWith(
-        textTheme: GoogleFonts.getTextTheme(
-          settings.customFontFamily!,
-          theme.textTheme,
-        ),
-      );
-    }
-
-    return theme;
-  }
-
-  // Get the ThemeData for dark mode
-  ThemeData getDarkTheme() {
-    final settings = themeSettings;
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: settings.primaryColor,
-      primary: settings.primaryColor,
-      secondary: settings.accentColor,
-      brightness: Brightness.dark,
-    );
-
-    var theme = FlexThemeData.dark(
-      scheme: FlexScheme.material,
-      colorScheme: colorScheme,
-      useMaterial3: true,
-      appBarElevation: 0.5,
-      subThemesData: const FlexSubThemesData(
-        interactionEffects: true,
-        blendOnLevel: 20,
-        blendOnColors: false,
-        useMaterial3Typography: true,
-      ),
-      darkIsTrueBlack: false,
-    );
-
-    if (settings.useCustomFont && settings.customFontFamily != null) {
-      theme = theme.copyWith(
-        textTheme: GoogleFonts.getTextTheme(
-          settings.customFontFamily!,
-          theme.textTheme,
-        ),
-      );
-    }
-
-    return theme;
-  }
-
   // Get current ThemeMode
   ThemeMode getThemeMode() => themeSettings.themeMode;
 
-  // Toggle between light and dark mode
-  Future<void> toggleThemeMode() async {
-    final currentMode = themeSettings.themeMode;
-    final newMode = currentMode == ThemeMode.light
-        ? ThemeMode.dark
-        : currentMode == ThemeMode.dark
-        ? ThemeMode.system
-        : ThemeMode.light;
-
-    await updateThemeSettings(themeSettings.copyWith(themeMode: newMode));
+  // Update theme mode (System/Light/Dark)
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await updateThemeSettings(themeSettings.copyWith(themeMode: mode));
   }
 
-  // Update primary color
-  Future<void> updatePrimaryColor(Color color) async {
-    await updateThemeSettings(themeSettings.copyWith(primaryColor: color));
-  }
-
-  // Update accent color
-  Future<void> updateAccentColor(Color color) async {
-    await updateThemeSettings(themeSettings.copyWith(accentColor: color));
-  }
-
-  // Update font settings
-  Future<void> updateFontSettings({
-    bool? useCustomFont,
-    String? customFontFamily,
-  }) async {
-    await updateThemeSettings(
-      themeSettings.copyWith(
-        useCustomFont: useCustomFont,
-        customFontFamily: customFontFamily,
-      ),
-    );
-  }
-
-  // Update dynamic theming
+  // Update dynamic theming toggle
   Future<void> setDynamicTheming(bool enabled) async {
     await updateThemeSettings(
       themeSettings.copyWith(useDynamicTheming: enabled),
     );
   }
 
-  // Update contrast level
-  Future<void> setContrastLevel(double level) async {
-    await updateThemeSettings(themeSettings.copyWith(contrastLevel: level));
-  }
+  // Get whether dynamic theming is enabled
+  bool get useDynamicTheming => themeSettings.useDynamicTheming;
 }

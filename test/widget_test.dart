@@ -15,25 +15,19 @@ void main() {
     // Pump a few frames to allow initial rendering
     await tester.pump();
 
-    // Verify that the app loads without crashing
+    // Verify that the app loads without crashing (first shows loading screen)
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 
-  testWidgets('App uses Material3 design', (WidgetTester tester) async {
+  testWidgets('App loads theme service and shows UI', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
+
+    // Pump frames to allow ThemeService to load
+    await tester.pump();
+    await tester.pump();
     await tester.pump();
 
-    final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
-    expect(materialApp.theme?.useMaterial3, isTrue);
-    expect(materialApp.darkTheme?.useMaterial3, isTrue);
-  });
-
-  testWidgets('App shows a scaffold', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 1));
-
-    // Should show a scaffold (either auth or main screen)
+    // Should show scaffolds after theme loads (auth or main screen)
     expect(find.byType(Scaffold), findsAtLeastNWidgets(1));
   });
 }

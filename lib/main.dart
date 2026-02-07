@@ -5,6 +5,7 @@ import 'screens/authentication_screen.dart';
 import 'screens/main_navigation_screen.dart';
 import 'screens/method_selection_screen.dart';
 import 'services/authentication_service.dart';
+import 'services/theme_service.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
@@ -25,9 +26,45 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => LockSuppression(),
-      child: DynamicColorBuilder(
+    return FutureBuilder<ThemeService>(
+      future: ThemeService.getInstance(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        }
+
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider<LockSuppression>(
+              create: (_) => LockSuppression(),
+            ),
+            ChangeNotifierProvider<ThemeService>.value(
+              value: snapshot.data!,
+            ),
+          ],
+          child: const _ThemedApp(),
+        );
+      },
+    );
+  }
+}
+
+class _ThemedApp extends StatelessWidget {
+  const _ThemedApp();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeService = context.watch<ThemeService>();
+    final useDynamic = themeService.useDynamicTheming;
+    final themeMode = themeService.getThemeMode();
+
+    if (useDynamic) {
+      // Use dynamic colors when enabled
+      return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
           ColorScheme lightColorScheme;
           ColorScheme darkColorScheme;
@@ -36,7 +73,7 @@ class MyApp extends StatelessWidget {
             lightColorScheme = lightDynamic.harmonized();
             darkColorScheme = darkDynamic.harmonized();
           } else {
-            // Fallback colors if dynamic color is not available.
+            // Fallback colors if dynamic color is not available
             lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
             darkColorScheme = ColorScheme.fromSeed(
               seedColor: Colors.deepPurple,
@@ -51,7 +88,7 @@ class MyApp extends StatelessWidget {
               colorScheme: darkColorScheme,
               useMaterial3: true,
             ),
-            // Add localization support
+            themeMode: themeMode,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -70,8 +107,41 @@ class MyApp extends StatelessWidget {
             home: const AuthenticationWrapper(),
           );
         },
-      ),
-    );
+      );
+    } else {
+      // Use static Material Design 3 colors when dynamic theming is disabled
+      final lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
+      final darkColorScheme = ColorScheme.fromSeed(
+        seedColor: Colors.deepPurple,
+        brightness: Brightness.dark,
+      );
+
+      return MaterialApp(
+        title: 'Focus Journal',
+        theme: ThemeData(colorScheme: lightColorScheme, useMaterial3: true),
+        darkTheme: ThemeData(
+          colorScheme: darkColorScheme,
+          useMaterial3: true,
+        ),
+        themeMode: themeMode,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('de'), // German
+          Locale('fr'), // French
+          Locale('es'), // Spanish
+          Locale('it'), // Italian
+          Locale('nl'), // Dutch
+          Locale('pl'), // Polish
+        ],
+        home: const AuthenticationWrapper(),
+      );
+    }
   }
 }
 
