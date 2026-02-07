@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
+import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -48,32 +51,102 @@ class JournalEntry {
 
 class JournalService {
   static const String _storageKey = 'journal_entries';
+  static const String _dekKey = 'journal_dek';
+  static const int _keySize = 32; // 256 bits
+  static const int _ivSize = 16; // 128 bits
   final SharedPreferences _prefs;
+  final FlutterSecureStorage _secureStorage;
 
-  JournalService._({required SharedPreferences prefs}) : _prefs = prefs;
+  JournalService._({
+    required SharedPreferences prefs,
+    FlutterSecureStorage? secureStorage,
+  })  : _prefs = prefs,
+        _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   static Future<JournalService> create() async {
     final prefs = await SharedPreferences.getInstance();
     return JournalService._(prefs: prefs);
   }
 
+  // --- Encryption helpers ---
+
+  Future<Uint8List> _getOrCreateDEK() async {
+    final existing = await _secureStorage.read(key: _dekKey);
+    if (existing != null) {
+      return Uint8List.fromList(base64.decode(existing));
+    }
+    final random = Random.secure();
+    final dek = Uint8List.fromList(
+      List.generate(_keySize, (_) => random.nextInt(256)),
+    );
+    await _secureStorage.write(key: _dekKey, value: base64.encode(dek));
+    return dek;
+  }
+
+  Future<String> _encrypt(String plaintext) async {
+    final dek = await _getOrCreateDEK();
+    final key = enc.Key(dek);
+    final iv = enc.IV.fromSecureRandom(_ivSize);
+    final encrypter = enc.Encrypter(enc.AES(key));
+    final encrypted = encrypter.encrypt(plaintext, iv: iv);
+    return '${iv.base64}:${encrypted.base64}';
+  }
+
+  Future<String> _decrypt(String ciphertext) async {
+    final dek = await _getOrCreateDEK();
+    final key = enc.Key(dek);
+    final parts = ciphertext.split(':');
+    if (parts.length != 2) throw Exception('Invalid encrypted format');
+    final iv = enc.IV.fromBase64(parts[0]);
+    final encrypter = enc.Encrypter(enc.AES(key));
+    return encrypter.decrypt64(parts[1], iv: iv);
+  }
+
+  /// Detects if stored data is plaintext JSON (starts with '[') and needs migration.
+  bool _isPlaintext(String data) {
+    final trimmed = data.trimLeft();
+    return trimmed.startsWith('[') || trimmed.startsWith('{');
+  }
+
   Future<List<JournalEntry>> getAllEntries() async {
-    final jsonString = _prefs.getString(_storageKey);
-    if (jsonString == null) return [];
+    final storedData = _prefs.getString(_storageKey);
+    if (storedData == null) return [];
 
     try {
-      final List<dynamic> jsonList = json.decode(jsonString);
-      return jsonList.map((json) => JournalEntry.fromJson(json)).toList()
-        ..sort((a, b) => b.lastModified.compareTo(a.lastModified));
+      String jsonString;
+      if (_isPlaintext(storedData)) {
+        // Legacy plaintext format - decrypt not needed, but migrate
+        jsonString = storedData;
+        // Migrate to encrypted format in background
+        final entries = _parseEntries(jsonString);
+        await _saveEncrypted(entries);
+        return entries;
+      } else {
+        // Encrypted format
+        jsonString = await _decrypt(storedData);
+      }
+      return _parseEntries(jsonString);
     } catch (e) {
       debugPrint('Error loading journal entries: $e');
       return [];
     }
   }
 
-  Future<void> saveEntries(List<JournalEntry> entries) async {
+  List<JournalEntry> _parseEntries(String jsonString) {
+    final List<dynamic> jsonList = json.decode(jsonString);
+    return jsonList.map((j) => JournalEntry.fromJson(j)).toList()
+      ..sort((a, b) => b.lastModified.compareTo(a.lastModified));
+  }
+
+  Future<void> _saveEncrypted(List<JournalEntry> entries) async {
     final jsonList = entries.map((entry) => entry.toJson()).toList();
-    await _prefs.setString(_storageKey, json.encode(jsonList));
+    final plaintext = json.encode(jsonList);
+    final encrypted = await _encrypt(plaintext);
+    await _prefs.setString(_storageKey, encrypted);
+  }
+
+  Future<void> saveEntries(List<JournalEntry> entries) async {
+    await _saveEncrypted(entries);
   }
 
   Future<void> addEntry(JournalEntry entry) async {

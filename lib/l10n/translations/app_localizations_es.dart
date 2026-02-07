@@ -368,4 +368,14 @@ class AppLocalizationsEs extends AppLocalizationsEn {
   String get calendarOverview => 'Calendario';
   @override
   String get noEntriesForDay => 'No hay entradas para este día';
+
+  // --- Security ---
+  @override
+  String tooManyAttempts(int seconds) => 'Demasiados intentos. Espere $seconds segundos.';
+  @override
+  String attemptsRemaining(int count) => '$count intentos restantes';
+  @override
+  String get passwordComplexityError => 'Debe contener mayúsculas, minúsculas, número y carácter especial';
+  @override
+  String get unexpectedError => 'Se produjo un error inesperado. Inténtelo de nuevo.';
 }

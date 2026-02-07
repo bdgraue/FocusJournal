@@ -15,7 +15,11 @@ class AuthenticationService {
   static const String _screenLockKey = 'screenLock';
   static const String _authMethodKey = 'authMethod';
   static const String _biometricsKey = 'biometrics';
-  static const int minPinLength = 4;
+  static const String _failedAttemptsKey = 'failedAttempts';
+  static const String _lockoutUntilKey = 'lockoutUntil';
+  static const int minPinLength = 6;
+  static const int _maxAttempts = 5;
+  static const int _pbkdf2Iterations = 100000;
 
   final FlutterSecureStorage _secureStorage;
 
@@ -35,46 +39,138 @@ class AuthenticationService {
   AuthenticationService._internal()
     : _secureStorage = const FlutterSecureStorage();
 
-  // --- Credential hashing helpers ---
+  // --- PBKDF2 key derivation ---
 
-  static const _saltSeparator = r'$';
+  static const _pbkdf2Prefix = 'pbkdf2';
+  static const _separator = r'$';
 
-  /// Hashes a credential with a random salt using HMAC-SHA256.
-  /// Returns `base64(salt)$hex(hash)`.
+  /// Derives a 256-bit hash using PBKDF2-HMAC-SHA256.
+  Uint8List _pbkdf2(String credential, Uint8List salt) {
+    final credentialBytes = utf8.encode(credential);
+    final hmac = Hmac(sha256, credentialBytes);
+
+    // PBKDF2 single block (SHA-256 output = 32 bytes)
+    final blockIndex = Uint8List(4)..[3] = 1;
+    var u = Uint8List.fromList(
+      hmac.convert([...salt, ...blockIndex]).bytes,
+    );
+    var result = Uint8List.fromList(u);
+
+    for (var i = 1; i < _pbkdf2Iterations; i++) {
+      u = Uint8List.fromList(hmac.convert(u).bytes);
+      for (var j = 0; j < result.length; j++) {
+        result[j] ^= u[j];
+      }
+    }
+
+    return result;
+  }
+
+  /// Hashes a credential with PBKDF2-HMAC-SHA256.
+  /// Returns `pbkdf2$base64(salt)$base64(hash)`.
   String _hashCredential(String credential) {
     final random = Random.secure();
     final salt = Uint8List.fromList(
       List.generate(32, (_) => random.nextInt(256)),
     );
-    final hash = _computeHash(credential, salt);
-    return '${base64.encode(salt)}$_saltSeparator$hash';
+    final hash = _pbkdf2(credential, salt);
+    return '$_pbkdf2Prefix$_separator${base64.encode(salt)}$_separator${base64.encode(hash)}';
   }
 
-  String _computeHash(String credential, Uint8List salt) {
+  /// Legacy HMAC-SHA256 hash (single iteration) for backward compatibility.
+  String _computeHashLegacy(String credential, Uint8List salt) {
     final hmac = Hmac(sha256, salt);
     return hmac.convert(utf8.encode(credential)).toString();
   }
 
   /// Verifies a credential against a stored value.
-  /// Supports both legacy plaintext and new hashed format.
+  /// Supports: PBKDF2 format, legacy HMAC format, and legacy plaintext.
   bool _verifyCredential(String credential, String stored) {
-    if (!stored.contains(_saltSeparator)) {
-      // Legacy plaintext format
-      return stored == credential;
+    if (stored.startsWith('$_pbkdf2Prefix$_separator')) {
+      // New PBKDF2 format: pbkdf2$base64(salt)$base64(hash)
+      final parts = stored.split(_separator);
+      if (parts.length != 3) return false;
+      final salt = Uint8List.fromList(base64.decode(parts[1]));
+      final expectedHash = base64.decode(parts[2]);
+      final computedHash = _pbkdf2(credential, salt);
+      // Constant-time comparison
+      if (computedHash.length != expectedHash.length) return false;
+      var result = 0;
+      for (var i = 0; i < computedHash.length; i++) {
+        result |= computedHash[i] ^ expectedHash[i];
+      }
+      return result == 0;
     }
-    final parts = stored.split(_saltSeparator);
-    if (parts.length != 2) return false;
-    final salt = Uint8List.fromList(base64.decode(parts[0]));
-    final expectedHash = parts[1];
-    return _computeHash(credential, salt) == expectedHash;
+
+    if (stored.contains(_separator)) {
+      // Legacy HMAC format: base64(salt)$hex(hash)
+      final parts = stored.split(_separator);
+      if (parts.length != 2) return false;
+      final salt = Uint8List.fromList(base64.decode(parts[0]));
+      final expectedHash = parts[1];
+      return _computeHashLegacy(credential, salt) == expectedHash;
+    }
+
+    // Legacy plaintext format
+    return stored == credential;
   }
 
-  /// Migrates a legacy plaintext credential to hashed format.
-  Future<void> _migrateIfLegacy(String key, String credential) async {
+  /// Migrates a credential to PBKDF2 format if stored in legacy format.
+  Future<void> _migrateToCurrentFormat(String key, String credential) async {
     final stored = await _secureStorage.read(key: key);
-    if (stored != null && !stored.contains(_saltSeparator)) {
+    if (stored != null && !stored.startsWith('$_pbkdf2Prefix$_separator')) {
       await _secureStorage.write(key: key, value: _hashCredential(credential));
     }
+  }
+
+  // --- Brute-force protection ---
+
+  /// Returns remaining lockout seconds (0 if not locked out).
+  Future<int> getLockoutRemaining() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lockoutStr = prefs.getString(_lockoutUntilKey);
+    if (lockoutStr == null) return 0;
+    final lockoutUntil = DateTime.tryParse(lockoutStr);
+    if (lockoutUntil == null) return 0;
+    final remaining = lockoutUntil.difference(DateTime.now()).inSeconds;
+    return remaining > 0 ? remaining : 0;
+  }
+
+  Future<int> getFailedAttempts() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_failedAttemptsKey) ?? 0;
+  }
+
+  Future<void> _recordFailedAttempt() async {
+    final prefs = await SharedPreferences.getInstance();
+    final attempts = (prefs.getInt(_failedAttemptsKey) ?? 0) + 1;
+    await prefs.setInt(_failedAttemptsKey, attempts);
+
+    if (attempts >= _maxAttempts) {
+      // Exponential backoff: 30s, 60s, 120s, 300s
+      final lockoutRounds = attempts - _maxAttempts;
+      final lockoutSeconds = [30, 60, 120, 300][lockoutRounds.clamp(0, 3)];
+      final lockoutUntil = DateTime.now().add(Duration(seconds: lockoutSeconds));
+      await prefs.setString(_lockoutUntilKey, lockoutUntil.toIso8601String());
+    }
+  }
+
+  Future<void> _resetFailedAttempts() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_failedAttemptsKey);
+    await prefs.remove(_lockoutUntilKey);
+  }
+
+  // --- Password complexity validation ---
+
+  /// Validates password complexity: min 8 chars, upper, lower, digit, special.
+  bool isValidPassword(String password) {
+    if (password.length < 8) return false;
+    if (!RegExp(r'[A-Z]').hasMatch(password)) return false;
+    if (!RegExp(r'[a-z]').hasMatch(password)) return false;
+    if (!RegExp(r'[0-9]').hasMatch(password)) return false;
+    if (!RegExp(r'[^A-Za-z0-9]').hasMatch(password)) return false;
+    return true;
   }
 
   void lockApp() {
@@ -107,10 +203,18 @@ class AuthenticationService {
   }
 
   Future<bool> verifyPassword(String password) async {
+    final lockout = await getLockoutRemaining();
+    if (lockout > 0) return false;
+
     final stored = await _secureStorage.read(key: _passwordKey);
     if (stored == null) return false;
     final matches = _verifyCredential(password, stored);
-    if (matches) await _migrateIfLegacy(_passwordKey, password);
+    if (matches) {
+      await _resetFailedAttempts();
+      await _migrateToCurrentFormat(_passwordKey, password);
+    } else {
+      await _recordFailedAttempt();
+    }
     return matches;
   }
 
@@ -130,11 +234,19 @@ class AuthenticationService {
   }
 
   Future<bool> verifyPin(String pin) async {
+    final lockout = await getLockoutRemaining();
+    if (lockout > 0) return false;
+
     if (!isValidPin(pin)) return false;
     final stored = await _secureStorage.read(key: _pinKey);
     if (stored == null) return false;
     final matches = _verifyCredential(pin, stored);
-    if (matches) await _migrateIfLegacy(_pinKey, pin);
+    if (matches) {
+      await _resetFailedAttempts();
+      await _migrateToCurrentFormat(_pinKey, pin);
+    } else {
+      await _recordFailedAttempt();
+    }
     return matches;
   }
 
@@ -158,11 +270,19 @@ class AuthenticationService {
   }
 
   Future<bool> verifyPattern(String pattern) async {
+    final lockout = await getLockoutRemaining();
+    if (lockout > 0) return false;
+
     if (!isValidPattern(pattern)) return false;
     final stored = await _secureStorage.read(key: _patternKey);
     if (stored == null) return false;
     final matches = _verifyCredential(pattern, stored);
-    if (matches) await _migrateIfLegacy(_patternKey, pattern);
+    if (matches) {
+      await _resetFailedAttempts();
+      await _migrateToCurrentFormat(_patternKey, pattern);
+    } else {
+      await _recordFailedAttempt();
+    }
     return matches;
   }
 
@@ -186,9 +306,11 @@ class AuthenticationService {
     await _secureStorage.delete(key: _passwordKey);
     await _secureStorage.delete(key: _pinKey);
     await _secureStorage.delete(key: _patternKey);
+    await _secureStorage.delete(key: _biometricsKey);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_hasSetupKey, false);
     await prefs.setString(_authMethodKey, authMethodPassword);
+    await _resetFailedAttempts();
   }
 
   Future<bool> authenticateWithCredentials(String credentials) async {
@@ -232,13 +354,33 @@ class AuthenticationService {
   }
 
   Future<bool> isBiometricsEnabled() async {
+    // Try secure storage first (new location)
+    final secureValue = await _secureStorage.read(key: _biometricsKey);
+    if (secureValue != null) return secureValue == 'true';
+
+    // Migrate from SharedPreferences if present
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_biometricsKey) ?? false;
+    final legacyValue = prefs.getBool(_biometricsKey);
+    if (legacyValue != null) {
+      await _secureStorage.write(
+        key: _biometricsKey,
+        value: legacyValue.toString(),
+      );
+      await prefs.remove(_biometricsKey);
+      return legacyValue;
+    }
+
+    return false;
   }
 
   Future<void> setBiometricsEnabled(bool enabled) async {
+    await _secureStorage.write(
+      key: _biometricsKey,
+      value: enabled.toString(),
+    );
+    // Clean up legacy SharedPreferences entry if present
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_biometricsKey, enabled);
+    await prefs.remove(_biometricsKey);
   }
 
   Future<bool> authenticateWithBiometrics({String? localizedReason}) async {
@@ -249,7 +391,7 @@ class AuthenticationService {
         localizedReason: localizedReason ?? 'Please authenticate to access your journal',
         options: const AuthenticationOptions(
           stickyAuth: true,
-          biometricOnly: true,
+          biometricOnly: false,
         ),
       );
       return didAuthenticate;

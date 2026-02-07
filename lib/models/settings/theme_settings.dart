@@ -41,8 +41,8 @@ class ThemeSettings {
 
   Map<String, dynamic> toJson() => {
     'themeMode': themeMode.index,
-    'primaryColor': primaryColor.value,
-    'accentColor': accentColor.value,
+    'primaryColor': primaryColor.toARGB32(),
+    'accentColor': accentColor.toARGB32(),
     'useDynamicTheming': useDynamicTheming,
     'contrastLevel': contrastLevel,
     'useCustomFont': useCustomFont,

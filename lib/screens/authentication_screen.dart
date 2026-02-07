@@ -27,6 +27,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   bool _showBackupPassword = false;
   bool _hasBackupPassword = false;
   bool _biometricsAvailable = false;
+  int _lockoutRemaining = 0;
 
   @override
   void initState() {
@@ -46,16 +47,51 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     final hasBackup = await _authService.hasBackupPassword();
     final canBiometric = await _authService.canUseBiometrics();
     final biometricEnabled = await _authService.isBiometricsEnabled();
+    final lockout = await _authService.getLockoutRemaining();
+    if (!mounted) return;
     setState(() {
       _isSetup = isSetup;
       _authMethod = currentMethod;
       _hasBackupPassword = hasBackup;
       _biometricsAvailable = canBiometric && biometricEnabled;
+      _lockoutRemaining = lockout;
     });
+
+    if (lockout > 0) {
+      _startLockoutCountdown();
+      return;
+    }
 
     // Auto-trigger biometric auth on screen load
     if (isSetup && _biometricsAvailable) {
       _authenticateWithBiometrics();
+    }
+  }
+
+  void _startLockoutCountdown() {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted) return;
+      setState(() {
+        _lockoutRemaining = (_lockoutRemaining - 1).clamp(0, 999);
+        if (_lockoutRemaining > 0) {
+          _errorMessage = AppLocalizations.of(context)!.tooManyAttempts(_lockoutRemaining);
+          _startLockoutCountdown();
+        } else {
+          _errorMessage = null;
+        }
+      });
+    });
+  }
+
+  Future<void> _checkAndShowLockout() async {
+    final lockout = await _authService.getLockoutRemaining();
+    if (!mounted) return;
+    if (lockout > 0) {
+      setState(() {
+        _lockoutRemaining = lockout;
+        _errorMessage = AppLocalizations.of(context)!.tooManyAttempts(lockout);
+      });
+      _startLockoutCountdown();
     }
   }
 
@@ -88,13 +124,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     });
 
     final success = await _authService.verifyPattern(pattern.join());
-    
+
     if (success) {
       widget.onAuthenticationSuccess?.call();
     } else {
-      setState(() {
-        _errorMessage = AppLocalizations.of(context)!.incorrectPattern;
-      });
+      await _checkAndShowLockout();
+      if (_lockoutRemaining == 0 && mounted) {
+        setState(() {
+          _errorMessage = AppLocalizations.of(context)!.incorrectPattern;
+        });
+      }
     }
 
     setState(() {
@@ -139,18 +178,23 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         });
       }
     } else {
-      setState(() {
-        _errorMessage = _showBackupPassword
-            ? AppLocalizations.of(context)!.incorrectBackupPassword
-            : _authMethod == AuthenticationService.authMethodPassword
-                ? AppLocalizations.of(context)!.incorrectPassword
-                : AppLocalizations.of(context)!.incorrectPin;
-      });
+      await _checkAndShowLockout();
+      if (_lockoutRemaining == 0 && mounted) {
+        setState(() {
+          _errorMessage = _showBackupPassword
+              ? AppLocalizations.of(context)!.incorrectBackupPassword
+              : _authMethod == AuthenticationService.authMethodPassword
+                  ? AppLocalizations.of(context)!.incorrectPassword
+                  : AppLocalizations.of(context)!.incorrectPin;
+        });
+      }
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   void _toggleBackupPassword() {
@@ -184,15 +228,17 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       if (widget.isChangingPin) {
         Navigator.pop(context);
       }
-    } catch (e) {
+    } catch (_) {
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = AppLocalizations.of(context)!.unexpectedError;
       });
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -278,7 +324,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ],
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _isLoading ? null : (_isSetup ? _authenticate : _setupCredential),
+                  onPressed: (_isLoading || _lockoutRemaining > 0) ? null : (_isSetup ? _authenticate : _setupCredential),
                   child: _isLoading
                       ? const CircularProgressIndicator()
                       : Text(_isSetup 
