@@ -7,6 +7,7 @@ import 'package:encrypt/encrypt.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import '../models/import_strategy.dart';
 
 class BackupService {
@@ -90,11 +91,11 @@ class BackupService {
     return IV.fromSecureRandom(_ivSize);
   }
 
-  Future<void> exportJournal(
+  Map<String, dynamic> _prepareEncryptedBackup(
     Map<String, dynamic> journalData,
     String password,
-  ) async {
-    final metadata = await _prepareMetadata();
+    Map<String, dynamic> metadata,
+  ) {
     final salt = _generateSalt();
     final key = _deriveKey(password, salt);
     final iv = _generateIV();
@@ -103,7 +104,7 @@ class BackupService {
     final jsonData = json.encode(journalData);
     final encrypted = encrypter.encrypt(jsonData, iv: iv);
 
-    final exportData = {
+    return {
       'metadata': metadata,
       'data': {
         'content': encrypted.base64,
@@ -111,6 +112,14 @@ class BackupService {
         'salt': base64.encode(salt),
       },
     };
+  }
+
+  Future<void> exportJournal(
+    Map<String, dynamic> journalData,
+    String password,
+  ) async {
+    final metadata = await _prepareMetadata();
+    final exportData = _prepareEncryptedBackup(journalData, password, metadata);
 
     final tempDir = await Directory.systemTemp.createTemp('journal_backup');
     final file = File(
@@ -126,6 +135,31 @@ class BackupService {
 
     // Clean up temp file
     await tempDir.delete(recursive: true);
+  }
+
+  Future<String?> saveJournalLocally(
+    Map<String, dynamic> journalData,
+    String password,
+  ) async {
+    final metadata = await _prepareMetadata();
+    final exportData = _prepareEncryptedBackup(journalData, password, metadata);
+
+    // Let user choose save location
+    final fileName = 'journal_backup_${DateTime.now().toIso8601String()}.fjb';
+    final result = await FilePicker.platform.saveFile(
+      dialogTitle: 'Save Backup',
+      fileName: fileName,
+      type: FileType.custom,
+      allowedExtensions: ['fjb'],
+    );
+
+    if (result != null) {
+      final file = File(result);
+      await file.writeAsString(json.encode(exportData));
+      return result;
+    }
+
+    return null;
   }
 
   Future<Map<String, dynamic>> importJournal(

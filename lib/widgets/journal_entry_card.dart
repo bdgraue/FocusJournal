@@ -132,8 +132,21 @@ class JournalEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      elevation: isDark ? 0 : 1,
+      surfaceTintColor: isDark ? Colors.transparent : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isDark
+            ? BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                width: 1,
+              )
+            : BorderSide.none,
+      ),
       color: isHighlighted
           ? Theme.of(context).colorScheme.primaryContainer.withAlpha(120)
           : null,

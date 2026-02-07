@@ -356,6 +356,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get restoreBackup => 'Backup wiederherstellen';
 
   @override
+  String get saveBackupLocally => 'Backup lokal speichern';
+
+  @override
+  String get createAndShareBackup => 'Backup erstellen & teilen';
+
+  @override
+  String get backupSavedSuccessfully => 'Backup erfolgreich gespeichert';
+
+  @override
+  String backupSavedTo(String path) => 'Backup gespeichert unter: $path';
+
+  @override
   String importSuccessMessage(int added, int updated, int total) =>
       'Import erfolgreich: +$added neue, ~$updated aktualisiert, $total gesamt.';
 

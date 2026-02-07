@@ -308,6 +308,14 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   @override
   String get restoreBackup => 'Przywróć kopię zapasową';
   @override
+  String get saveBackupLocally => 'Zapisz kopię zapasową lokalnie';
+  @override
+  String get createAndShareBackup => 'Utwórz i udostępnij kopię zapasową';
+  @override
+  String get backupSavedSuccessfully => 'Kopia zapasowa została zapisana pomyślnie';
+  @override
+  String backupSavedTo(String path) => 'Kopia zapasowa zapisana w: $path';
+  @override
   String importSuccessMessage(int added, int updated, int total) =>
       'Import udany: +$added nowych, ~$updated zaktualizowanych, $total łącznie.';
   @override

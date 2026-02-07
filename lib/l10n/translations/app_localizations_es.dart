@@ -309,6 +309,14 @@ class AppLocalizationsEs extends AppLocalizationsEn {
   @override
   String get restoreBackup => 'Restaurar respaldo';
   @override
+  String get saveBackupLocally => 'Guardar respaldo localmente';
+  @override
+  String get createAndShareBackup => 'Crear y compartir respaldo';
+  @override
+  String get backupSavedSuccessfully => 'Respaldo guardado correctamente';
+  @override
+  String backupSavedTo(String path) => 'Respaldo guardado en: $path';
+  @override
   String importSuccessMessage(int added, int updated, int total) =>
       'Importación exitosa: +$added nuevas, ~$updated actualizadas, $total en total.';
   @override

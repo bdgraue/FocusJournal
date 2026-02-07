@@ -549,6 +549,10 @@ abstract class AppLocalizations {
   String get passwordRequired;
   String get createBackup;
   String get restoreBackup;
+  String get saveBackupLocally;
+  String get createAndShareBackup;
+  String get backupSavedSuccessfully;
+  String backupSavedTo(String path);
   String importSuccessMessage(int added, int updated, int total);
 
   // --- Theme settings ---

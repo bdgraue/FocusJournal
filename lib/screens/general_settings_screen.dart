@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../services/authentication_service.dart';
 import '../services/notification_service.dart';
+import '../services/theme_service.dart';
+import '../widgets/material3_card.dart';
 import 'acknowledgments_screen.dart';
 import 'backup_screen.dart';
 import 'security_settings_screen.dart';
+import 'theme_settings_screen.dart';
 
 class GeneralSettingsScreen extends StatefulWidget {
   final VoidCallback? onSetupComplete;
@@ -27,6 +30,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   final _notificationService = NotificationService();
   bool _notificationsEnabled = false;
   TimeOfDay _reminderTime = const TimeOfDay(hour: 20, minute: 0);
+  ThemeService? _themeService;
+  ThemeMode _currentThemeMode = ThemeMode.system;
 
   // Feature flags to temporarily hide inactive settings until implemented.
   final bool _showSecuritySection = true;
@@ -35,8 +40,8 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   // TODO(settings): Implement journal preferences (default view, sorting, font size)
   final bool _showJournalPreferencesSection = false;
 
-  // TODO(settings): Implement customization (theme mode, language via localization, accent color)
-  final bool _showCustomizationSection = false;
+  // TODO(settings): Implement language selector and additional customization options
+  final bool _showCustomizationSection = true;
 
   // TODO(settings): Implement privacy & data (retention policy, analytics toggle, clear data flow)
   final bool _showPrivacySection = false;
@@ -46,6 +51,14 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     super.initState();
     _loadNotificationState();
     _loadAuthMethod();
+    _loadThemeMode();
+  }
+
+  Future<void> _loadThemeMode() async {
+    _themeService = await ThemeService.getInstance();
+    setState(() {
+      _currentThemeMode = _themeService!.getThemeMode();
+    });
   }
 
   Future<void> _loadAuthMethod() async {
@@ -115,6 +128,17 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     }
   }
 
+  String _getThemeModeDisplayName(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return AppLocalizations.of(context)!.systemTheme;
+      case ThemeMode.light:
+        return AppLocalizations.of(context)!.lightMode;
+      case ThemeMode.dark:
+        return AppLocalizations.of(context)!.darkMode;
+    }
+  }
+
   void _navigateToSecuritySettings() {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -135,7 +159,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Notifications & Reminders
-              Card(
+              Material3Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -170,7 +194,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               const SizedBox(height: 16),
               // Security Section
               if (_showSecuritySection)
-                Card(
+                Material3Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -198,7 +222,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                 ),
               const SizedBox(height: 16),
               // Data Backup & Recovery Section
-              Card(
+              Material3Card(
                 child: ListTile(
                   leading: const Icon(Icons.backup),
                   title: Text(AppLocalizations.of(context)!.backupAndRecovery),
@@ -212,7 +236,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               ),
               // Acknowledgments
               const SizedBox(height: 16),
-              Card(
+              Material3Card(
                 child: ListTile(
                   leading: const Icon(Icons.favorite, color: Colors.pink),
                   title: Text(AppLocalizations.of(context)!.credits),
@@ -227,7 +251,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               const SizedBox(height: 16),
               // Journal Preferences Section (hidden until implemented)
               if (_showJournalPreferencesSection)
-                Card(
+                Material3Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -270,45 +294,29 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               const SizedBox(height: 16),
-              // Customization Section (hidden until implemented)
+              // Customization Section
               if (_showCustomizationSection)
-                Card(
+                Material3Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Customization',
+                          AppLocalizations.of(context)!.appearance,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         ListTile(
-                          leading: const Icon(Icons.color_lens),
-                          title: const Text('Theme'),
-                          subtitle: const Text('Light'),
+                          leading: const Icon(Icons.palette_outlined),
+                          title: Text(AppLocalizations.of(context)!.themeSettings),
+                          subtitle: Text(_getThemeModeDisplayName(_currentThemeMode)),
                           trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open theme selector
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.language),
-                          title: const Text('Language'),
-                          subtitle: const Text('English'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open language selector
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.format_paint),
-                          title: const Text('Accent Color'),
-                          subtitle: const Text('Blue'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            // TODO: Open accent color selector
-                          },
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const ThemeSettingsScreen(),
+                            ),
+                          ).then((_) => _loadThemeMode()),
                         ),
                       ],
                     ),
@@ -317,7 +325,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               const SizedBox(height: 16),
               // Privacy & Data Section (hidden until implemented)
               if (_showPrivacySection)
-                Card(
+                Material3Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(

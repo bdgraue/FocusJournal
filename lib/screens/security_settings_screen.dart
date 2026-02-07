@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import '../services/authentication_service.dart';
+import '../widgets/material3_card.dart';
 import 'password_setup_screen.dart';
 import 'pin_setup_screen.dart';
 import 'pattern_setup_screen.dart';
@@ -137,7 +138,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
         padding: const EdgeInsets.all(16.0),
         children: [
           // Current Authentication Method
-          Card(
+          Material3Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -162,7 +163,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
           const SizedBox(height: 16),
 
           // Change Authentication Method
-          Card(
+          Material3Card(
             child: Column(
               children: [
                 ListTile(
@@ -226,7 +227,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
           // Biometric Authentication
           if (_canUseBiometrics || _biometricsEnabled) ...[
             const SizedBox(height: 16),
-            Card(
+            Material3Card(
               child: SwitchListTile(
                 secondary: const Icon(Icons.fingerprint),
                 title: Text(AppLocalizations.of(context)!.enableBiometrics),
