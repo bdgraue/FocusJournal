@@ -144,22 +144,21 @@ class BackupService {
     final metadata = await _prepareMetadata();
     final exportData = _prepareEncryptedBackup(journalData, password, metadata);
 
-    // Let user choose save location
+    // Encode to JSON string and convert to bytes
+    final jsonString = json.encode(exportData);
+    final bytes = Uint8List.fromList(utf8.encode(jsonString));
+
+    // Let user choose save location with bytes for mobile compatibility
     final fileName = 'journal_backup_${DateTime.now().toIso8601String()}.fjb';
     final result = await FilePicker.platform.saveFile(
       dialogTitle: 'Save Backup',
       fileName: fileName,
       type: FileType.custom,
       allowedExtensions: ['fjb'],
+      bytes: bytes,
     );
 
-    if (result != null) {
-      final file = File(result);
-      await file.writeAsString(json.encode(exportData));
-      return result;
-    }
-
-    return null;
+    return result;
   }
 
   Future<Map<String, dynamic>> importJournal(
