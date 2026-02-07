@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'screens/authentication_screen.dart';
 import 'screens/main_navigation_screen.dart';
-import 'screens/password_setup_screen.dart';
+import 'screens/method_selection_screen.dart';
 import 'services/authentication_service.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -179,9 +179,8 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
 
     Widget mainContent;
     if (!_isAuthSetup!) {
-      mainContent = PasswordSetupScreen(
+      mainContent = MethodSelectionScreen(
         onSetupComplete: _onSetupComplete,
-        isFirstTimeSetup: true,
       );
     } else if (!_isAuthenticated) {
       mainContent = AuthenticationScreen(
