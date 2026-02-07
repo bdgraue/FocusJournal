@@ -188,37 +188,46 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
           title: Text(l10n.importStrategy),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  RadioListTile<ImportStrategy>(
-                    title: Text(l10n.completeOverwrite),
-                    subtitle: Text(l10n.replaceAllData),
-                    value: ImportStrategy.completeOverwrite,
-                    groupValue: _selectedImportStrategy,
-                    onChanged: (ImportStrategy? value) {
-                      setState(() => _selectedImportStrategy = value!);
-                    },
-                  ),
-                  RadioListTile<ImportStrategy>(
-                    title: Text(l10n.smartMerge),
-                    subtitle: Text(l10n.mergeWithConflicts),
-                    value: ImportStrategy.smartMerge,
-                    groupValue: _selectedImportStrategy,
-                    onChanged: (ImportStrategy? value) {
-                      setState(() => _selectedImportStrategy = value!);
-                    },
-                  ),
-                  RadioListTile<ImportStrategy>(
-                    title: Text(l10n.addNewOnly),
-                    subtitle: Text(l10n.onlyImportNew),
-                    value: ImportStrategy.addNewOnly,
-                    groupValue: _selectedImportStrategy,
-                    onChanged: (ImportStrategy? value) {
-                      setState(() => _selectedImportStrategy = value!);
-                    },
-                  ),
-                ],
+              return RadioGroup<ImportStrategy>(
+                groupValue: _selectedImportStrategy,
+                onChanged: (ImportStrategy? value) {
+                  setState(() => _selectedImportStrategy = value!);
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(l10n.completeOverwrite),
+                      subtitle: Text(l10n.replaceAllData),
+                      leading: Radio<ImportStrategy>(
+                        value: ImportStrategy.completeOverwrite,
+                      ),
+                      onTap: () {
+                        setState(() => _selectedImportStrategy = ImportStrategy.completeOverwrite);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(l10n.smartMerge),
+                      subtitle: Text(l10n.mergeWithConflicts),
+                      leading: Radio<ImportStrategy>(
+                        value: ImportStrategy.smartMerge,
+                      ),
+                      onTap: () {
+                        setState(() => _selectedImportStrategy = ImportStrategy.smartMerge);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(l10n.addNewOnly),
+                      subtitle: Text(l10n.onlyImportNew),
+                      leading: Radio<ImportStrategy>(
+                        value: ImportStrategy.addNewOnly,
+                      ),
+                      onTap: () {
+                        setState(() => _selectedImportStrategy = ImportStrategy.addNewOnly);
+                      },
+                    ),
+                  ],
+                ),
               );
             },
           ),
