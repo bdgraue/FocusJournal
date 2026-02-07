@@ -133,10 +133,12 @@ class BackupService {
     );
     await file.writeAsString(json.encode(exportData));
 
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      subject: 'Journal Backup',
-      text: 'FocusJournal Backup File',
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        subject: 'Journal Backup',
+        text: 'FocusJournal Backup File',
+      ),
     );
 
     // Clean up temp file

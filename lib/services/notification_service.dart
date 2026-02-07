@@ -37,7 +37,7 @@ class NotificationService {
     const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_foreground');
     const initSettings = InitializationSettings(android: androidSettings);
 
-    await _notifications.initialize(initSettings);
+    await _notifications.initialize(settings: initSettings);
     _initialized = true;
 
     // Reschedule if enabled (e.g., after app restart)
@@ -84,18 +84,18 @@ class NotificationService {
   Future<void> scheduleDailyReminder(int hour, int minute) async {
     if (!_initialized) await initialize();
 
-    await _notifications.cancel(_notificationId);
+    await _notifications.cancel(id: _notificationId);
 
     final message = _getRandomMessage();
 
     // Use periodicallyShow for simple daily notifications
     // Note: This doesn't respect the exact time, but it's simpler
     await _notifications.periodicallyShow(
-      _notificationId,
-      'Focus Journal',
-      message,
-      RepeatInterval.daily,
-      const NotificationDetails(
+      id: _notificationId,
+      title: 'Focus Journal',
+      body: message,
+      repeatInterval: RepeatInterval.daily,
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'daily_reminder',
           'Daily Reminders',
@@ -110,7 +110,7 @@ class NotificationService {
   }
 
   Future<void> cancelReminder() async {
-    await _notifications.cancel(_notificationId);
+    await _notifications.cancel(id: _notificationId);
   }
 
   String _getRandomMessage() {
