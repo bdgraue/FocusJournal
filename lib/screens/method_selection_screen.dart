@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import '../services/authentication_service.dart';
+import '../widgets/material3_card.dart';
 import 'password_setup_screen.dart';
 import 'pin_setup_screen.dart';
 import 'pattern_setup_screen.dart';
@@ -101,7 +102,7 @@ class _MethodSelectionScreenState extends State<MethodSelectionScreen> {
             const SizedBox(height: 32),
 
             // Password Option
-            Card(
+            Material3Card(
               child: ListTile(
                 leading: const Icon(Icons.lock_outline),
                 title: Text(AppLocalizations.of(context)!.password),
@@ -116,7 +117,7 @@ class _MethodSelectionScreenState extends State<MethodSelectionScreen> {
             const SizedBox(height: 16),
 
             // PIN Option
-            Card(
+            Material3Card(
               child: ListTile(
                 leading: const Icon(Icons.pin_outlined),
                 title: Text(AppLocalizations.of(context)!.pin),
@@ -128,7 +129,7 @@ class _MethodSelectionScreenState extends State<MethodSelectionScreen> {
             const SizedBox(height: 16),
 
             // Pattern Option
-            Card(
+            Material3Card(
               child: ListTile(
                 leading: const Icon(Icons.grid_3x3_outlined),
                 title: Text(AppLocalizations.of(context)!.pattern),

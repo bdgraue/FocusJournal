@@ -5,6 +5,7 @@ import '../services/backup_service.dart';
 import '../services/journal_service.dart';
 import '../models/import_strategy.dart';
 import '../services/event_bus.dart';
+import '../widgets/material3_card.dart';
 
 class BackupScreen extends StatefulWidget {
   const BackupScreen({super.key});
@@ -40,6 +41,36 @@ class _BackupScreenState extends State<BackupScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(AppLocalizations.of(context)!.journalExportedSuccessfully)),
         );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.exportFailed(e.toString()))),
+        );
+      }
+    }
+  }
+
+  Future<void> _saveJournalLocally() async {
+    if (!_formKey.currentState!.validate()) return;
+    try {
+      final service = await _journalService;
+      final journalData = await service.exportData();
+      final savedPath = await BackupService().saveJournalLocally(
+        journalData,
+        _passwordController.text,
+      );
+
+      if (mounted) {
+        if (savedPath != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context)!.backupSavedTo(savedPath))),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(AppLocalizations.of(context)!.noFileSelected)),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -200,7 +231,7 @@ class _BackupScreenState extends State<BackupScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Card(
+          child: Material3Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -241,10 +272,18 @@ class _BackupScreenState extends State<BackupScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       FilledButton.icon(
-                        onPressed: _exportJournal,
-                        icon: const Icon(Icons.upload),
-                        label: Text(AppLocalizations.of(context)!.createBackup),
+                        onPressed: _saveJournalLocally,
+                        icon: const Icon(Icons.save),
+                        label: Text(AppLocalizations.of(context)!.saveBackupLocally),
                       ),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        onPressed: _exportJournal,
+                        icon: const Icon(Icons.share),
+                        label: Text(AppLocalizations.of(context)!.createAndShareBackup),
+                      ),
+                      const SizedBox(height: 16),
+                      const Divider(),
                       const SizedBox(height: 8),
                       OutlinedButton.icon(
                         onPressed: _showImportStrategyDialog,

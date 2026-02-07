@@ -308,6 +308,14 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   @override
   String get restoreBackup => 'Back-up herstellen';
   @override
+  String get saveBackupLocally => 'Back-up lokaal opslaan';
+  @override
+  String get createAndShareBackup => 'Back-up maken en delen';
+  @override
+  String get backupSavedSuccessfully => 'Back-up succesvol opgeslagen';
+  @override
+  String backupSavedTo(String path) => 'Back-up opgeslagen in: $path';
+  @override
   String importSuccessMessage(int added, int updated, int total) =>
       'Import geslaagd: +$added nieuw, ~$updated bijgewerkt, $total totaal.';
   @override

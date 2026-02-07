@@ -312,6 +312,14 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   @override
   String get restoreBackup => 'Restaurer une sauvegarde';
   @override
+  String get saveBackupLocally => 'Enregistrer la sauvegarde localement';
+  @override
+  String get createAndShareBackup => 'Créer et partager la sauvegarde';
+  @override
+  String get backupSavedSuccessfully => 'Sauvegarde enregistrée avec succès';
+  @override
+  String backupSavedTo(String path) => 'Sauvegarde enregistrée dans : $path';
+  @override
   String importSuccessMessage(int added, int updated, int total) =>
       'Import réussi : +$added nouvelles, ~$updated mises à jour, $total au total.';
   @override
