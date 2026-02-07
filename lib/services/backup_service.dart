@@ -180,21 +180,28 @@ class BackupService {
     final metadata = await _prepareMetadata();
     final exportData = _prepareEncryptedBackup(journalData, password, metadata);
 
-    // Encode to JSON string and convert to bytes
     final jsonString = json.encode(exportData);
-    final bytes = Uint8List.fromList(utf8.encode(jsonString));
 
-    // Let user choose save location with bytes for mobile compatibility
     final fileName = 'journal_backup_${DateTime.now().toIso8601String()}.fjb';
+
+    // On desktop platforms (Linux/Windows/macOS), FilePicker's bytes parameter
+    // doesn't work reliably, so we need to get the path and write manually
     final result = await FilePicker.platform.saveFile(
       dialogTitle: 'Save Backup',
       fileName: fileName,
       type: FileType.custom,
       allowedExtensions: ['fjb'],
-      bytes: bytes,
     );
 
-    return result;
+    if (result != null) {
+      // Write the file manually to ensure correct encoding
+      final file = File(result);
+      await file.writeAsString(jsonString, encoding: utf8);
+
+      return result;
+    }
+
+    return null;
   }
 
   Future<Map<String, dynamic>> importJournal(
@@ -203,6 +210,7 @@ class BackupService {
   ) async {
     final file = File(filePath);
     final content = await file.readAsString();
+
     final importData = json.decode(content) as Map<String, dynamic>;
 
     final metadata = importData['metadata'] as Map<String, dynamic>;
@@ -227,8 +235,9 @@ class BackupService {
       try {
         final encrypter = Encrypter(AES(key));
         final decrypted = encrypter.decrypt64(encryptedContent, iv: iv);
-        return {'metadata': metadata, 'data': json.decode(decrypted)};
-      } catch (_) {
+        final result = json.decode(decrypted);
+        return {'metadata': metadata, 'data': result};
+      } catch (e) {
         // Try next key derivation method
       }
     }

@@ -153,40 +153,42 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Notifications & Reminders
-              Material3Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.notificationsAndReminders,
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      SwitchListTile(
-                        secondary: const Icon(Icons.notifications_active),
-                        title: Text(AppLocalizations.of(context)!.dailyReminders),
-                        subtitle: Text(
-                          AppLocalizations.of(context)!.dailyRemindersDescription,
+              // Notifications & Reminders (only on Android/iOS)
+              if (_notificationService.isPlatformSupported) ...[
+                Material3Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.notificationsAndReminders,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        value: _notificationsEnabled,
-                        onChanged: _toggleNotifications,
-                      ),
-                      if (_notificationsEnabled)
-                        ListTile(
-                          leading: const Icon(Icons.access_time),
-                          title: Text(AppLocalizations.of(context)!.reminderTime),
-                          subtitle: Text(_reminderTime.format(context)),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: _pickReminderTime,
+                        const SizedBox(height: 8),
+                        SwitchListTile(
+                          secondary: const Icon(Icons.notifications_active),
+                          title: Text(AppLocalizations.of(context)!.dailyReminders),
+                          subtitle: Text(
+                            AppLocalizations.of(context)!.dailyRemindersDescription,
+                          ),
+                          value: _notificationsEnabled,
+                          onChanged: _toggleNotifications,
                         ),
-                    ],
+                        if (_notificationsEnabled)
+                          ListTile(
+                            leading: const Icon(Icons.access_time),
+                            title: Text(AppLocalizations.of(context)!.reminderTime),
+                            subtitle: Text(_reminderTime.format(context)),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: _pickReminderTime,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
               // Security Section
               if (_showSecuritySection)
                 Material3Card(
