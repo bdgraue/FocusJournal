@@ -2,6 +2,9 @@ import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 /// Manages daily journal reminders using local notifications.
 ///
@@ -51,6 +54,12 @@ class NotificationService {
     return Platform.isAndroid || Platform.isIOS;
   }
 
+  Future<void> _configureLocalTimezone() async {
+    tz.initializeTimeZones();
+    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
+  }
+
   Future<void> initialize() async {
     if (_initialized) return;
 
@@ -59,6 +68,8 @@ class NotificationService {
       _initialized = true;
       return;
     }
+
+    await _configureLocalTimezone();
 
     const androidSettings = AndroidInitializationSettings('@drawable/ic_launcher_foreground');
     const initSettings = InitializationSettings(android: androidSettings);
@@ -111,6 +122,23 @@ class NotificationService {
     }
   }
 
+  /// Compute the next occurrence of [hour]:[minute] in local time.
+  tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
   Future<void> scheduleDailyReminder(int hour, int minute) async {
     if (!isPlatformSupported) return;
     if (!_initialized) await initialize();
@@ -118,14 +146,13 @@ class NotificationService {
     await _notifications.cancel(id: _notificationId);
 
     final message = _getRandomMessage();
+    final scheduledDate = _nextInstanceOfTime(hour, minute);
 
-    // Use periodicallyShow for simple daily notifications
-    // Note: This doesn't respect the exact time, but it's simpler
-    await _notifications.periodicallyShow(
+    await _notifications.zonedSchedule(
       id: _notificationId,
       title: 'Focus Journal',
       body: message,
-      repeatInterval: RepeatInterval.daily,
+      scheduledDate: scheduledDate,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'daily_reminder',
@@ -137,6 +164,9 @@ class NotificationService {
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
