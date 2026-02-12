@@ -4,6 +4,7 @@ import 'package:focus_journal/l10n/app_localizations.dart';
 import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'journal_entry_screen.dart';
 import 'package:focus_journal/services/event_bus.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
@@ -26,18 +27,30 @@ class _JournalScreenState extends State<JournalScreen> {
   String? _highlightedEntryId;
   final ScrollController _scrollController = ScrollController();
   bool _isScrolledAway = false;
+  bool _starsEnabled = true;
 
   @override
   void initState() {
     super.initState();
     _journalService = JournalService.create();
     _loadEntries();
+    _loadStarsEnabled();
     _sub = AppEventBus().stream.listen((event) {
       if (event == AppEvents.journalChanged) {
         _loadEntries();
+        _loadStarsEnabled();
       }
     });
     _scrollController.addListener(_onScroll);
+  }
+
+  Future<void> _loadStarsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _starsEnabled = prefs.getBool('stars_enabled') ?? true;
+      });
+    }
   }
 
   void _onScroll() {
@@ -103,6 +116,12 @@ class _JournalScreenState extends State<JournalScreen> {
     await _loadEntries();
   }
 
+  Future<void> _toggleStar(String id) async {
+    final service = await _journalService;
+    await service.toggleHighlight(id);
+    await _loadEntries();
+  }
+
   Widget _buildEntryCard(JournalEntry entry) {
     _entryKeys.putIfAbsent(entry.id, () => GlobalKey());
     final entryKey = _entryKeys[entry.id]!;
@@ -118,12 +137,17 @@ class _JournalScreenState extends State<JournalScreen> {
       }
     }
 
+    final canToggleStar = _starsEnabled && entry.isEditableToday;
+    final showStar = _starsEnabled && (entry.isEditableToday || entry.isHighlighted);
+
     return KeyedSubtree(
       key: entryKey,
       child: JournalEntryCard(
         entry: entry,
         isEditMode: widget.isEditMode,
         isHighlighted: _highlightedEntryId == entry.id,
+        showStar: showStar,
+        onToggleStar: canToggleStar ? () => _toggleStar(entry.id) : null,
         onTap: widget.isEditMode ? openEntry : null,
         onEdit: widget.isEditMode ? openEntry : null,
         onDelete: widget.isEditMode ? () => _deleteEntry(entry.id) : null,

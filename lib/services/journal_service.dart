@@ -18,12 +18,14 @@ class JournalEntry {
   final String content;
   final DateTime createdAt;
   final DateTime lastModified;
+  final bool isHighlighted;
 
   JournalEntry({
     String? id,
     required this.content,
     DateTime? createdAt,
     DateTime? lastModified,
+    this.isHighlighted = false,
   }) : id = id ?? const Uuid().v4(),
        createdAt = createdAt ?? DateTime.now(),
        lastModified = lastModified ?? DateTime.now();
@@ -34,6 +36,7 @@ class JournalEntry {
       'content': content,
       'createdAt': createdAt.toIso8601String(),
       'lastModified': lastModified.toIso8601String(),
+      'isHighlighted': isHighlighted,
     };
   }
 
@@ -43,6 +46,7 @@ class JournalEntry {
       content: json['content'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       lastModified: DateTime.parse(json['lastModified'] as String),
+      isHighlighted: json['isHighlighted'] as bool? ?? false,
     );
   }
 
@@ -53,12 +57,13 @@ class JournalEntry {
         createdAt.day == now.day;
   }
 
-  JournalEntry copyWith({String? content}) {
+  JournalEntry copyWith({String? content, bool? isHighlighted}) {
     return JournalEntry(
       id: id,
       content: content ?? this.content,
       createdAt: createdAt,
       lastModified: DateTime.now(),
+      isHighlighted: isHighlighted ?? this.isHighlighted,
     );
   }
 }
@@ -241,6 +246,23 @@ class JournalService {
     } catch (e) {
       throw Exception('Invalid journal data format: $e');
     }
+  }
+
+  Future<void> toggleHighlight(String id) async {
+    final entries = await getAllEntries();
+    final index = entries.indexWhere((e) => e.id == id);
+    if (index != -1) {
+      entries[index] = entries[index].copyWith(
+        isHighlighted: !entries[index].isHighlighted,
+      );
+      await saveEntries(entries);
+    }
+  }
+
+  Future<List<JournalEntry>> getHighlightedEntries() async {
+    final entries = await getAllEntries();
+    return entries.where((e) => e.isHighlighted).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   /// Returns the total count of journal entries

@@ -10,6 +10,8 @@ class JournalEntryCard extends StatelessWidget {
   final VoidCallback? onDelete;
   final String? highlightQuery;
   final bool isHighlighted;
+  final bool showStar;
+  final VoidCallback? onToggleStar;
 
   const JournalEntryCard({
     super.key,
@@ -20,6 +22,8 @@ class JournalEntryCard extends StatelessWidget {
     this.onDelete,
     this.highlightQuery,
     this.isHighlighted = false,
+    this.showStar = false,
+    this.onToggleStar,
   });
 
   Widget _buildContent(BuildContext context) {
@@ -134,7 +138,7 @@ class JournalEntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Card(
+    final card = Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       elevation: isDark ? 0 : 1,
       surfaceTintColor: isDark ? Colors.transparent : null,
@@ -151,6 +155,43 @@ class JournalEntryCard extends StatelessWidget {
           ? Theme.of(context).colorScheme.primaryContainer.withAlpha(120)
           : null,
       child: _buildContent(context),
+    );
+
+    if (!showStar) return card;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        card,
+        Positioned(
+          top: 2,
+          right: 24,
+          child: GestureDetector(
+            onTap: onToggleStar,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(30),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: Icon(
+                entry.isHighlighted ? Icons.star : Icons.star_border,
+                size: 20,
+                color: entry.isHighlighted
+                    ? Colors.amber
+                    : Theme.of(context).colorScheme.outline,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -519,4 +519,14 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   String get credits => 'Ringraziamenti';
   @override
   String get creditsDeike => 'Per le sue meravigliose idee e il suo sostegno nonch\u00e9 il suo contributo al successo di questa app. Inoltre per le passeggiate, le belle conversazioni e per esserci sempre quando ho bisogno di lei.';
+
+  // --- Highlights / Stelle ---
+  @override
+  String get highlights => 'In evidenza';
+  @override
+  String get noHighlights => 'Nessuna voce contrassegnata';
+  @override
+  String get enableStars => 'Attiva stelle';
+  @override
+  String get enableStarsDescription => 'Segna le tue voci preferite';
 }

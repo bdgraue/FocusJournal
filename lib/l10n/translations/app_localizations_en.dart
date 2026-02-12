@@ -578,4 +578,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get credits => 'Acknowledgments';
   @override
   String get creditsDeike => 'For her wonderful ideas and her support as well as her contribution to making this app a success. Also for the walks, great conversations, and for always being there when I need her.';
+
+  // --- Highlights / Stars ---
+  @override
+  String get highlights => 'Highlights';
+  @override
+  String get noHighlights => 'No starred entries yet';
+  @override
+  String get enableStars => 'Enable Stars';
+  @override
+  String get enableStarsDescription => 'Star your favorite entries';
 }

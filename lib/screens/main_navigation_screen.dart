@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
+import 'package:focus_journal/services/event_bus.dart';
 import 'calendar_screen.dart';
 import 'general_settings_screen.dart';
+import 'highlights_screen.dart';
 import 'journal_screen.dart';
 import 'search_screen.dart';
 
@@ -17,6 +21,34 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isEditMode = false;
   String? _scrollToEntryId;
+  bool _starsEnabled = true;
+  StreamSubscription<String>? _eventSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStarsEnabled();
+    _eventSub = AppEventBus().stream.listen((event) {
+      if (event == AppEvents.journalChanged) {
+        _loadStarsEnabled();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _eventSub?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _loadStarsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _starsEnabled = prefs.getBool('stars_enabled') ?? true;
+      });
+    }
+  }
 
   Future<void> _openSearch() async {
     final entryId = await Navigator.of(context).push<String>(
@@ -33,6 +65,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Future<void> _openCalendar() async {
     final entryId = await Navigator.of(context).push<String>(
       MaterialPageRoute(builder: (context) => const CalendarScreen()),
+    );
+    if (entryId != null && mounted) {
+      setState(() => _scrollToEntryId = entryId);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _scrollToEntryId = null);
+      });
+    }
+  }
+
+  Future<void> _openHighlights() async {
+    final entryId = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (context) => const HighlightsScreen()),
     );
     if (entryId != null && mounted) {
       setState(() => _scrollToEntryId = entryId);
@@ -66,6 +110,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                         _openSearch();
                       case 'calendar':
                         _openCalendar();
+                      case 'highlights':
+                        _openHighlights();
                       case 'edit':
                         setState(() => _isEditMode = true);
                       case 'settings':
@@ -73,7 +119,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                           MaterialPageRoute(
                             builder: (context) => const GeneralSettingsScreen(),
                           ),
-                        );
+                        ).then((_) => _loadStarsEnabled());
                     }
                   },
                   itemBuilder: (context) => [
@@ -97,6 +143,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                         ],
                       ),
                     ),
+                    if (_starsEnabled)
+                      PopupMenuItem(
+                        value: 'highlights',
+                        child: Row(
+                          children: [
+                            const Icon(Icons.star_outline),
+                            const SizedBox(width: 12),
+                            Text(l10n.highlights),
+                          ],
+                        ),
+                      ),
                     PopupMenuItem(
                       value: 'edit',
                       child: Row(

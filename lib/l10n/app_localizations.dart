@@ -850,6 +850,12 @@ abstract class AppLocalizations {
   // --- Credits ---
   String get credits;
   String get creditsDeike;
+
+  // --- Highlights / Stars ---
+  String get highlights;
+  String get noHighlights;
+  String get enableStars;
+  String get enableStarsDescription;
 }
 
 /// The delegate class which loads AppLocalizations.

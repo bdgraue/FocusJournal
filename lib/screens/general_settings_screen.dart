@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../services/authentication_service.dart';
+import '../services/event_bus.dart';
 import '../services/notification_service.dart';
 import '../services/theme_service.dart';
 import '../widgets/material3_card.dart';
@@ -40,6 +42,7 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
   // TODO(settings): Implement language selector and additional customization options
   final bool _showCustomizationSection = true;
 
+  bool _starsEnabled = true;
 
   @override
   void initState() {
@@ -47,6 +50,23 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
     _loadNotificationState();
     _loadAuthMethod();
     _loadThemeMode();
+    _loadStarsEnabled();
+  }
+
+  Future<void> _loadStarsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _starsEnabled = prefs.getBool('stars_enabled') ?? true;
+    });
+  }
+
+  Future<void> _toggleStars(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('stars_enabled', enabled);
+    setState(() {
+      _starsEnabled = enabled;
+    });
+    AppEventBus().emit(AppEvents.journalChanged);
   }
 
   Future<void> _loadThemeMode() async {
@@ -226,6 +246,17 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ],
+              // Stars / Highlights
+              const SizedBox(height: 16),
+              Material3Card(
+                child: SwitchListTile(
+                  secondary: const Icon(Icons.star_outline),
+                  title: Text(AppLocalizations.of(context)!.enableStars),
+                  subtitle: Text(AppLocalizations.of(context)!.enableStarsDescription),
+                  value: _starsEnabled,
+                  onChanged: _toggleStars,
+                ),
+              ),
               // Acknowledgments
               const SizedBox(height: 16),
               Material3Card(

@@ -522,4 +522,14 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get credits => 'Remerciements';
   @override
   String get creditsDeike => 'Pour ses id\u00e9es formidables et son soutien ainsi que sa contribution au succ\u00e8s de cette app. Aussi pour les promenades, les belles conversations et pour \u00eatre toujours l\u00e0 quand j\'ai besoin d\'elle.';
+
+  // --- Highlights / \u00c9toiles ---
+  @override
+  String get highlights => 'Highlights';
+  @override
+  String get noHighlights => 'Pas encore d\'entr\u00e9es marqu\u00e9es';
+  @override
+  String get enableStars => 'Activer les \u00e9toiles';
+  @override
+  String get enableStarsDescription => 'Marquez vos entr\u00e9es pr\u00e9f\u00e9r\u00e9es';
 }
