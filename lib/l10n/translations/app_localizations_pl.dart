@@ -517,5 +517,5 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   @override
   String get credits => 'Podzi\u0119kowania';
   @override
-  String get creditsDeike => 'Za jej wspania\u0142e pomys\u0142y i wk\u0142ad w sukces tej aplikacji. A tak\u017ce za cudowne rozmowy o ka\u017cdej porze, czu\u0142o\u015b\u0107 i uczucie, kt\u00f3re otrzymuj\u0119.';
+  String get creditsDeike => 'Za jej wspania\u0142e pomys\u0142y i wsparcie oraz wk\u0142ad w sukces tej aplikacji. A tak\u017ce za spacery, wspania\u0142e rozmowy i za to, \u017ce zawsze jest, gdy jej potrzebuj\u0119.';
 }

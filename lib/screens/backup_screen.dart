@@ -25,7 +25,6 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
   late final Future<JournalService> _journalService = JournalService.create();
   ExportService? _exportService;
 
-  static const _minBackupPasswordLength = 6;
 
   Future<ExportService> get _getExportService async {
     if (_exportService != null) return _exportService!;
@@ -337,9 +336,6 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return AppLocalizations.of(context)!.passwordRequired;
-                      }
-                      if (value.length < _minBackupPasswordLength) {
-                        return 'Password must be at least $_minBackupPasswordLength characters';
                       }
                       return null;
                     },

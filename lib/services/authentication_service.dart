@@ -178,16 +178,11 @@ class AuthenticationService {
     await prefs.remove(_lockoutUntilKey);
   }
 
-  // --- Password complexity validation ---
+  // --- Password validation ---
 
-  /// Validates password complexity: min 8 chars, upper, lower, digit, special.
+  /// Validates that a password is not empty.
   bool isValidPassword(String password) {
-    if (password.length < 8) return false;
-    if (!RegExp(r'[A-Z]').hasMatch(password)) return false;
-    if (!RegExp(r'[a-z]').hasMatch(password)) return false;
-    if (!RegExp(r'[0-9]').hasMatch(password)) return false;
-    if (!RegExp(r'[^A-Za-z0-9]').hasMatch(password)) return false;
-    return true;
+    return password.isNotEmpty;
   }
 
   void lockApp() {

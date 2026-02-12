@@ -181,27 +181,35 @@ class BackupService {
     final exportData = _prepareEncryptedBackup(journalData, password, metadata);
 
     final jsonString = json.encode(exportData);
+    final bytes = Uint8List.fromList(utf8.encode(jsonString));
 
     final fileName = 'journal_backup_${DateTime.now().toIso8601String()}.fjb';
 
-    // On desktop platforms (Linux/Windows/macOS), FilePicker's bytes parameter
-    // doesn't work reliably, so we need to get the path and write manually
-    final result = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save Backup',
-      fileName: fileName,
-      type: FileType.custom,
-      allowedExtensions: ['fjb'],
-    );
-
-    if (result != null) {
-      // Write the file manually to ensure correct encoding
-      final file = File(result);
-      await file.writeAsString(jsonString, encoding: utf8);
-
+    if (Platform.isAndroid || Platform.isIOS) {
+      // On mobile, FilePicker returns a content URI — pass bytes directly
+      final result = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save Backup',
+        fileName: fileName,
+        type: FileType.custom,
+        allowedExtensions: ['fjb'],
+        bytes: bytes,
+      );
       return result;
+    } else {
+      // On desktop, FilePicker returns a real file path — write manually
+      final result = await FilePicker.platform.saveFile(
+        dialogTitle: 'Save Backup',
+        fileName: fileName,
+        type: FileType.custom,
+        allowedExtensions: ['fjb'],
+      );
+      if (result != null) {
+        final file = File(result);
+        await file.writeAsString(jsonString, encoding: utf8);
+        return result;
+      }
+      return null;
     }
-
-    return null;
   }
 
   Future<Map<String, dynamic>> importJournal(
