@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 
@@ -15,6 +16,8 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
   late final TextEditingController _contentController;
   late final Future<JournalService> _journalService;
   bool _isProcessing = false;
+  bool _starsEnabled = false;
+  bool _isStarred = false;
 
   bool get _isReadOnly =>
       widget.entry != null && !widget.entry!.isEditableToday;
@@ -26,6 +29,24 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
       text: widget.entry?.content ?? '',
     );
     _journalService = JournalService.create();
+    _isStarred = widget.entry?.isHighlighted ?? false;
+    _loadStarsEnabled();
+  }
+
+  Future<void> _loadStarsEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _starsEnabled = prefs.getBool('stars_enabled') ?? true;
+      });
+    }
+  }
+
+  Future<void> _toggleStar() async {
+    if (widget.entry == null) return;
+    final service = await _journalService;
+    await service.toggleHighlight(widget.entry!.id);
+    setState(() => _isStarred = !_isStarred);
   }
 
   @override
@@ -86,6 +107,14 @@ class _JournalEntryScreenState extends State<JournalEntryScreen> {
                   : AppLocalizations.of(context)!.editEntry,
         ),
         actions: [
+          if (_starsEnabled && widget.entry != null && (_isStarred || widget.entry!.isEditableToday))
+            IconButton(
+              icon: Icon(
+                _isStarred ? Icons.star : Icons.star_border,
+                color: _isStarred ? Colors.amber : null,
+              ),
+              onPressed: widget.entry!.isEditableToday ? _toggleStar : null,
+            ),
           if (!_isReadOnly)
             IconButton(
               icon: const Icon(Icons.save),

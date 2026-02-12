@@ -518,4 +518,14 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   String get credits => 'Podzi\u0119kowania';
   @override
   String get creditsDeike => 'Za jej wspania\u0142e pomys\u0142y i wsparcie oraz wk\u0142ad w sukces tej aplikacji. A tak\u017ce za spacery, wspania\u0142e rozmowy i za to, \u017ce zawsze jest, gdy jej potrzebuj\u0119.';
+
+  // --- Highlights / Gwiazdki ---
+  @override
+  String get highlights => 'Wyr\u00f3\u017cnione';
+  @override
+  String get noHighlights => 'Brak oznaczonych wpis\u00f3w';
+  @override
+  String get enableStars => 'W\u0142\u0105cz gwiazdki';
+  @override
+  String get enableStarsDescription => 'Oznaczaj ulubione wpisy';
 }

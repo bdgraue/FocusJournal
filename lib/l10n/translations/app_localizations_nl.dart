@@ -518,4 +518,14 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get credits => 'Dankwoord';
   @override
   String get creditsDeike => 'Voor haar geweldige idee\u00ebn en haar steun evenals haar bijdrage aan het succes van deze app. Ook voor de wandelingen, mooie gesprekken en dat ze er altijd is als ik haar nodig heb.';
+
+  // --- Highlights / Sterren ---
+  @override
+  String get highlights => 'Hoogtepunten';
+  @override
+  String get noHighlights => 'Nog geen gemarkeerde items';
+  @override
+  String get enableStars => 'Sterren activeren';
+  @override
+  String get enableStarsDescription => 'Markeer je favoriete items';
 }
