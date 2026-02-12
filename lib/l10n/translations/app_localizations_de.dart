@@ -581,5 +581,5 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get credits => 'Danksagung';
   @override
-  String get creditsDeike => 'F\u00fcr ihre tollen Ideen und ihren Beitrag zum Gelingen der App. Au\u00dferdem f\u00fcr die wundervollen Gespr\u00e4che jederzeit, die Z\u00e4rtlichkeit und die Zuneigung die ich erhalte.';
+  String get creditsDeike => 'F\u00fcr ihre tollen Ideen und ihre Unterst\u00fctzung sowie ihren Beitrag zum Gelingen der App. Zudem f\u00fcr die Spazierg\u00e4nge, tolle Gespr\u00e4che und daf\u00fcr, dass sie immer da ist, wenn ich sie brauche.';
 }

@@ -156,35 +156,26 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               // Notifications & Reminders (only on Android/iOS)
               if (_notificationService.isPlatformSupported) ...[
                 Material3Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.notificationsAndReminders,
-                          style: Theme.of(context).textTheme.titleLarge,
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        secondary: const Icon(Icons.notifications_active),
+                        title: Text(AppLocalizations.of(context)!.dailyReminders),
+                        subtitle: Text(
+                          AppLocalizations.of(context)!.dailyRemindersDescription,
                         ),
-                        const SizedBox(height: 8),
-                        SwitchListTile(
-                          secondary: const Icon(Icons.notifications_active),
-                          title: Text(AppLocalizations.of(context)!.dailyReminders),
-                          subtitle: Text(
-                            AppLocalizations.of(context)!.dailyRemindersDescription,
-                          ),
-                          value: _notificationsEnabled,
-                          onChanged: _toggleNotifications,
+                        value: _notificationsEnabled,
+                        onChanged: _toggleNotifications,
+                      ),
+                      if (_notificationsEnabled)
+                        ListTile(
+                          leading: const Icon(Icons.access_time),
+                          title: Text(AppLocalizations.of(context)!.reminderTime),
+                          subtitle: Text(_reminderTime.format(context)),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: _pickReminderTime,
                         ),
-                        if (_notificationsEnabled)
-                          ListTile(
-                            leading: const Icon(Icons.access_time),
-                            title: Text(AppLocalizations.of(context)!.reminderTime),
-                            subtitle: Text(_reminderTime.format(context)),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: _pickReminderTime,
-                          ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -192,29 +183,16 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
               // Security Section
               if (_showSecuritySection)
                 Material3Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.securitySettings,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        ListTile(
-                          leading: Icon(_getAuthMethodIcon(_currentAuthMethod)),
-                          title: Text(
-                            AppLocalizations.of(context)!.currentAuthMethod,
-                          ),
-                          subtitle: Text(
-                            _getAuthMethodDisplayName(_currentAuthMethod),
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: _navigateToSecuritySettings,
-                        ),
-                      ],
+                  child: ListTile(
+                    leading: Icon(_getAuthMethodIcon(_currentAuthMethod)),
+                    title: Text(
+                      AppLocalizations.of(context)!.currentAuthMethod,
                     ),
+                    subtitle: Text(
+                      _getAuthMethodDisplayName(_currentAuthMethod),
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: _navigateToSecuritySettings,
                   ),
                 ),
               const SizedBox(height: 16),
@@ -231,6 +209,23 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ),
+              // Design / Theme
+              if (_showCustomizationSection) ...[
+                const SizedBox(height: 16),
+                Material3Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.palette_outlined),
+                    title: Text(AppLocalizations.of(context)!.themeSettings),
+                    subtitle: Text(_getThemeModeDisplayName(_currentThemeMode)),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ThemeSettingsScreen(),
+                      ),
+                    ).then((_) => _loadThemeMode()),
+                  ),
+                ),
+              ],
               // Acknowledgments
               const SizedBox(height: 16),
               Material3Card(
@@ -245,35 +240,6 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              // Customization Section
-              if (_showCustomizationSection)
-                Material3Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.appearance,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        ListTile(
-                          leading: const Icon(Icons.palette_outlined),
-                          title: Text(AppLocalizations.of(context)!.themeSettings),
-                          subtitle: Text(_getThemeModeDisplayName(_currentThemeMode)),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const ThemeSettingsScreen(),
-                            ),
-                          ).then((_) => _loadThemeMode()),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
             ],
           ),
       ),
