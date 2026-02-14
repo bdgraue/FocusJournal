@@ -121,18 +121,6 @@ class _AboutScreenState extends State<AboutScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
-
-          // Self-thanks
-          Card(
-            child: ListTile(
-              leading: Icon(Icons.self_improvement,
-                  color: Theme.of(context).colorScheme.primary),
-              title: const Text('Marc',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(l10n.creditsSelf),
-            ),
-          ),
         ],
       ),
     );

@@ -542,5 +542,5 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   @override
   String get developer => 'Sviluppatore';
   @override
-  String get creditsSelf => 'Per la mia pazienza, perseveranza, tenacia e dedizione alla vita.';
+  String get creditsSelf => 'Ringrazio me stesso per la mia pazienza, perseveranza, tenacia e dedizione alla vita.';
 }

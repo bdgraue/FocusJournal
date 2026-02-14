@@ -545,5 +545,5 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   @override
   String get developer => 'D\u00e9veloppeur';
   @override
-  String get creditsSelf => 'Pour ma patience, ma pers\u00e9v\u00e9rance, ma t\u00e9nacit\u00e9 et mon d\u00e9vouement \u00e0 la vie.';
+  String get creditsSelf => 'Je me remercie pour ma patience, ma pers\u00e9v\u00e9rance, ma t\u00e9nacit\u00e9 et mon d\u00e9vouement \u00e0 la vie.';
 }
