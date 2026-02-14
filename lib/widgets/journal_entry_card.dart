@@ -173,13 +173,20 @@ class JournalEntryCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(30),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
+                border: isDark
+                    ? Border.all(
+                        color: Theme.of(context).colorScheme.outlineVariant.withAlpha(100),
+                      )
+                    : null,
+                boxShadow: isDark
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(30),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
               ),
               child: Icon(
                 entry.isHighlighted ? Icons.star : Icons.star_border,
