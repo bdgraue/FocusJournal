@@ -528,4 +528,18 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   String get enableStars => 'Sterren activeren';
   @override
   String get enableStarsDescription => 'Markeer je favoriete items';
+
+  // --- Over de app ---
+  @override
+  String get aboutApp => 'Over de app';
+  @override
+  String get version => 'Versie';
+  @override
+  String get installedOn => 'Ge\u00efnstalleerd op';
+  @override
+  String get lastUpdated => 'Laatste update';
+  @override
+  String get developer => 'Ontwikkelaar';
+  @override
+  String get creditsSelf => 'Voor mijn geduld, doorzettingsvermogen, vasthoudendheid en toewijding aan het leven.';
 }

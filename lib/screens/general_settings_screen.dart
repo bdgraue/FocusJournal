@@ -6,6 +6,7 @@ import '../services/event_bus.dart';
 import '../services/notification_service.dart';
 import '../services/theme_service.dart';
 import '../widgets/material3_card.dart';
+import 'about_screen.dart';
 import 'acknowledgments_screen.dart';
 import 'backup_screen.dart';
 import 'security_settings_screen.dart';
@@ -267,6 +268,21 @@ class _GeneralSettingsScreenState extends State<GeneralSettingsScreen> {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const AcknowledgmentsScreen(),
+                    ),
+                  ),
+                ),
+              ),
+              // About the App
+              const SizedBox(height: 16),
+              Material3Card(
+                child: ListTile(
+                  leading: Icon(Icons.info_outline,
+                      color: Theme.of(context).colorScheme.primary),
+                  title: Text(AppLocalizations.of(context)!.aboutApp),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const AboutScreen(),
                     ),
                   ),
                 ),

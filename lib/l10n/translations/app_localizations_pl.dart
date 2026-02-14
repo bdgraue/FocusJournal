@@ -528,4 +528,18 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   String get enableStars => 'W\u0142\u0105cz gwiazdki';
   @override
   String get enableStarsDescription => 'Oznaczaj ulubione wpisy';
+
+  // --- O aplikacji ---
+  @override
+  String get aboutApp => 'O aplikacji';
+  @override
+  String get version => 'Wersja';
+  @override
+  String get installedOn => 'Zainstalowano';
+  @override
+  String get lastUpdated => 'Ostatnia aktualizacja';
+  @override
+  String get developer => 'Programista';
+  @override
+  String get creditsSelf => 'Za moj\u0105 cierpliwo\u015b\u0107, wytrwa\u0142o\u015b\u0107, uparto\u015b\u0107 i oddanie \u017cyciu.';
 }

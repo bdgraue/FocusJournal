@@ -856,6 +856,14 @@ abstract class AppLocalizations {
   String get noHighlights;
   String get enableStars;
   String get enableStarsDescription;
+
+  // --- About ---
+  String get aboutApp;
+  String get version;
+  String get installedOn;
+  String get lastUpdated;
+  String get developer;
+  String get creditsSelf;
 }
 
 /// The delegate class which loads AppLocalizations.
