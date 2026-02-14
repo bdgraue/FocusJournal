@@ -23,6 +23,16 @@ class AcknowledgmentsScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.self_improvement,
+                  color: Theme.of(context).colorScheme.primary),
+              subtitle: Text(
+                AppLocalizations.of(context)!.creditsSelf,
+              ),
+            ),
+          ),
         ],
       ),
     );

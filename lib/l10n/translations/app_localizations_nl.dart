@@ -541,5 +541,5 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   @override
   String get developer => 'Ontwikkelaar';
   @override
-  String get creditsSelf => 'Voor mijn geduld, doorzettingsvermogen, vasthoudendheid en toewijding aan het leven.';
+  String get creditsSelf => 'Ik dank mezelf voor mijn geduld, doorzettingsvermogen, vasthoudendheid en toewijding aan het leven.';
 }
