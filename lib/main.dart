@@ -17,6 +17,30 @@ class LockSuppression extends ValueNotifier<bool> {
   LockSuppression() : super(false);
 }
 
+/// Shared authentication state between _AuthGate and _LockOverlay.
+class AppAuthState extends ChangeNotifier {
+  bool? _isAuthSetup;
+  bool _isAuthenticated = false;
+
+  bool? get isAuthSetup => _isAuthSetup;
+  bool get isAuthenticated => _isAuthenticated;
+
+  void setAuthSetup(bool value) {
+    _isAuthSetup = value;
+    notifyListeners();
+  }
+
+  void authenticate() {
+    _isAuthenticated = true;
+    notifyListeners();
+  }
+
+  void logout() {
+    _isAuthenticated = false;
+    notifyListeners();
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -45,6 +69,9 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider<ThemeService>.value(
               value: snapshot.data!,
             ),
+            ChangeNotifierProvider<AppAuthState>(
+              create: (_) => AppAuthState(),
+            ),
           ],
           child: const _ThemedApp(),
         );
@@ -63,7 +90,6 @@ class _ThemedApp extends StatelessWidget {
     final themeMode = themeService.getThemeMode();
 
     if (useDynamic) {
-      // Use dynamic colors when enabled
       return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
           ColorScheme lightColorScheme;
@@ -73,7 +99,6 @@ class _ThemedApp extends StatelessWidget {
             lightColorScheme = lightDynamic.harmonized();
             darkColorScheme = darkDynamic.harmonized();
           } else {
-            // Fallback colors if dynamic color is not available
             lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
             darkColorScheme = ColorScheme.fromSeed(
               seedColor: Colors.deepPurple,
@@ -96,20 +121,20 @@ class _ThemedApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: const [
-              Locale('en', 'US'), // English (United States)
-              Locale('de', 'DE'), // Deutsch (Deutschland)
-              Locale('fr', 'FR'), // Français (France)
-              Locale('es', 'ES'), // Español (España)
-              Locale('it', 'IT'), // Italiano (Italia)
-              Locale('nl', 'NL'), // Nederlands (Nederland)
-              Locale('pl', 'PL'), // Polski (Polska)
+              Locale('en', 'US'),
+              Locale('de', 'DE'),
+              Locale('fr', 'FR'),
+              Locale('es', 'ES'),
+              Locale('it', 'IT'),
+              Locale('nl', 'NL'),
+              Locale('pl', 'PL'),
             ],
-            home: const AuthenticationWrapper(),
+            home: const _AuthGate(),
+            builder: (context, child) => LockOverlay(child: child!),
           );
         },
       );
     } else {
-      // Use static Material Design 3 colors when dynamic theming is disabled
       final lightColorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
       final darkColorScheme = ColorScheme.fromSeed(
         seedColor: Colors.deepPurple,
@@ -131,41 +156,96 @@ class _ThemedApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [
-          Locale('en'), // English
-          Locale('de'), // German
-          Locale('fr'), // French
-          Locale('es'), // Spanish
-          Locale('it'), // Italian
-          Locale('nl'), // Dutch
-          Locale('pl'), // Polish
+          Locale('en'),
+          Locale('de'),
+          Locale('fr'),
+          Locale('es'),
+          Locale('it'),
+          Locale('nl'),
+          Locale('pl'),
         ],
-        home: const AuthenticationWrapper(),
+        home: const _AuthGate(),
+        builder: (context, child) => LockOverlay(child: child!),
       );
     }
   }
 }
 
-class AuthenticationWrapper extends StatefulWidget {
-  const AuthenticationWrapper({super.key});
+/// Manages the authentication flow: setup, login, or main app.
+/// This is the home route of the Navigator.
+class _AuthGate extends StatefulWidget {
+  const _AuthGate();
 
   @override
-  State<AuthenticationWrapper> createState() => _AuthenticationWrapperState();
+  State<_AuthGate> createState() => _AuthGateState();
 }
 
-class _AuthenticationWrapperState extends State<AuthenticationWrapper>
-    with WidgetsBindingObserver {
+class _AuthGateState extends State<_AuthGate> {
   final _authService = AuthenticationService();
-  bool? _isAuthSetup;
-  bool _isAuthenticated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthSetup();
+  }
+
+  Future<void> _checkAuthSetup() async {
+    final isSetup = await _authService.isAuthenticationSetup();
+    if (mounted) {
+      context.read<AppAuthState>().setAuthSetup(isSetup);
+    }
+  }
+
+  void _onAuthenticationSuccess() {
+    context.read<AppAuthState>().authenticate();
+  }
+
+  void _onSetupComplete() {
+    final authState = context.read<AppAuthState>();
+    authState.setAuthSetup(true);
+    authState.authenticate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = context.watch<AppAuthState>();
+
+    if (authState.isAuthSetup == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (!authState.isAuthSetup!) {
+      return MethodSelectionScreen(onSetupComplete: _onSetupComplete);
+    }
+
+    if (!authState.isAuthenticated) {
+      return AuthenticationScreen(
+        onAuthenticationSuccess: _onAuthenticationSuccess,
+      );
+    }
+
+    return MainNavigationScreen(
+      onLogout: () => context.read<AppAuthState>().logout(),
+    );
+  }
+}
+
+/// Lock overlay that sits ABOVE the Navigator via MaterialApp.builder.
+/// Covers all pushed routes when the app is locked.
+class LockOverlay extends StatefulWidget {
+  final Widget child;
+
+  const LockOverlay({super.key, required this.child});
+
+  @override
+  State<LockOverlay> createState() => _LockOverlayState();
+}
+
+class _LockOverlayState extends State<LockOverlay>
+    with WidgetsBindingObserver {
   bool _isLocked = false;
   Orientation? _lastOrientation;
   DateTime? _lastMetricsChange;
-
-  void logout() {
-    setState(() {
-      _isAuthenticated = false;
-    });
-  }
 
   @override
   void initState() {
@@ -176,7 +256,6 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
         _lastOrientation = MediaQuery.of(context).orientation;
       }
     });
-    _checkAuthSetup();
   }
 
   @override
@@ -207,11 +286,10 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
         return;
       }
 
-      setState(() {
-        if (_isAuthenticated) {
-          _isLocked = true;
-        }
-      });
+      final authState = context.read<AppAuthState>();
+      if (authState.isAuthenticated) {
+        setState(() => _isLocked = true);
+      }
     } else if (state == AppLifecycleState.resumed) {
       _lastOrientation = MediaQuery.of(context).orientation;
       _lastMetricsChange = null;
@@ -223,53 +301,18 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
     _lastMetricsChange = DateTime.now();
   }
 
-  Future<void> _checkAuthSetup() async {
-    final isSetup = await _authService.isAuthenticationSetup();
-    setState(() {
-      _isAuthSetup = isSetup;
-    });
-  }
-
-  void _onAuthenticationSuccess() {
-    setState(() {
-      _isAuthenticated = true;
-      _isLocked = false;
-    });
-  }
-
-  void _onSetupComplete() {
-    setState(() {
-      _isAuthSetup = true;
-      _isAuthenticated = true;
-      _isLocked = false;
-    });
+  void _onUnlock() {
+    setState(() => _isLocked = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isAuthSetup == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    Widget mainContent;
-    if (!_isAuthSetup!) {
-      mainContent = MethodSelectionScreen(
-        onSetupComplete: _onSetupComplete,
-      );
-    } else if (!_isAuthenticated) {
-      mainContent = AuthenticationScreen(
-        onAuthenticationSuccess: _onAuthenticationSuccess,
-      );
-    } else {
-      mainContent = MainNavigationScreen(onLogout: logout);
-    }
-
     return Stack(
       children: [
-        mainContent,
+        widget.child,
         if (_isLocked)
           AuthenticationScreen(
-            onAuthenticationSuccess: _onAuthenticationSuccess,
+            onAuthenticationSuccess: _onUnlock,
           ),
       ],
     );
