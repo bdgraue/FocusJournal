@@ -159,7 +159,7 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   bool _isAuthenticated = false;
   bool _isLocked = false;
   Orientation? _lastOrientation;
-  bool _orientationJustChanged = false;
+  DateTime? _lastMetricsChange;
 
   void logout() {
     setState(() {
@@ -171,23 +171,12 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Initialize orientation after first frame so MediaQuery is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _lastOrientation = MediaQuery.of(context).orientation;
       }
     });
     _checkAuthSetup();
-    _checkInitialLock();
-  }
-
-  Future<void> _checkInitialLock() async {
-    final shouldLock = await _authService.shouldRequireAuth(context);
-    if (shouldLock) {
-      setState(() {
-        _isLocked = true;
-      });
-    }
   }
 
   @override
@@ -198,44 +187,40 @@ class _AuthenticationWrapperState extends State<AuthenticationWrapper>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Lock when app goes to background (inactive or paused)
     if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
-      // Check if lock suppression is active (e.g., during file picker operations)
+      // Don't lock during sensitive operations like file picker
       final lockSuppression = context.read<LockSuppression>();
-      if (lockSuppression.value) {
-        // Don't lock during sensitive operations like file picker
-        return;
-      }
+      if (lockSuppression.value) return;
 
-      // In some cases, inactive may arrive before didChangeMetrics on rotation.
-      // Detect orientation change here as well and skip locking if it changed.
+      // Common case: orientation already applied before lifecycle fires
       final currentOrientation = MediaQuery.of(context).orientation;
       if (_lastOrientation != null && _lastOrientation != currentOrientation) {
-        _orientationJustChanged = true;
+        _lastOrientation = currentOrientation;
+        return;
       }
       _lastOrientation = currentOrientation;
 
-      if (_orientationJustChanged) {
-        // Reset the flag and skip locking/unlocking on rotation
-        _orientationJustChanged = false;
+      // Edge case: lifecycle fires before metrics are applied (rotation pending)
+      if (_lastMetricsChange != null &&
+          DateTime.now().difference(_lastMetricsChange!) <
+              const Duration(milliseconds: 500)) {
         return;
       }
+
       setState(() {
         if (_isAuthenticated) {
           _isLocked = true;
         }
       });
+    } else if (state == AppLifecycleState.resumed) {
+      _lastOrientation = MediaQuery.of(context).orientation;
+      _lastMetricsChange = null;
     }
   }
 
   @override
   void didChangeMetrics() {
-    // Triggered on orientation changes and other metrics updates
-    final currentOrientation = MediaQuery.of(context).orientation;
-    if (_lastOrientation != null && _lastOrientation != currentOrientation) {
-      _orientationJustChanged = true;
-    }
-    _lastOrientation = currentOrientation;
+    _lastMetricsChange = DateTime.now();
   }
 
   Future<void> _checkAuthSetup() async {

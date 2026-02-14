@@ -7,7 +7,6 @@ import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 
 /// Manages user authentication for the journal app.
 ///
@@ -29,7 +28,6 @@ class AuthenticationService {
   static const String _pinKey = 'pin';
   static const String _patternKey = 'pattern';
   static const String _hasSetupKey = 'hasSetupAuth';
-  static const String _screenLockKey = 'screenLock';
   static const String _authMethodKey = 'authMethod';
   static const String _biometricsKey = 'biometrics';
   static const String _failedAttemptsKey = 'failedAttempts';
@@ -47,8 +45,6 @@ class AuthenticationService {
 
   static final AuthenticationService _instance =
       AuthenticationService._internal();
-  bool _isLocked = false;
-
   factory AuthenticationService() {
     return _instance;
   }
@@ -185,19 +181,6 @@ class AuthenticationService {
     return password.isNotEmpty;
   }
 
-  void lockApp() {
-    _isLocked = true;
-  }
-
-  Future<bool> shouldRequireAuth(BuildContext context) async {
-    // Require auth only if app was explicitly locked by app logic
-    if (_isLocked) {
-      _isLocked = false; // Reset lock state after checking
-      return true;
-    }
-    // Do not tie auth requirement to orientation changes
-    return false;
-  }
 
   Future<bool> isAuthenticationSetup() async {
     final prefs = await SharedPreferences.getInstance();
@@ -303,16 +286,6 @@ class AuthenticationService {
     return prefs.getString(_authMethodKey) ?? authMethodPassword;
   }
 
-  Future<bool> isScreenLockEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_screenLockKey) ??
-        true; // Default to true for security
-  }
-
-  Future<void> setScreenLockEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_screenLockKey, enabled);
-  }
 
   Future<void> logout() async {
     await _secureStorage.delete(key: _passwordKey);

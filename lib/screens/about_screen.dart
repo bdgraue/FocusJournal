@@ -56,7 +56,7 @@ class _AboutScreenState extends State<AboutScreen> {
     try {
       final date = DateTime.parse(isoDate);
       final locale = Localizations.localeOf(context).toString();
-      return DateFormat.yMMMMd(locale).format(date);
+      return DateFormat.yMMMMd(locale).add_Hm().format(date);
     } catch (_) {
       return isoDate;
     }
