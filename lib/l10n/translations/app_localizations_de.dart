@@ -592,4 +592,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get enableStars => 'Sterne aktivieren';
   @override
   String get enableStarsDescription => 'Markiere deine liebsten Eintr\u00e4ge';
+
+  // --- \u00dcber die App ---
+  @override
+  String get aboutApp => '\u00dcber die App';
+  @override
+  String get version => 'Version';
+  @override
+  String get installedOn => 'Installiert am';
+  @override
+  String get lastUpdated => 'Letztes Update';
+  @override
+  String get developer => 'Entwickler';
+  @override
+  String get creditsSelf => 'F\u00fcr meine Geduld, Ausdauer, Beharrlichkeit und Hingabe zum Leben.';
 }

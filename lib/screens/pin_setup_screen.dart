@@ -49,6 +49,8 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
           Navigator.pop(context);
         } else {
           await _offerBiometrics(authService);
+          if (!mounted) return;
+          Navigator.of(context).popUntil((route) => route.isFirst);
           widget.onSetupComplete?.call();
         }
       } catch (_) {
@@ -89,6 +91,17 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
 
     if (enable == true) {
       await authService.setBiometricsEnabled(true);
+      final success = await authService.authenticateWithBiometrics(
+        localizedReason: l10n.biometricPrompt,
+      );
+      if (!success) {
+        await authService.setBiometricsEnabled(false);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.biometricAuthFailed)),
+          );
+        }
+      }
     }
   }
 

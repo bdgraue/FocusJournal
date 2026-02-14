@@ -532,4 +532,18 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   String get enableStars => 'Activer les \u00e9toiles';
   @override
   String get enableStarsDescription => 'Marquez vos entr\u00e9es pr\u00e9f\u00e9r\u00e9es';
+
+  // --- \u00c0 propos ---
+  @override
+  String get aboutApp => '\u00c0 propos de l\'app';
+  @override
+  String get version => 'Version';
+  @override
+  String get installedOn => 'Install\u00e9 le';
+  @override
+  String get lastUpdated => 'Derni\u00e8re mise \u00e0 jour';
+  @override
+  String get developer => 'D\u00e9veloppeur';
+  @override
+  String get creditsSelf => 'Pour ma patience, ma pers\u00e9v\u00e9rance, ma t\u00e9nacit\u00e9 et mon d\u00e9vouement \u00e0 la vie.';
 }
