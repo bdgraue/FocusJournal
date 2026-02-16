@@ -239,6 +239,8 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
               child: Text(l10n.proceed),
               onPressed: () async {
                 final lockSuppression = context.read<LockSuppression>();
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final l10n = AppLocalizations.of(context)!;
 
                 // CRITICAL: Save password BEFORE dialog closes and lifecycle clears it
                 final savedPassword = _passwordController.text;
@@ -262,26 +264,26 @@ class _BackupScreenState extends State<BackupScreen> with WidgetsBindingObserver
                       await _importJournal(file.path!);
                     } else {
                       if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        scaffoldMessenger.showSnackBar(
                           SnackBar(
-                            content: Text(AppLocalizations.of(context)!.couldNotGetFilePath),
+                            content: Text(l10n.couldNotGetFilePath),
                           ),
                         );
                       }
                     }
                   } else {
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(AppLocalizations.of(context)!.noFileSelected)),
+                      scaffoldMessenger.showSnackBar(
+                        SnackBar(content: Text(l10n.noFileSelected)),
                       );
                     }
                   }
                 } catch (e) {
                   lockSuppression.value = false;
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    scaffoldMessenger.showSnackBar(
                       SnackBar(
-                        content: Text(AppLocalizations.of(context)!.filePickFailed(e.toString())),
+                        content: Text(l10n.filePickFailed(e.toString())),
                       ),
                     );
                   }

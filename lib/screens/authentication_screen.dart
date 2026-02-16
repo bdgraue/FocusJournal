@@ -225,13 +225,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         await _authService.setupPin(_credentialController.text);
       }
       widget.onAuthenticationSuccess?.call();
-      if (widget.isChangingPin) {
+      if (mounted && widget.isChangingPin) {
         Navigator.pop(context);
       }
     } catch (_) {
-      setState(() {
-        _errorMessage = AppLocalizations.of(context)!.unexpectedError;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = AppLocalizations.of(context)!.unexpectedError;
+        });
+      }
     }
 
     if (mounted) {
