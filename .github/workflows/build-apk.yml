@@ -47,17 +47,28 @@ jobs:
           flutter --version
           dart --version
 
+      - name: Run analyzer
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
       - name: Build release APK
         run: flutter build apk --release --build-number=${{ github.run_number }} --verbose
 
-      - name: Rename APK to include version
+      - name: Read version from pubspec
+        id: version
         run: |
           VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | sed 's/+.*//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Rename APK to include version
+        run: |
           APK_DIR=build/app/outputs/flutter-apk
-          mv "$APK_DIR/app-release.apk" "$APK_DIR/FocusJournal-v${VERSION}-build${{ github.run_number }}.apk"
+          mv "$APK_DIR/app-release.apk" "$APK_DIR/FocusJournal-v${{ steps.version.outputs.version }}-build${{ github.run_number }}.apk"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: FocusJournal-APK
+          name: FocusJournal-v${{ steps.version.outputs.version }}-build${{ github.run_number }}
           path: build/app/outputs/flutter-apk/*.apk
           retention-days: 90
