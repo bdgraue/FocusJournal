@@ -48,7 +48,7 @@ jobs:
           dart --version
 
       - name: Run analyzer
-        run: flutter analyze --no-fatal-infos
+        run: flutter analyze
 
       - name: Run tests
         run: flutter test
