@@ -1,166 +1,136 @@
 # Focus Journal
 
-**Version 1.1.2**
+> A calm, private journaling app for focus, reflection, and small daily wins.
 
-A minimalist, privacy-focused journaling app built with Flutter. Focus Journal helps you maintain a personal journal with strong encryption and biometric authentication, designed for mindfulness and personal growth.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/WariKoda/FocusJournal/pulls)
+[![Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
+---
+
+## About
+
+Focus Journal is a local-first journaling app for people who want to build a
+quiet daily practice around focus and reflection. No account, no cloud, no
+tracking — your entries live on your device, encrypted.
+
+> _Made with [kodawari](https://en.wikipedia.org/wiki/Kodawari) in mind:
+> careful craftsmanship and attention to detail, in every small interaction._
 
 ## Features
 
-### Core Functionality
-- **Encrypted Journal Entries**: All entries are encrypted using AES-256 encryption
-- **Secure Authentication**: Multiple authentication methods:
-  - Biometric (fingerprint/face recognition)
-  - PIN code
-  - Password
-  - Pattern lock
-- **Calendar View**: Browse entries by date with an intuitive calendar interface
-- **Search**: Quickly find entries across your entire journal
-- **Same-Day Editing**: Edit entries only on the day they were created (read-only afterwards)
+- **Encrypted journal entries** — AES-256 encryption for all content
+- **Multiple auth methods** — biometric (fingerprint/face), PIN, password, or pattern
+- **Calendar view** — browse entries by date with an intuitive calendar
+- **Full-text search** — find entries across your whole journal
+- **Same-day editing** — entries are immutable after the day they were written
+- **Encrypted backups** — AES-256-GCM with PBKDF2 (100k iterations), `.fjb` format
+- **Material 3 design** — dynamic color (Android 12+), light & dark themes
+- **Multilingual** — 7 languages (DE, EN, ES, FR, IT, NL, PL)
+- **Cross-platform** — Android, iOS, Linux, macOS, Windows, Web
 
-### Privacy & Security
-- **Local Storage**: All data stays on your device
-- **Secure Storage**: Credentials stored using platform-secure storage APIs
-- **No Cloud Sync**: Your journal never leaves your device (unless you explicitly export)
-- **Encryption**: AES-256 encryption for all journal content
+## Screenshots
 
-### User Experience
-- **Material 3 Design**: Modern, clean interface following Material Design 3 guidelines
-- **Dynamic Color**: Adapts to your system color scheme (Android 12+)
-- **Dark/Light Theme**: System-aware theme switching
-- **Multilingual**: Support for 8 languages (DE, EN, ES, FR, IT, NL, PL)
-- **Cross-Platform**: Android, iOS, Linux, macOS, Windows, Web
+<!-- Add screenshots under docs/screenshots/ and reference them here -->
 
-### Data Management
-- **Backup & Export**: Export your journal to share or backup
-- **Import**: Restore entries from backup files
-- **Notifications**: Optional daily reminders to journal
+_Coming soon._
+
+## Tech Stack
+
+- **Framework:** [Flutter](https://flutter.dev/)
+- **State management:** [Provider](https://pub.dev/packages/provider)
+- **Local storage:** SQLite with AES-256 content encryption
+  (via [`encrypt`](https://pub.dev/packages/encrypt) + [`crypto`](https://pub.dev/packages/crypto))
+- **Secure credential storage:** [`flutter_secure_storage`](https://pub.dev/packages/flutter_secure_storage)
+- **Auth:** [`local_auth`](https://pub.dev/packages/local_auth) for biometrics
+- **Theming:** Material 3 + [`dynamic_color`](https://pub.dev/packages/dynamic_color) + [`flex_color_scheme`](https://pub.dev/packages/flex_color_scheme)
 
 ## Getting Started
 
 ### Prerequisites
-- Flutter SDK ^3.8.1
-- Dart SDK (comes with Flutter)
 
-### Installation
+- Flutter SDK (stable channel, `^3.8.1`)
+- Platform toolchain for your target (Android SDK, Xcode, etc.)
 
-1. Clone the repository:
+### Build & Run
+
 ```bash
-git clone <repository-url>
+git clone https://github.com/WariKoda/FocusJournal.git
 cd FocusJournal
-```
 
-2. Install dependencies:
-```bash
 flutter pub get
-```
-
-3. Run the app:
-```bash
 flutter run
 ```
 
-### Building for Release
+### Building for release
 
-#### Android
 ```bash
+# Android
 flutter build apk --release
-# or for app bundle:
 flutter build appbundle --release
-```
 
-#### iOS
-```bash
+# iOS
 flutter build ios --release
-```
 
-#### Desktop (Linux/macOS/Windows)
-```bash
+# Desktop
 flutter build linux --release
 flutter build macos --release
 flutter build windows --release
+
+# Web
+flutter build web --release
 ```
 
-#### Web
+### Running tests
+
 ```bash
-flutter build web --release
+flutter analyze
+flutter test
 ```
 
 ## Project Structure
 
 ```
 lib/
-├── l10n/                    # Localization files
-│   └── translations/        # Translations for 8 languages
-├── models/                  # Data models
-│   └── settings/           # Settings-related models
-├── screens/                # UI screens (11 screens)
-├── services/               # Business logic services (7 services)
-└── widgets/                # Reusable UI components
+├── l10n/          # Localization files (7 languages)
+├── models/        # Data models (incl. settings)
+├── screens/       # UI screens
+├── services/      # Business logic (auth, backup, journal, theme, notifications)
+└── widgets/       # Reusable UI components
 ```
-
-## Key Dependencies
-
-- **flutter_secure_storage**: Secure credential storage
-- **local_auth**: Biometric authentication
-- **encrypt/crypto**: AES-256 encryption
-- **table_calendar**: Calendar view
-- **flutter_local_notifications**: Daily reminders
-- **share_plus**: Export functionality
-- **dynamic_color**: Material You dynamic theming
-- **provider**: State management
-- **flex_color_scheme**: Advanced theming
-- **google_fonts**: Custom typography
-
-## Security Features
-
-### Screen Rotation Behavior
-Focus Journal ensures that rotating the device never changes the lock state:
-- If the app is currently locked, rotating the screen keeps it locked (no auto-unlock)
-- If the app is currently unlocked (e.g., in Settings), rotating the screen keeps it unlocked (no auto-lock)
-- Authentication is required when returning from background or when explicitly locked
-
-### Encryption
-- All journal entries are encrypted using AES-256
-- Encryption keys are derived from your authentication credentials
-- Keys are stored securely using platform-specific secure storage
-
-## Development
-
-### Running Tests
-```bash
-flutter test
-```
-
-### Code Generation
-The app uses code generation for some features. If you modify models or add new localizations, run:
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
-
-### Localization
-To add a new language:
-1. Create a new file in `lib/l10n/translations/app_localizations_XX.dart`
-2. Implement the `AppLocalizations` abstract class
-3. Add the locale to the `supportedLocales` in [main.dart](lib/main.dart)
-
-## Roadmap
-
-See [TODO_SETTINGS.md](TODO_SETTINGS.md) for planned features and settings sections currently in development.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are very welcome — whether that's code, documentation, bug
+reports, translations, or design feedback. If you're new to the project, look
+for issues tagged [`good first issue`](https://github.com/WariKoda/FocusJournal/labels/good%20first%20issue).
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request,
+and note that this project adheres to the [Contributor Covenant Code of
+Conduct](CODE_OF_CONDUCT.md).
+
+Questions and ideas are welcome in
+[Discussions](https://github.com/WariKoda/FocusJournal/discussions). Issues
+and PRs can be in English or German — whichever feels more natural to you.
+
+## Roadmap
+
+See the [open issues](https://github.com/WariKoda/FocusJournal/issues) for an
+up-to-date view of planned work.
+
+## Security
+
+If you find a security-sensitive issue, please follow the process in
+[SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## License
 
-This project is private and not intended for redistribution.
+Focus Journal is free software, licensed under the
+[GNU General Public License v3.0](LICENSE). You are free to use, study, share,
+and modify it under the terms of that license.
 
-## Maintainer
+## Acknowledgements
 
-bdgraue (bdgraue@gmail.com)
-
-## Links
-
-- Homepage: https://bdgraue.vancheng.de
-- Repository: https://bdgraue.vancheng.de/focus_journal
-- Issue Tracker: https://bdgraue.vancheng.de/focus_journal/issues
+- The Flutter and Dart communities.
+- Everyone who takes the time to open an issue or send a pull request.
