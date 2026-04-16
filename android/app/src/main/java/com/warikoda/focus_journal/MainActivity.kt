@@ -1,4 +1,4 @@
-package com.bdgraue.focus_journal
+package com.warikoda.focus_journal
 
 import android.os.Bundle
 import android.view.WindowManager
