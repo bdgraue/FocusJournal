@@ -1,7 +1,7 @@
 # Focus Journal - Claude Code Project Context
 
-> **Version**: 1.1.5
-> **Last Updated**: 2026-02-07
+> **Version**: 1.4.1
+> **Last Updated**: 2026-04-16
 > **Tech Stack**: Flutter 3.38.9, Dart 3.10.8
 > **Architecture**: Material 3 Design with Provider state management
 
@@ -202,4 +202,4 @@ When working on this project:
 ---
 
 **Maintained by**: bdgraue (bdgraue@gmail.com)
-**Repository**: https://bdgraue.vancheng.de/focus_journal
+**Repository**: https://github.com/WariKoda/FocusJournal
