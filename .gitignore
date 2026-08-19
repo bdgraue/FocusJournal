@@ -42,9 +42,13 @@ app.*.map.json
 # APK files
 *.apk
 
-# Android signing
+# Android signing — no keystores or signing credentials in git, anywhere
 /android/key.properties
 /android/app/release.keystore
+key.properties
+*.jks
+*.keystore
+*.pem
 
 # Android Studio will place build artifacts here
 /android/app/debug
