@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Focus Journal — Deine Gedanken bleiben deine</title>
+  <meta name="description" content="Focus Journal ist ein Tagebuch für deinen Kopf. Alles bleibt verschlüsselt auf deinem Gerät. Kein Konto, keine Werbung, kostenlos und quelloffen.">
+  <link rel="stylesheet" href="assets/focusjournal.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="alternate" hreflang="en" href="en/index.html">
+  <script src="assets/focusjournal.js" defer></script>
+  <!-- Ohne JavaScript bleibt die Eintrags-Animation aus, der Text aber
+       sichtbar. -->
+  <noscript><style>.einblenden { opacity: 1; translate: 0 0; }</style></noscript>
+</head>
+<body>
+<header class="kopf">
+  <div class="hof kopf-zeile">
+    <a class="marke" href="index.html"><img src="assets/logo.png" alt="" width="32" height="32">Focus Journal</a>
+    <nav aria-label="Seitennavigation">
+      <a href="#funktionen">Funktionen</a>
+      <a href="#downloads">Downloads</a>
+      <a href="#quellcode">Quellcode</a>
+      <a href="#faq">Fragen</a>
+    </nav>
+    <div class="kopf-werkzeug">
+      <a class="sprachwechsel" href="en/index.html" hreflang="en" lang="en">EN</a>
+      <button id="themawechsel" type="button" aria-label="Zwischen hellem und dunklem Design wechseln">☾</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hof held">
+    <div class="held-text">
+      <h1>Deine Gedanken <em>bleiben deine.</em></h1>
+      <p>Focus Journal ist ein Tagebuch für deinen Kopf. Du schreibst auf,
+        was der Tag gebracht hat. Alles bleibt verschlüsselt auf deinem
+        Gerät. Die App fragt nie nach dem Internet — sie darf gar nicht
+        hinein.</p>
+      <div class="held-aktionen">
+        <a class="knopf knopf-voll" href="#downloads">Focus Journal holen</a>
+        <a class="knopf knopf-rand" href="#funktionen">Was die App kann</a>
+      </div>
+    </div>
+
+    <!-- Die Signatur der Seite: die App, gezeigt als das, was sie verwahrt —
+         eine aufgeschlagene, linierte Tagebuchseite. -->
+    <article class="tagebuchseite" aria-label="Focus Journal, gezeigt als aufgeschlagene Tagebuchseite">
+      <header class="seiten-kopf">
+        <img src="assets/logo.png" alt="Das Focus-Journal-Logo: ein aufgeschlagenes Buch mit Stift" width="52" height="52">
+        <div>
+          <h2>Heute</h2>
+          <p>Ein Tag. Ein Eintrag. Bleibt, wie er ist.</p>
+        </div>
+      </header>
+      <p class="karte-label">Dein Eintrag <span class="stern">★</span></p>
+      <p class="eintrag">
+        <span class="einblenden">Der Morgen war zäh.</span>
+        <span class="einblenden">Dann eine Stunde am Stück gearbeitet.</span>
+        <span class="einblenden">Ohne Handy, ohne Nachrichten.</span>
+        <span class="einblenden">Danach war der Kopf leicht.</span>
+      </p>
+      <p class="seiten-fuss">
+        <span class="chip gesperrt">🔒 verschlüsselt auf diesem Gerät</span>
+        <span class="chip">ab morgen nicht mehr änderbar</span>
+      </p>
+    </article>
+  </section>
+
+  <aside class="zusagen" aria-label="Focus Journal in Zahlen">
+    <div class="hof">
+      <ul>
+        <li><span class="zahl">0</span>Konten</li>
+        <li><span class="zahl">0</span>Werbenetze</li>
+        <li><span class="zahl">5</span>Berechtigungen</li>
+        <li><span class="zahl">7</span>Sprachen</li>
+        <li><span class="zahl">100.000</span>Schlüsselrunden</li>
+      </ul>
+    </div>
+  </aside>
+
+  <section class="abschnitt" id="funktionen">
+    <div class="hof">
+      <p class="augenbraue">Funktionen</p>
+      <h2>So arbeitet Focus Journal</h2>
+      <p class="vorspann">Jeder Bildschirm der App, und was dahintersteckt. Die Bilder kannst du hell oder dunkel ansehen — unabhängig davon, wie diese Seite gerade aussieht.</p>
+      <div class="bild-leiste" hidden>
+        <div class="bild-schalter" role="group" aria-label="Ansicht der Bilder"><button type="button" data-thema="light" aria-pressed="false">Hell</button><button type="button" data-thema="dark" aria-pressed="false">Dunkel</button></div>
+      </div>
+      <div class="funktionsstreifen">
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="01-journal">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/01-journal.png" alt="Tagebuch-Liste mit Einträgen mehrerer Tage, Datumsüberschriften und Sternen" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/01-journal.png" alt="Tagebuch-Liste mit Einträgen mehrerer Tage, Datumsüberschriften und Sternen" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Übersicht</p>
+          <h3>Dein Tagebuch</h3>
+          <p>Alle Einträge liegen untereinander, nach Tagen gruppiert. Heute und Gestern stehen namentlich da, ältere Tage mit vollem Datum. Ein Stern am Rand markiert die Einträge, die dir wichtig sind.</p>
+          <p>Ein Tippen auf das Plus, und du schreibst den Eintrag für heute.</p>
+          <p class="beleg">nach Tagen gruppiert · Heute und Gestern namentlich</p>
+          </div>
+        </article>
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="05-write">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/05-write.png" alt="Neuer Eintrag mit Textfeld und Speichern-Symbol" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/05-write.png" alt="Neuer Eintrag mit Textfeld und Speichern-Symbol" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Schreiben</p>
+          <h3>Schreiben und loslassen</h3>
+          <p>Du schreibst deinen Eintrag am Tag, an dem er passiert. Ändern und löschen kannst du ihn auch nur an diesem Tag. Danach steht er fest.</p>
+          <p>Das nimmt den Druck, alles später schön zu machen. Lesen kannst du alte Einträge natürlich immer.</p>
+          <p class="beleg">änderbar und löschbar nur am selben Tag</p>
+          </div>
+        </article>
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="02-calendar">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/02-calendar.png" alt="Monatskalender; Tage mit Eintrag tragen einen Punkt" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/02-calendar.png" alt="Monatskalender; Tage mit Eintrag tragen einen Punkt" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Kalender</p>
+          <h3>Der Kalender</h3>
+          <p>Ein Punkt unter dem Datum zeigt, an welchen Tagen du geschrieben hast. Tippe auf einen Tag und lies nach, was damals los war.</p>
+          <p>So siehst du auf einen Blick, wie oft du dran warst.</p>
+          <p class="beleg">ein Punkt je Tag mit Eintrag</p>
+          </div>
+        </article>
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="03-search">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/03-search.png" alt="Suche mit hervorgehobener Fundstelle in den Treffern" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/03-search.png" alt="Suche mit hervorgehobener Fundstelle in den Treffern" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Suche</p>
+          <h3>Alles wiederfinden</h3>
+          <p>Such nach einem Wort, und die App zeigt dir jeden Eintrag, in dem es vorkommt — die Fundstelle ist im Text hervorgehoben.</p>
+          <p>Die Suche läuft auf deinem Gerät. Sie braucht kein Internet und schickt nichts weg.</p>
+          <p class="beleg">Volltext über alle Einträge · läuft auf dem Gerät</p>
+          </div>
+        </article>
+        <article class="streifen gold">
+          <div class="streifen-bild" data-shot="04-highlights">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/04-highlights.png" alt="Sammlung der mit Stern markierten Einträge" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/04-highlights.png" alt="Sammlung der mit Stern markierten Einträge" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Highlights</p>
+          <h3>Sterne für gute Tage</h3>
+          <p>Markiere besondere Einträge mit einem Stern. Die App sammelt alle Sterne an einem Ort, damit du die guten Tage wiederfindest, ohne zu blättern.</p>
+          <p>Magst du keine Sterne? Dann schalte sie in den Einstellungen einfach ab.</p>
+          <p class="beleg">Sterne abschaltbar in den Einstellungen</p>
+          </div>
+        </article>
+        <article class="streifen gold">
+          <div class="streifen-bild" data-shot="06-lock">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/06-lock.png" alt="Sperrbildschirm mit PIN-Eingabe und Entsperren-Knopf" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/06-lock.png" alt="Sperrbildschirm mit PIN-Eingabe und Entsperren-Knopf" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Sicherheit</p>
+          <h3>Sicher verschlossen</h3>
+          <p>Du schützt dein Tagebuch mit PIN, Passwort oder Muster. Fingerabdruck und Gesichtserkennung gehen auch. Legst du das Handy weg, sperrt sich die App von selbst. Nach fünf falschen Versuchen musst du warten — jedes Mal länger.</p>
+          <p>Die Einträge selbst liegen verschlüsselt auf dem Gerät, der Schlüssel dazu im geschützten Speicher deines Systems. Und die App hat gar keine Erlaubnis, ins Internet zu gehen: Es gibt keinen Server, auf dem etwas landen könnte.</p>
+          <p class="beleg">PIN · Passwort · Muster · Biometrie — 5 Fehlversuche → 30 · 60 · 120 · 300 Sekunden Wartezeit</p>
+          </div>
+        </article>
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="07-backup">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/07-backup.png" alt="Backup erstellen und wiederherstellen, mit Passwortfeld" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/07-backup.png" alt="Backup erstellen und wiederherstellen, mit Passwortfeld" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Backup</p>
+          <h3>Sichern und wiederherstellen</h3>
+          <p>Mach ein Backup deines Tagebuchs. Es wird mit deinem Passwort verschlüsselt und als <code>.fjb</code>-Datei gespeichert — wohin, entscheidest du.</p>
+          <p>Beim Zurückspielen wählst du: alles ersetzen, nur Neues ergänzen oder klug zusammenführen.</p>
+          <p class="beleg">AES-256 · PBKDF2-HMAC-SHA256 · 100.000 Runden · Format .fjb</p>
+          </div>
+        </article>
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="08-settings">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/08-settings.png" alt="Einstellungen mit täglicher Erinnerung und Uhrzeit" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/08-settings.png" alt="Einstellungen mit täglicher Erinnerung und Uhrzeit" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Erinnerung</p>
+          <h3>Kleine Erinnerung</h3>
+          <p>Die App erinnert dich einmal am Tag ans Schreiben, wenn du magst. Die Uhrzeit suchst du dir aus. So wird aus dem Vorsatz eine Gewohnheit.</p>
+          <p>In denselben Einstellungen findest du deine Sperre, die Backups und den Schalter für die Sterne.</p>
+          <p class="beleg">eine Erinnerung am Tag · Uhrzeit frei wählbar</p>
+          </div>
+        </article>
+        <article class="streifen">
+          <div class="streifen-bild" data-shot="09-theme">
+            <img class="bild-hell" src="assets/screenshots/de/phone/light/09-theme.png" alt="Design-Einstellungen: hell, dunkel oder System" loading="lazy" width="1080" height="1920">
+            <img class="bild-dunkel" src="assets/screenshots/de/phone/dark/09-theme.png" alt="Design-Einstellungen: hell, dunkel oder System" loading="lazy" width="1080" height="1920">
+          </div>
+          <div class="streifen-text">
+          <p class="marke-nummer">Design</p>
+          <h3>Dein Design, deine Sprache</h3>
+          <p>Hell, dunkel oder wie dein System — du entscheidest. Auf neueren Android-Handys nimmt die App die Farben deines Hintergrundbilds auf.</p>
+          <p>Sie spricht 7 Sprachen: Deutsch, Englisch, Französisch, Spanisch, Italienisch, Niederländisch und Polnisch, und richtet sich nach deinem Gerät.</p>
+          <p class="beleg">7 Sprachen · hell / dunkel / System · dynamische Farben ab Android 12</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="abschnitt gedeckt" id="downloads">
+    <div class="hof">
+      <p class="augenbraue">Downloads</p>
+      <h2>Focus Journal auf dein Gerät</h2>
+      <p class="vorspann">Focus Journal ist kostenlos. Es gibt keine Werbung,
+        kein Abo und keine Käufe in der App.</p>
+      <div class="plattformen">
+        <div class="plattform plattform-haupt">
+          <h3>Android</h3>
+          <p>Über Google Play. Der Store hält die App aktuell und meldet dir
+            neue Fassungen.</p>
+          <span class="status">bald verfügbar</span>
+        </div>
+        <div class="plattform">
+          <h3>Selbst bauen</h3>
+          <p>Der Quellcode liegt offen. Mit Flutter baust du dir die App
+            selbst:</p>
+          <p><code>flutter build apk</code></p>
+          <span class="status"><a href="https://github.com/WariKoda/FocusJournal">zum Quellcode</a></span>
+        </div>
+      </div>
+      <p class="geplant"><strong>Geplant:</strong> iPhone &amp; iPad · Windows ·
+        macOS · Linux · Web. Die App ist für diese Ziele vorbereitet, gebaut
+        und veröffentlicht ist bisher keines.</p>
+    </div>
+  </section>
+
+  <section class="abschnitt" id="quellcode">
+    <div class="hof">
+      <p class="augenbraue">Offener Quellcode</p>
+      <h2>Nachprüfen statt glauben</h2>
+      <div class="quelle">
+        <p class="stark">Der komplette Quellcode von Focus Journal ist
+          öffentlich. Jeder darf nachlesen, was die App tut — und was sie
+          nicht tut.</p>
+        <p>Die stärkste Aussage dieser Seite steht nicht in einem Werbetext,
+          sondern in einer Datei, die du selbst öffnen kannst: dem
+          Android-Manifest. Dort steht, was die App vom Betriebssystem
+          verlangt — und dort fehlt der Internetzugang.</p>
+        <div class="berechtigungen">
+          <p class="berechtigungen-kopf">Was die App vom System verlangt</p>
+          <ul>
+            <li><code>USE_BIOMETRIC</code><span>Fingerabdruck und Gesichtserkennung</span></li>
+            <li><code>POST_NOTIFICATIONS</code><span>die tägliche Erinnerung</span></li>
+            <li><code>SCHEDULE_EXACT_ALARM</code><span>damit sie zur eingestellten Zeit kommt</span></li>
+            <li><code>USE_EXACT_ALARM</code><span>dasselbe für neuere Android-Fassungen</span></li>
+            <li><code>RECEIVE_BOOT_COMPLETED</code><span>stellt die Erinnerung nach einem Neustart wieder her</span></li>
+            <li class="fehlt"><code>INTERNET</code><span>wird nicht angefordert — die App kommt gar nicht ins Netz</span></li>
+          </ul>
+        </div>
+        <p><a href="https://github.com/WariKoda/FocusJournal">github.com/WariKoda/FocusJournal</a></p>
+        <p class="lizenz">Lizenz: GNU GPL v3.0</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="abschnitt faq gedeckt" id="faq">
+    <div class="hof">
+      <p class="augenbraue">Fragen</p>
+      <h2 class="abschnitt-titel">Kurz beantwortet</h2>
+      <details>
+        <summary>Brauche ich ein Konto?</summary>
+        <p>Nein. Du öffnest die App, richtest deine Sperre ein und
+          schreibst los. Es gibt keine Anmeldung und keine E-Mail-Adresse,
+          die du angeben müsstest.</p>
+      </details>
+      <details>
+        <summary>Geht die App ohne Internet?</summary>
+        <p>Ja — und zwar immer. Focus Journal fordert auf Android gar nicht
+          erst die Erlaubnis an, ins Internet zu gehen. Schreiben, lesen,
+          suchen, sichern: alles passiert auf deinem Gerät.</p>
+      </details>
+      <details>
+        <summary>Kann ich einen Eintrag später ändern?</summary>
+        <p>Nein. Ändern und löschen geht nur an dem Tag, an dem du den
+          Eintrag geschrieben hast. Danach bleibt er so stehen. Lesen
+          kannst du ihn für immer.</p>
+      </details>
+      <details>
+        <summary>Was ist, wenn ich mein Gerät verliere?</summary>
+        <p>Dafür gibt es Backups. Mach regelmäßig eins und leg es an einen
+          sicheren Ort. Auf dem neuen Gerät spielst du es wieder ein. Das
+          Backup ist mit deinem Passwort verschlüsselt — merke es dir gut,
+          denn ohne das Passwort kommt niemand mehr an die Einträge, auch
+          du nicht.</p>
+      </details>
+      <details>
+        <summary>Wer kann meine Einträge lesen?</summary>
+        <p>Nur du. Die Einträge liegen verschlüsselt auf deinem Gerät, der
+          Schlüssel dazu im geschützten Speicher deines Systems. Zusätzlich
+          schützt du die App mit PIN, Passwort, Muster oder deinem
+          Fingerabdruck. Es gibt keinen Server und keine Weitergabe an
+          Dritte.</p>
+      </details>
+      <details>
+        <summary>Was kostet Focus Journal?</summary>
+        <p>Nichts. Die App ist kostenlos und quelloffen. Es gibt keine
+          Werbung, kein Abo und keine Käufe in der App. Es werden auch
+          keine Daten gesammelt und verkauft — das wäre auch schwierig,
+          weil die App nicht ins Internet darf.</p>
+      </details>
+      <div class="abbinder">
+        <p>Mehr steht nicht dazwischen: App laden, Sperre einrichten, den
+          ersten Eintrag schreiben.</p>
+        <a class="knopf knopf-voll" href="#downloads">Focus Journal holen</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="fuss">
+  <div class="hof fuss-zeile">
+    <a class="marke" href="index.html"><img src="assets/logo.png" alt="" width="24" height="24">Focus Journal</a>
+    <a href="datenschutz.html">Datenschutzerklärung</a>
+    <a href="impressum.html">Impressum</a>
+    <a href="en/index.html" hreflang="en" lang="en">English</a>
+  </div>
+</footer>
+</body>
+</html>
