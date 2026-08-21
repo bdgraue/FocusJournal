@@ -31,18 +31,12 @@ class _ThemeSettingsContent extends StatefulWidget {
 }
 
 class _ThemeSettingsContentState extends State<_ThemeSettingsContent> {
-  late ThemeService _themeService;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeThemeService();
-  }
-
-  Future<void> _initializeThemeService() async {
-    _themeService = await ThemeService.getInstance();
-    setState(() {});
-  }
+  /// Der Dienst kommt aus dem ChangeNotifierProvider, den
+  /// [ThemeSettingsScreen] um dieses Widget legt — er steht damit schon beim
+  /// ersten build() bereit. Ihn hier ein zweites Mal asynchron zu holen ließ
+  /// den ersten Frame auf ein noch nicht gesetztes late-Feld laufen
+  /// (LateInitializationError).
+  ThemeService get _themeService => context.read<ThemeService>();
 
   @override
   Widget build(BuildContext context) {
