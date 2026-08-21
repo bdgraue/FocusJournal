@@ -99,3 +99,8 @@ coverage/
 
 # Android build reports
 android/build/reports/
+
+# Screenshot-Rohdaten der Store-/Website-Läufe (Ergebnis von
+# integration_test/store_screenshots_test.dart). Die für die Website
+# ausgewählten Bilder liegen versioniert unter website/assets/screenshots/.
+store_assets/screenshots/
