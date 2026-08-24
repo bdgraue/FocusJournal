@@ -577,6 +577,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get unexpectedError => 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
 
+  @override
+  String get entriesUnreadable =>
+      'Deine Einträge konnten nicht entschlüsselt werden. Sie sind vermutlich noch da — schreibe nichts Neues, bevor das geklärt ist, und spiele im Zweifel ein Backup ein.';
+
   // --- Danksagung ---
   @override
   String get credits => 'Danksagung';

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/services/event_bus.dart';
+import 'package:focus_journal/widgets/entries_unreadable_notice.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,7 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
   List<JournalEntry>? _entries;
   StreamSubscription<String>? _sub;
   bool _starsEnabled = true;
+  bool _entriesUnreadable = false;
 
   @override
   void initState() {
@@ -40,10 +42,17 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
 
   Future<void> _loadEntries() async {
     final service = await _journalService;
-    final entries = await service.getHighlightedEntries();
+    final List<JournalEntry> entries;
+    try {
+      entries = await service.getHighlightedEntries();
+    } on JournalDecryptionException {
+      if (mounted) setState(() => _entriesUnreadable = true);
+      return;
+    }
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
+        _entriesUnreadable = false;
         _entries = entries;
         _starsEnabled = prefs.getBool('stars_enabled') ?? true;
       });
@@ -85,6 +94,10 @@ class _HighlightsScreenState extends State<HighlightsScreen> {
   }
 
   Widget _buildBody(AppLocalizations l10n) {
+    if (_entriesUnreadable) {
+      return const EntriesUnreadableNotice();
+    }
+
     if (_entries == null) {
       return const Center(child: CircularProgressIndicator());
     }

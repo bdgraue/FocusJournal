@@ -514,6 +514,10 @@ class AppLocalizationsIt extends AppLocalizationsEn {
   @override
   String get unexpectedError => 'Si \u00e8 verificato un errore imprevisto. Riprova.';
 
+  @override
+  String get entriesUnreadable =>
+      'Non è stato possibile decifrare le tue voci. Molto probabilmente ci sono ancora: non scrivere nulla di nuovo finché non è chiarito e, nel dubbio, ripristina un backup.';
+
   // --- Ringraziamenti ---
   @override
   String get credits => 'Ringraziamenti';

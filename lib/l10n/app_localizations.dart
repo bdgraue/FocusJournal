@@ -847,6 +847,11 @@ abstract class AppLocalizations {
   String get passwordComplexityError;
   String get unexpectedError;
 
+  /// Shown when stored entries exist but cannot be decrypted. Must not
+  /// read like "you have no entries" — the data is most likely still
+  /// there, and the user should not start over on top of it.
+  String get entriesUnreadable;
+
   // --- Credits ---
   String get credits;
   String get creditsDeike;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/services/event_bus.dart';
+import 'package:focus_journal/widgets/entries_unreadable_notice.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -16,6 +17,7 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   late final Future<JournalService> _journalService;
   Map<DateTime, List<JournalEntry>> _entriesByDay = {};
+  bool _entriesUnreadable = false;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   List<JournalEntry> _selectedDayEntries = [];
@@ -42,9 +44,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Future<void> _loadEntries() async {
     final service = await _journalService;
-    final grouped = await service.getEntriesGroupedByDay();
+    final Map<DateTime, List<JournalEntry>> grouped;
+    try {
+      grouped = await service.getEntriesGroupedByDay();
+    } on JournalDecryptionException {
+      if (mounted) setState(() => _entriesUnreadable = true);
+      return;
+    }
     if (mounted) {
       setState(() {
+        _entriesUnreadable = false;
         _entriesByDay = grouped;
         if (_selectedDay != null) {
           final key = DateTime(
@@ -88,7 +97,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
         title: Text(l10n.calendarOverview),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Column(
+      body: _entriesUnreadable
+          ? const EntriesUnreadableNotice()
+          : Column(
         children: [
           TableCalendar<JournalEntry>(
             locale: locale,

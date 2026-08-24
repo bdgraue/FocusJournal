@@ -20,7 +20,7 @@ tracking — your entries live on your device, encrypted.
 
 ## Features
 
-- **Encrypted journal entries** — AES-256 encryption for all content
+- **Encrypted journal entries** — AES-256-GCM, key held in the OS secure storage
 - **Multiple auth methods** — biometric (fingerprint/face), PIN, password, or pattern
 - **Calendar view** — browse entries by date with an intuitive calendar
 - **Full-text search** — find entries across your whole journal
@@ -40,7 +40,7 @@ _Coming soon._
 
 - **Framework:** [Flutter](https://flutter.dev/)
 - **State management:** [Provider](https://pub.dev/packages/provider)
-- **Local storage:** SQLite with AES-256 content encryption
+- **Local storage:** SharedPreferences with AES-256-GCM content encryption
   (via [`encrypt`](https://pub.dev/packages/encrypt) + [`crypto`](https://pub.dev/packages/crypto))
 - **Secure credential storage:** [`flutter_secure_storage`](https://pub.dev/packages/flutter_secure_storage)
 - **Auth:** [`local_auth`](https://pub.dev/packages/local_auth) for biometrics

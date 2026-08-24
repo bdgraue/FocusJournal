@@ -6,6 +6,22 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+/// Thrown when stored entries exist but cannot be decrypted or parsed.
+///
+/// Deliberately distinct from "there is nothing stored yet": an empty journal
+/// and an unreadable one look the same to the user but mean opposite things.
+/// Callers must surface this instead of showing an empty list — otherwise the
+/// next write would persist that empty list over data that is still there.
+class JournalDecryptionException implements Exception {
+  final Object cause;
+
+  JournalDecryptionException(this.cause);
+
+  @override
+  String toString() =>
+      'Stored journal entries could not be decrypted or parsed: $cause';
+}
+
 /// Represents a single journal entry with content and timestamps.
 ///
 /// Each entry has a unique ID (UUID), creation timestamp, and last modified
@@ -75,17 +91,28 @@ class JournalEntry {
 /// data encrypted and stored in SharedPreferences.
 ///
 /// Security features:
-/// - AES-256-GCM encryption for all entry content
-/// - Unique IV per entry (stored alongside ciphertext)
-/// - DEK generated once and stored securely
-/// - Automatic encryption on save, decryption on load
+/// - AES-256-GCM (authenticated) encryption for all entry content
+/// - Fresh random 96-bit nonce per write, stored alongside the ciphertext
+/// - DEK generated once with `Random.secure()` and stored securely
+/// - Tampered or truncated ciphertext is rejected by the GCM tag rather than
+///   decrypting to garbage
 ///
-/// Singleton pattern with async initialization via `getInstance()`.
+/// Storage format: `v2:<base64 nonce>:<base64 ciphertext+tag>`. Records written
+/// before authenticated encryption was introduced carry no prefix and are
+/// AES-256-CTR; [_decrypt] still reads them, and the next write lifts the whole
+/// store to v2.
 class JournalService {
   static const String _storageKey = 'journal_entries';
   static const String _dekKey = 'journal_dek';
   static const int _keySize = 32; // 256 bits
-  static const int _ivSize = 16; // 128 bits
+
+  /// 96-bit nonce — the size GCM is specified for (NIST SP 800-38D). Other
+  /// lengths work but take the slower GHASH derivation path.
+  static const int _nonceSize = 12;
+
+  /// Marks a record as AES-256-GCM. Records without it predate authenticated
+  /// encryption and are AES-256-CTR.
+  static const String _formatPrefix = 'v2';
   final SharedPreferences _prefs;
   final FlutterSecureStorage _secureStorage;
 
@@ -95,9 +122,13 @@ class JournalService {
   })  : _prefs = prefs,
         _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
-  static Future<JournalService> create() async {
+  /// [secureStorage] exists so tests can supply a fake; production callers pass
+  /// nothing and get the real platform-backed store.
+  static Future<JournalService> create({
+    FlutterSecureStorage? secureStorage,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
-    return JournalService._(prefs: prefs);
+    return JournalService._(prefs: prefs, secureStorage: secureStorage);
   }
 
   // --- Encryption helpers ---
@@ -118,20 +149,32 @@ class JournalService {
   Future<String> _encrypt(String plaintext) async {
     final dek = await _getOrCreateDEK();
     final key = enc.Key(dek);
-    final iv = enc.IV.fromSecureRandom(_ivSize);
-    final encrypter = enc.Encrypter(enc.AES(key));
-    final encrypted = encrypter.encrypt(plaintext, iv: iv);
-    return '${iv.base64}:${encrypted.base64}';
+    final nonce = enc.IV.fromSecureRandom(_nonceSize);
+    final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.gcm));
+    final encrypted = encrypter.encrypt(plaintext, iv: nonce);
+    return '$_formatPrefix:${nonce.base64}:${encrypted.base64}';
   }
 
-  Future<String> _decrypt(String ciphertext) async {
+  Future<String> _decrypt(String stored) async {
     final dek = await _getOrCreateDEK();
     final key = enc.Key(dek);
-    final parts = ciphertext.split(':');
-    if (parts.length != 2) throw Exception('Invalid encrypted format');
-    final iv = enc.IV.fromBase64(parts[0]);
-    final encrypter = enc.Encrypter(enc.AES(key));
-    return encrypter.decrypt64(parts[1], iv: iv);
+    final parts = stored.split(':');
+
+    // v2 carries the prefix and is authenticated; a wrong key or a tampered
+    // record fails on the GCM tag instead of yielding plausible garbage.
+    if (parts.length == 3 && parts[0] == _formatPrefix) {
+      final encrypter = enc.Encrypter(enc.AES(key, mode: enc.AESMode.gcm));
+      return encrypter.decrypt64(parts[2], iv: enc.IV.fromBase64(parts[1]));
+    }
+
+    // Legacy: written before authenticated encryption, AES-256-CTR. Kept so
+    // existing installs keep their entries; the next save rewrites them as v2.
+    if (parts.length == 2) {
+      final encrypter = enc.Encrypter(enc.AES(key));
+      return encrypter.decrypt64(parts[1], iv: enc.IV.fromBase64(parts[0]));
+    }
+
+    throw const FormatException('Unrecognised encrypted record layout');
   }
 
   /// Detects if stored data is plaintext JSON (starts with '[') and needs migration.
@@ -140,27 +183,28 @@ class JournalService {
     return trimmed.startsWith('[') || trimmed.startsWith('{');
   }
 
+  /// Loads all entries.
+  ///
+  /// Returns an empty list only when nothing has ever been written. If stored
+  /// data exists but cannot be read, this throws [JournalDecryptionException]
+  /// rather than returning `[]` — the two are indistinguishable to the caller
+  /// but mean opposite things, and returning `[]` here would let the next write
+  /// persist an empty list over entries that are still on disk.
   Future<List<JournalEntry>> getAllEntries() async {
     final storedData = _prefs.getString(_storageKey);
     if (storedData == null) return [];
 
     try {
-      String jsonString;
       if (_isPlaintext(storedData)) {
-        // Legacy plaintext format - decrypt not needed, but migrate
-        jsonString = storedData;
-        // Migrate to encrypted format in background
-        final entries = _parseEntries(jsonString);
+        // Written before any encryption existed. Read as-is, then migrate.
+        final entries = _parseEntries(storedData);
         await _saveEncrypted(entries);
         return entries;
-      } else {
-        // Encrypted format
-        jsonString = await _decrypt(storedData);
       }
-      return _parseEntries(jsonString);
+      return _parseEntries(await _decrypt(storedData));
     } catch (e) {
       debugPrint('Error loading journal entries: $e');
-      return [];
+      throw JournalDecryptionException(e);
     }
   }
 

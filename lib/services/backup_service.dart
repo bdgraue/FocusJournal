@@ -18,9 +18,15 @@ class InvalidBackupPasswordException implements Exception {
 
 class BackupService {
   static const _algorithm = 'AES-256-GCM';
-  static const _backupVersion = '1.1';
+
+  /// 2.0 marks authenticated encryption. Files written as 1.0/1.1 claim
+  /// AES-256-GCM in their metadata but are in fact AES-256-CTR — which is why
+  /// [decryptBackup] decides by trying rather than by reading this field.
+  static const _backupVersion = '2.0';
   static const _keySize = 32; // 256 bits
-  static const _ivSize = 16; // 128 bits
+
+  /// 96-bit nonce — the size GCM is specified for (NIST SP 800-38D).
+  static const _nonceSize = 12;
   static const _saltSize = 32; // 256-bit salt
   static const _pbkdf2Iterations = 100000;
   final FlutterSecureStorage _secureStorage;
@@ -121,28 +127,33 @@ class BackupService {
     return Key(list);
   }
 
-  IV _generateIV() {
-    return IV.fromSecureRandom(_ivSize);
+  IV _generateNonce() {
+    return IV.fromSecureRandom(_nonceSize);
   }
 
-  Map<String, dynamic> _prepareEncryptedBackup(
+  /// Builds the encrypted backup document.
+  ///
+  /// Separate from [exportJournal] on purpose: this is the part worth testing,
+  /// and keeping it free of file and secure-storage access makes a plain unit
+  /// test of the full round trip possible.
+  Map<String, dynamic> encryptBackup(
     Map<String, dynamic> journalData,
     String password,
     Map<String, dynamic> metadata,
   ) {
     final salt = _generateSalt();
     final key = _deriveKey(password, salt);
-    final iv = _generateIV();
-    final encrypter = Encrypter(AES(key));
+    final nonce = _generateNonce();
+    final encrypter = Encrypter(AES(key, mode: AESMode.gcm));
 
     final jsonData = json.encode(journalData);
-    final encrypted = encrypter.encrypt(jsonData, iv: iv);
+    final encrypted = encrypter.encrypt(jsonData, iv: nonce);
 
     return {
       'metadata': metadata,
       'data': {
         'content': encrypted.base64,
-        'iv': iv.base64,
+        'iv': nonce.base64,
         'salt': base64.encode(salt),
       },
     };
@@ -153,7 +164,7 @@ class BackupService {
     String password,
   ) async {
     final metadata = await _prepareMetadata();
-    final exportData = _prepareEncryptedBackup(journalData, password, metadata);
+    final exportData = encryptBackup(journalData, password, metadata);
 
     final tempDir = await Directory.systemTemp.createTemp('journal_backup');
     final file = File(
@@ -178,7 +189,7 @@ class BackupService {
     String password,
   ) async {
     final metadata = await _prepareMetadata();
-    final exportData = _prepareEncryptedBackup(journalData, password, metadata);
+    final exportData = encryptBackup(journalData, password, metadata);
 
     final jsonString = json.encode(exportData);
     final bytes = Uint8List.fromList(utf8.encode(jsonString));
@@ -212,24 +223,35 @@ class BackupService {
     }
   }
 
-  Future<Map<String, dynamic>> importJournal(
+  /// Decrypts a backup document produced by [encryptBackup].
+  ///
+  /// The cipher mode is determined by trying, not by reading
+  /// `metadata.encryptionMethod`: files written as version 1.0/1.1 claim
+  /// AES-256-GCM there but are actually AES-256-CTR, so that field cannot be
+  /// trusted.
+  ///
+  /// GCM is attempted first because a wrong key or a tampered file fails
+  /// definitively on the authentication tag. CTR is the fallback and can only
+  /// be judged by whether the result happens to parse as JSON — the same
+  /// best-effort check this code has always relied on for old files.
+  ///
+  /// Key derivation runs once per candidate, not once per mode: PBKDF2 with
+  /// 100,000 rounds is the expensive part.
+  ///
+  /// Throws [InvalidBackupPasswordException] if no combination yields readable
+  /// data.
+  Map<String, dynamic> decryptBackup(
+    Map<String, dynamic> importData,
     String password,
-    String filePath,
-  ) async {
-    final file = File(filePath);
-    final content = await file.readAsString();
-
-    final importData = json.decode(content) as Map<String, dynamic>;
-
+  ) {
     final metadata = importData['metadata'] as Map<String, dynamic>;
     final encryptedData = importData['data'] as Map<String, dynamic>;
 
-    // Detect format: v1.1+ includes a salt for PBKDF2, v1.0 does not
+    // Format detection for the key: v1.1+ carries a salt for PBKDF2, v1.0 does not.
     final saltBase64 = encryptedData['salt'] as String?;
     final iv = IV.fromBase64(encryptedData['iv'] as String);
     final encryptedContent = encryptedData['content'] as String;
 
-    // Build ordered list of keys to try: primary method first, then fallback
     final keysToTry = <Key>[];
     if (saltBase64 != null) {
       final salt = Uint8List.fromList(base64.decode(saltBase64));
@@ -240,17 +262,29 @@ class BackupService {
     }
 
     for (final key in keysToTry) {
-      try {
-        final encrypter = Encrypter(AES(key));
-        final decrypted = encrypter.decrypt64(encryptedContent, iv: iv);
-        final result = json.decode(decrypted);
-        return {'metadata': metadata, 'data': result};
-      } catch (e) {
-        // Try next key derivation method
+      for (final mode in const [AESMode.gcm, AESMode.sic]) {
+        try {
+          final encrypter = Encrypter(AES(key, mode: mode));
+          final decrypted = encrypter.decrypt64(encryptedContent, iv: iv);
+          final result = json.decode(decrypted);
+          return {'metadata': metadata, 'data': result};
+        } catch (e) {
+          // Wrong key or wrong mode — try the next combination.
+        }
       }
     }
 
     throw InvalidBackupPasswordException();
+  }
+
+  Future<Map<String, dynamic>> importJournal(
+    String password,
+    String filePath,
+  ) async {
+    final file = File(filePath);
+    final content = await file.readAsString();
+    final importData = json.decode(content) as Map<String, dynamic>;
+    return decryptBackup(importData, password);
   }
 
   Map<String, dynamic> mergeJournals(
