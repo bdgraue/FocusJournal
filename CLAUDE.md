@@ -2,8 +2,13 @@
 
 > **Version**: 1.5.0
 > **Last Updated**: 2026-08-24
-> **Tech Stack**: Flutter 3.38.9, Dart 3.10.8
+> **Tech Stack**: Flutter, stable channel · Dart SDK `^3.8.1`
 > **Architecture**: Material 3 Design with Provider state management
+
+No Flutter version is pinned anywhere: `.github/workflows/build-apk.yml`
+and `.metadata` both say `stable` without one, and `pubspec.yaml` states
+only the Dart constraint. A specific build number here would be backed by
+nothing in the repo — and kept current by nobody.
 
 ## 🎯 Project Overview
 
