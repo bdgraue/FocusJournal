@@ -165,9 +165,9 @@
   <div class="card">
     <h2 data-icon="🛡️">Security</h2>
     <ul>
-      <li>Journal entries are stored on the device encrypted with <strong>AES-256</strong>; every write gets its own random IV.</li>
+      <li>Journal entries are stored on the device encrypted with <strong>AES-256-GCM</strong>; every write gets its own random nonce. GCM is an <em>authenticated</em> mode: if the ciphertext has been altered, that is caught on reading instead of silently producing corrupted entries.</li>
       <li>PIN, password and pattern are stored using <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations and a 32-byte random salt.</li>
-      <li>Backup files are encrypted with <strong>AES-256</strong>; the key is derived from your backup password via <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations.</li>
+      <li>Backup files are encrypted with <strong>AES-256-GCM</strong>; the key is derived from your backup password via <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations. An altered or damaged file is refused on import.</li>
       <li>After five wrong unlock attempts the app locks for increasing periods (30, 60, 120 and finally 300 seconds).</li>
       <li>When the app moves to the background, it locks itself.</li>
     </ul>

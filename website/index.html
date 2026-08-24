@@ -163,7 +163,7 @@
           <p class="marke-nummer">Sicherheit</p>
           <h3>Sicher verschlossen</h3>
           <p>Du schützt dein Tagebuch mit PIN, Passwort oder Muster. Fingerabdruck und Gesichtserkennung gehen auch. Legst du das Handy weg, sperrt sich die App von selbst. Nach fünf falschen Versuchen musst du warten — jedes Mal länger.</p>
-          <p>Die Einträge selbst liegen verschlüsselt auf dem Gerät, der Schlüssel dazu im geschützten Speicher deines Systems. Und die App hat gar keine Erlaubnis, ins Internet zu gehen: Es gibt keinen Server, auf dem etwas landen könnte.</p>
+          <p>Die Einträge selbst liegen mit AES-256-GCM verschlüsselt auf dem Gerät, der Schlüssel dazu im geschützten Speicher deines Systems. Und die App hat gar keine Erlaubnis, ins Internet zu gehen: Es gibt keinen Server, auf dem etwas landen könnte.</p>
           <p class="beleg">PIN · Passwort · Muster · Biometrie — 5 Fehlversuche → 30 · 60 · 120 · 300 Sekunden Wartezeit</p>
           </div>
         </article>
@@ -176,8 +176,8 @@
           <p class="marke-nummer">Backup</p>
           <h3>Sichern und wiederherstellen</h3>
           <p>Mach ein Backup deines Tagebuchs. Es wird mit deinem Passwort verschlüsselt und als <code>.fjb</code>-Datei gespeichert — wohin, entscheidest du.</p>
-          <p>Beim Zurückspielen wählst du: alles ersetzen, nur Neues ergänzen oder klug zusammenführen.</p>
-          <p class="beleg">AES-256 · PBKDF2-HMAC-SHA256 · 100.000 Runden · Format .fjb</p>
+          <p>Beim Zurückspielen wählst du: alles ersetzen, nur Neues ergänzen oder klug zusammenführen. Wurde an der Datei etwas verändert, merkt die App das und weist sie ab — statt dir stillschweigend beschädigte Einträge einzuspielen.</p>
+          <p class="beleg">AES-256-GCM · PBKDF2-HMAC-SHA256 · 100.000 Runden · Format .fjb</p>
           </div>
         </article>
         <article class="streifen">
