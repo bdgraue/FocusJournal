@@ -167,9 +167,9 @@
   <div class="card">
     <h2 data-icon="🛡️">Sicherheit</h2>
     <ul>
-      <li>Tagebucheinträge liegen mit <strong>AES-256</strong> verschlüsselt auf dem Gerät; jeder Speichervorgang bekommt einen eigenen Zufalls-IV.</li>
+      <li>Tagebucheinträge liegen mit <strong>AES-256-GCM</strong> verschlüsselt auf dem Gerät; jeder Speichervorgang bekommt einen eigenen Zufalls-Nonce. GCM ist ein <em>authentifiziertes</em> Verfahren: Wurde am Geheimtext etwas verändert, fällt das beim Lesen auf, statt unbemerkt zu entstellten Einträgen zu führen.</li>
       <li>PIN, Passwort und Muster werden mit <strong>PBKDF2-HMAC-SHA256</strong> und 100.000 Iterationen samt 32-Byte-Zufallssalz abgelegt.</li>
-      <li>Backup-Dateien werden mit <strong>AES-256</strong> verschlüsselt; der Schlüssel wird aus deinem Backup-Passwort per <strong>PBKDF2-HMAC-SHA256</strong> mit 100.000 Iterationen abgeleitet.</li>
+      <li>Backup-Dateien werden mit <strong>AES-256-GCM</strong> verschlüsselt; der Schlüssel wird aus deinem Backup-Passwort per <strong>PBKDF2-HMAC-SHA256</strong> mit 100.000 Iterationen abgeleitet. Eine veränderte oder beschädigte Datei wird beim Einspielen abgewiesen.</li>
       <li>Nach fünf falschen Entsperr-Versuchen sperrt die App zunehmend länger (30, 60, 120 und schließlich 300 Sekunden).</li>
       <li>Wechselt die App in den Hintergrund, sperrt sie sich selbst.</li>
     </ul>
@@ -245,9 +245,9 @@
   <div class="card">
     <h2 data-icon="🛡️">Security</h2>
     <ul>
-      <li>Journal entries are stored on the device encrypted with <strong>AES-256</strong>; every write gets its own random IV.</li>
+      <li>Journal entries are stored on the device encrypted with <strong>AES-256-GCM</strong>; every write gets its own random nonce. GCM is an <em>authenticated</em> mode: if the ciphertext has been altered, that is caught on reading instead of silently producing corrupted entries.</li>
       <li>PIN, password and pattern are stored using <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations and a 32-byte random salt.</li>
-      <li>Backup files are encrypted with <strong>AES-256</strong>; the key is derived from your backup password via <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations.</li>
+      <li>Backup files are encrypted with <strong>AES-256-GCM</strong>; the key is derived from your backup password via <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations. An altered or damaged file is refused on import.</li>
       <li>After five wrong unlock attempts the app locks for increasing periods (30, 60, 120 and finally 300 seconds).</li>
       <li>When the app moves to the background, it locks itself.</li>
     </ul>

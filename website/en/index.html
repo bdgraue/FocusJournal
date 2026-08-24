@@ -162,7 +162,7 @@
           <p class="marke-nummer">Security</p>
           <h3>Locked up safely</h3>
           <p>Protect your journal with a PIN, a password or a pattern. Fingerprint and face unlock work too. Put the phone down and the app locks itself. After five wrong tries you have to wait — a little longer each time.</p>
-          <p>The entries themselves sit encrypted on the device, the key for them in your system's protected storage. And the app has no permission to reach the internet at all: there is no server anything could end up on.</p>
+          <p>The entries themselves sit encrypted with AES-256-GCM on the device, the key for them in your system's protected storage. And the app has no permission to reach the internet at all: there is no server anything could end up on.</p>
           <p class="beleg">PIN · password · pattern · biometrics — 5 wrong tries → 30 · 60 · 120 · 300 seconds wait</p>
           </div>
         </article>
@@ -175,8 +175,8 @@
           <p class="marke-nummer">Backup</p>
           <h3>Back up and restore</h3>
           <p>Make a backup of your journal. It is encrypted with your password and saved as a <code>.fjb</code> file — where it goes is up to you.</p>
-          <p>When you restore it, you decide: replace everything, add only what is new, or merge intelligently.</p>
-          <p class="beleg">AES-256 · PBKDF2-HMAC-SHA256 · 100,000 rounds · .fjb format</p>
+          <p>When you restore it, you decide: replace everything, add only what is new, or merge intelligently. If the file has been altered, the app notices and refuses it — rather than quietly importing damaged entries.</p>
+          <p class="beleg">AES-256-GCM · PBKDF2-HMAC-SHA256 · 100,000 rounds · .fjb format</p>
           </div>
         </article>
         <article class="streifen">
