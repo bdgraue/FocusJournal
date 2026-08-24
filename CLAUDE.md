@@ -20,7 +20,7 @@ Focus Journal is a **minimalist journaling app** focused on mindfulness and pers
 - **AuthenticationService**: Handles biometric/PIN/pattern auth with lockout protection
 - **BackupService**: AES-256-GCM encryption with PBKDF2 (100k iterations)
 - **ExportService**: Coordinates backup/restore with auto-format detection
-- **JournalService**: SQLite-based local storage
+- **JournalService**: encrypted entries in SharedPreferences, DEK in secure storage
 - **NotificationService**: Daily reminders
 - **ThemeService**: Material 3 theming with dynamic colors
 
@@ -60,26 +60,43 @@ test/
 ├── screens/
 │   └── authentication_screen_test.dart
 └── services/
-    └── backup_service_test.dart  # 13 comprehensive tests ✓
+    ├── backup_service_test.dart   # validation, merging, crypto round trip
+    └── journal_service_test.dart  # entry format, legacy reads, fail-hard
 ```
 
 ## 🔐 Security Architecture
 
 ### Backup Encryption (BackupService)
 ```dart
-Algorithm:    AES-256-GCM
+Algorithm:    AES-256-GCM (authenticated, 128-bit tag)
 Key Derivation: PBKDF2-HMAC-SHA256
 Iterations:   100,000
 Salt:         256-bit random
-IV:           128-bit random
+Nonce:        96-bit random
 File Format:  .fjb (Focus Journal Backup)
 ```
+
+Backups written before version 2.0 are AES-256-CTR although their metadata
+claims GCM. `decryptBackup` therefore decides the mode by trying — GCM first,
+because a wrong key fails there definitively — and never by reading
+`encryptionMethod`.
+
+### Entry Encryption (JournalService)
+```dart
+Algorithm:    AES-256-GCM (authenticated, 128-bit tag)
+Key:          256-bit DEK, Random.secure(), kept in flutter_secure_storage
+Nonce:        96-bit random, fresh per write
+Record:       v2:<base64 nonce>:<base64 ciphertext+tag>
+```
+
+Records without the `v2:` prefix predate authenticated encryption and are
+AES-256-CTR; they stay readable and are lifted to v2 on the next write.
 
 ### Data Format
 ```json
 {
   "metadata": {
-    "version": "1.1",
+    "version": "2.0",
     "exportDate": "2024-01-01T00:00:00Z",
     "encryptionMethod": "AES-256-GCM",
     "keyDerivation": "PBKDF2-HMAC-SHA256",
@@ -112,14 +129,24 @@ File Format:  .fjb (Focus Journal Backup)
 ## 🧪 Testing
 
 ### Current Coverage
-- **Widget Tests**: 3/3 passing ✓
-- **BackupService Tests**: 13/13 passing ✓
-- **Total**: 17 tests passing
+`flutter test`: 61 passing ✓
 
 ### Test Strategy
-- **Data Validation**: 6 tests covering format validation
-- **Merge Strategies**: 5 tests for all merge scenarios
-- **Security**: 2 tests for exception handling
+- **Data Validation**: format validation of imported journal data
+- **Merge Strategies**: all three import strategies
+- **Encryption round trip**: encrypt → decrypt, wrong password, tampered
+  ciphertext, and a hand-built legacy CTR fixture that proves old backups and
+  old entries stay readable
+- **Fail hard**: unreadable stored entries must raise, never look like an empty
+  journal — a returned `[]` would invite the next write to overwrite them
+
+Device-level checks that a unit test cannot cover — the platform keystore
+holding the data encryption key — live in
+`integration_test/legacy_encryption_test.dart`:
+
+```
+flutter test integration_test/legacy_encryption_test.dart -d <device>
+```
 
 ## 🚀 Recent Updates (v1.1.5)
 

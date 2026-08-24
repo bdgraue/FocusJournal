@@ -573,6 +573,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get unexpectedError => 'An unexpected error occurred. Please try again.';
 
+  @override
+  String get entriesUnreadable =>
+      'Your entries could not be decrypted. They are most likely still there — do not write anything new until this is sorted out, and restore a backup if in doubt.';
+
   // --- Acknowledgments ---
   @override
   String get credits => 'Acknowledgments';

@@ -513,6 +513,10 @@ class AppLocalizationsPl extends AppLocalizationsEn {
   @override
   String get unexpectedError => 'Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d. Spr\u00f3buj ponownie.';
 
+  @override
+  String get entriesUnreadable =>
+      'Nie udało się odszyfrować Twoich wpisów. Najprawdopodobniej nadal tam są — nie pisz nic nowego, zanim to się wyjaśni, a w razie wątpliwości przywróć kopię zapasową.';
+
   // --- Podziękowania ---
   @override
   String get credits => 'Podzi\u0119kowania';

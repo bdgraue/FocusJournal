@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import 'package:focus_journal/services/journal_service.dart';
+import 'package:focus_journal/widgets/entries_unreadable_notice.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,7 @@ class _JournalScreenState extends State<JournalScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isScrolledAway = false;
   bool _starsEnabled = true;
+  bool _entriesUnreadable = false;
 
   @override
   void initState() {
@@ -71,9 +73,18 @@ class _JournalScreenState extends State<JournalScreen> {
 
   Future<void> _loadEntries() async {
     final service = await _journalService;
-    final entries = await service.getAllEntries();
+    final List<JournalEntry> entries;
+    try {
+      entries = await service.getAllEntries();
+    } on JournalDecryptionException {
+      // Never fall through to an empty list here — see
+      // EntriesUnreadableNotice for why that would be dangerous.
+      if (mounted) setState(() => _entriesUnreadable = true);
+      return;
+    }
     if (mounted) {
       setState(() {
+        _entriesUnreadable = false;
         _entries = entries;
       });
       if (widget.scrollToEntryId != null) {
@@ -218,7 +229,9 @@ class _JournalScreenState extends State<JournalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _entries == null
+      body: _entriesUnreadable
+          ? const EntriesUnreadableNotice()
+          : _entries == null
           ? const Center(child: CircularProgressIndicator())
           : _entries!.isEmpty
           ? Center(

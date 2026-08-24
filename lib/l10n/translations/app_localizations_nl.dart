@@ -513,6 +513,10 @@ class AppLocalizationsNl extends AppLocalizationsEn {
   @override
   String get unexpectedError => 'Er is een onverwachte fout opgetreden. Probeer het opnieuw.';
 
+  @override
+  String get entriesUnreadable =>
+      'Je items konden niet worden ontsleuteld. Ze staan er waarschijnlijk nog — schrijf niets nieuws voordat dit is opgelost en zet bij twijfel een back-up terug.';
+
   // --- Dankwoord ---
   @override
   String get credits => 'Dankwoord';

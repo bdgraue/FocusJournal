@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:focus_journal/l10n/app_localizations.dart';
 import 'package:focus_journal/services/journal_service.dart';
 import 'package:focus_journal/services/event_bus.dart';
+import 'package:focus_journal/widgets/entries_unreadable_notice.dart';
 import 'package:focus_journal/widgets/journal_entry_card.dart';
 import 'package:intl/intl.dart';
 
@@ -17,6 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
   late final Future<JournalService> _journalService;
   final TextEditingController _searchController = TextEditingController();
   List<JournalEntry>? _results;
+  bool _entriesUnreadable = false;
   Timer? _debounce;
   StreamSubscription<String>? _sub;
 
@@ -52,8 +54,19 @@ class _SearchScreenState extends State<SearchScreen> {
       return;
     }
     final service = await _journalService;
-    final results = await service.searchEntries(query);
-    if (mounted) setState(() => _results = results);
+    final List<JournalEntry> results;
+    try {
+      results = await service.searchEntries(query);
+    } on JournalDecryptionException {
+      if (mounted) setState(() => _entriesUnreadable = true);
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        _entriesUnreadable = false;
+        _results = results;
+      });
+    }
   }
 
   DateTime _startOfLocalDay(DateTime dt) =>
@@ -103,6 +116,10 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildBody(AppLocalizations l10n) {
+    if (_entriesUnreadable) {
+      return const EntriesUnreadableNotice();
+    }
+
     if (_results == null) {
       return Center(
         child: Column(

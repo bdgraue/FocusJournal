@@ -517,6 +517,10 @@ class AppLocalizationsFr extends AppLocalizationsEn {
   @override
   String get unexpectedError => 'Une erreur inattendue s\'est produite. Veuillez r\u00e9essayer.';
 
+  @override
+  String get entriesUnreadable =>
+      "Vos entrées n'ont pas pu être déchiffrées. Elles sont probablement toujours là — n'écrivez rien de nouveau avant que ce soit résolu, et restaurez une sauvegarde en cas de doute.";
+
   // --- Remerciements ---
   @override
   String get credits => 'Remerciements';
