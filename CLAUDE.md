@@ -217,6 +217,35 @@ void didChangeAppLifecycleState(AppLifecycleState state) {
 - [PBKDF2 Standard](https://tools.ietf.org/html/rfc2898)
 - [AES-GCM Spec](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf)
 
+## 🏷️ Releases and tags
+
+- Tags are named `X.Y.Z` — **no `v` prefix**.
+- A tag sits on the commit that set that version in `pubspec.yaml`, and that
+  commit must be on `main`. Tagging a pre-squash branch head leaves the tag off
+  the main line, where `git describe` will not find it.
+- Tag only **after** the pull request is merged, on the merged state. `main` is
+  protected; nothing lands on it directly.
+- Version choice follows semver as it applies to an app: a changed on-disk
+  format or changed user-visible behaviour is a MINOR bump, a bug fix is PATCH.
+  Note that migrations here are one-way — a newer format cannot be read by an
+  older build — so a MINOR release still breaks downgrades.
+
+### The 1.3.2 anomaly
+
+There is no `1.3.2` tag, and there cannot be one. A GitHub release named
+"1.3.2" was once published as **immutable** against a commit that already
+carried version 1.4.1. Immutability permanently reserves the tag name: it
+could not be moved, and after the release and tag were removed the name could
+not be created again either (`Cannot create ref due to creations being
+restricted`).
+
+**`v1.3.2` is the 1.3.2 release.** It points at `1646676`, the commit that set
+version 1.3.2, and it is the one tag in the repository that keeps the old
+prefix — not an oversight.
+
+The lesson worth keeping: do not publish an immutable release until the tag is
+certain, because the name is spent either way.
+
 ## 🤝 Contributing
 
 When working on this project:
@@ -225,6 +254,7 @@ When working on this project:
 3. Update this CLAUDE.md if architecture changes
 4. Security-critical changes require extra review
 5. Use conventional commit messages
+6. Tag releases per the section above — `X.Y.Z`, after the merge
 
 ---
 
