@@ -1,7 +1,7 @@
 # Focus Journal - Claude Code Project Context
 
-> **Version**: 1.4.1
-> **Last Updated**: 2026-04-16
+> **Version**: 1.5.0
+> **Last Updated**: 2026-08-24
 > **Tech Stack**: Flutter 3.38.9, Dart 3.10.8
 > **Architecture**: Material 3 Design with Provider state management
 
