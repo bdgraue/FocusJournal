@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Journal – Privacy Policy</title>
+  <link rel="icon" href="../assets/logo.png" type="image/png">
+  <style>
+    :root {
+      --primary: #673AB7;
+      --bg: #faf7f2;
+      --card: #ffffff;
+      --text: #1b1a1f;
+      --muted: #4a4550;
+      --border: #e6ded4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 24px 16px 64px;
+    }
+    header {
+      max-width: 760px;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      padding: 6px 14px;
+      border: 2px solid var(--primary);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      max-width: 760px;
+      margin: 0 auto 20px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2::before {
+      content: attr(data-icon);
+      font-size: 1.2rem;
+    }
+    p { color: var(--muted); margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    ul {
+      padding-left: 20px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    li { margin-bottom: 4px; }
+    strong { color: var(--text); }
+    a { color: var(--primary); }
+    .badge {
+      display: inline-block;
+      background: #ede4ff;
+      color: var(--primary);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 32px;
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 20px 16px; }
+      header { flex-wrap: wrap; }
+      .lang-switch { margin-left: 0; }
+    }
+    .lang-switch a { text-decoration: none; display: inline-block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Focus Journal</h1>
+    <p id="header-sub">Privacy Policy · Last updated: August 2026</p>
+  </div>
+  <div class="lang-switch">
+    <a class="lang-btn" href="../datenschutz.html" hreflang="de" lang="de">DE</a>
+  </div>
+</header>
+
+<!-- ===== ENGLISH ===== -->
+<div>
+
+  <div class="card">
+    <h2 data-icon="🔒">Core Principle</h2>
+    <p><strong>Focus Journal stores all your data exclusively on your device.</strong> There are no accounts, no cloud, no server run by the developer and no sharing of data with third parties. The Android build of the app does not even request permission to access the internet.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📱">What data is stored?</h2>
+    <ul>
+      <li><strong>Journal entries:</strong> Your text, the date and the star marker – encrypted in your device's local app storage. The key for it is generated once on the device and kept in protected system storage (Android Keystore or Keychain).</li>
+      <li><strong>App settings:</strong> Theme, reminder time, stars on/off – stored locally in your device's app preferences.</li>
+      <li><strong>Credentials:</strong> PIN, password or pattern are <strong>never stored in plaintext</strong>, only as a salted, stretched verifier in protected system storage.</li>
+      <li><strong>Backup files:</strong> Only when you create a backup yourself. The <code>.fjb</code> file is encrypted with your backup password and ends up wherever you save or share it.</li>
+    </ul>
+    <p><strong>No</strong> usage analytics, crash reports, advertising identifiers or telemetry are collected. The app contains no ads and no tracking libraries.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🌐">Network Access</h2>
+    <p><strong>None.</strong> The published Android build of Focus Journal declares no <code>INTERNET</code> permission. The operating system therefore does not let the app onto the network at all — regardless of what the app might attempt.</p>
+    <p>Consequently there is no transmission of entries, no synchronisation and no developer access to your data. If you want to move your journal to another device, you do so yourself using a backup file.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🔑">App Permissions</h2>
+    <ul>
+      <li><span class="badge">USE_BIOMETRIC</span> For the biometric app lock (fingerprint/face). Biometric data never leaves the device and is not readable by the app.</li>
+      <li><span class="badge">POST_NOTIFICATIONS</span> For the optional daily reminder.</li>
+      <li><span class="badge">SCHEDULE_EXACT_ALARM</span> So the reminder arrives at the time you set.</li>
+      <li><span class="badge">USE_EXACT_ALARM</span> Same purpose, for newer Android versions.</li>
+      <li><span class="badge">RECEIVE_BOOT_COMPLETED</span> Restores the reminder after the device reboots.</li>
+    </ul>
+    <p>The app requests nothing beyond this — in particular no location, no contacts, no camera and no internet access.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🛡️">Security</h2>
+    <ul>
+      <li>Journal entries are stored on the device encrypted with <strong>AES-256</strong>; every write gets its own random IV.</li>
+      <li>PIN, password and pattern are stored using <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations and a 32-byte random salt.</li>
+      <li>Backup files are encrypted with <strong>AES-256</strong>; the key is derived from your backup password via <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations.</li>
+      <li>After five wrong unlock attempts the app locks for increasing periods (30, 60, 120 and finally 300 seconds).</li>
+      <li>When the app moves to the background, it locks itself.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="👤">Data Controller</h2>
+    <p>
+      <strong>Van Cheng</strong><br>
+      Stikelkamper Straße 6<br>
+      26835 Hesel, Germany<br>
+      Email: <a href="mailto:bdgraue@gmail.com">bdgraue@gmail.com</a><br>
+      Source code: <a href="https://github.com/WariKoda/FocusJournal" target="_blank" rel="noopener">github.com/WariKoda/FocusJournal</a>
+    </p>
+    <p>Since the app transmits no personal data to the developer, there is nothing at the developer's end to disclose or delete. Your data resides solely on your device — you retain full control.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📋">Your Rights</h2>
+    <p>Since all data is stored locally on your device, you manage it yourself at any time:</p>
+    <ul>
+      <li><strong>Delete:</strong> Delete an entry in the app on the same day, wipe all data from the settings, or uninstall the app.</li>
+      <li><strong>Export:</strong> The app's backup feature produces an encrypted <code>.fjb</code> file.</li>
+      <li><strong>Portability:</strong> You can carry that file to another device and restore it there.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📅">Changes</h2>
+    <p>This privacy policy may change with new app versions. The current version is always available at this address. Material changes are named in the release notes.</p>
+    <p><strong>Last updated:</strong> August 2026 | <strong>App version:</strong> 1.4.1</p>
+  </div>
+
+</div>
+
+<footer>
+  Focus Journal &copy; 2026 Van Cheng &nbsp;·&nbsp;
+  <a href="https://github.com/WariKoda/FocusJournal">GitHub</a>
+</footer>
+
+
+</body>
+</html>

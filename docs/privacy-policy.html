@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Journal – Datenschutzerklärung / Privacy Policy</title>
+  <!-- FAVICON: wird beim Split durch den passenden Pfad ersetzt -->
+  <style>
+    :root {
+      --primary: #673AB7;
+      --bg: #faf7f2;
+      --card: #ffffff;
+      --text: #1b1a1f;
+      --muted: #4a4550;
+      --border: #e6ded4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 24px 16px 64px;
+    }
+    header {
+      max-width: 760px;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .lang-switch {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      padding: 6px 14px;
+      border: 2px solid var(--primary);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      max-width: 760px;
+      margin: 0 auto 20px;
+    }
+    h2 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h2::before {
+      content: attr(data-icon);
+      font-size: 1.2rem;
+    }
+    p { color: var(--muted); margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    ul {
+      padding-left: 20px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    li { margin-bottom: 4px; }
+    strong { color: var(--text); }
+    a { color: var(--primary); }
+    .badge {
+      display: inline-block;
+      background: #ede4ff;
+      color: var(--primary);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 32px;
+    }
+    [data-lang] { display: none; }
+    [data-lang].visible { display: block; }
+
+    @media (max-width: 520px) {
+      .card { padding: 20px 16px; }
+      header { flex-wrap: wrap; }
+      .lang-switch { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Focus Journal</h1>
+    <p id="header-sub">Datenschutzerklärung · Stand: August 2026</p>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('de')" id="btn-de">DE</button>
+    <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+  </div>
+</header>
+
+<!-- ===== DEUTSCH ===== -->
+<div data-lang="de" class="visible">
+
+  <div class="card">
+    <h2 data-icon="🔒">Grundprinzip</h2>
+    <p><strong>Focus Journal speichert alle deine Daten ausschließlich lokal auf deinem Gerät.</strong> Es gibt keine Konten, keine Cloud, keinen Server des Entwicklers und keine Weitergabe von Daten an Dritte. Die Android-Fassung der App fordert nicht einmal die Berechtigung an, ins Internet zu gehen.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📱">Welche Daten werden gespeichert?</h2>
+    <ul>
+      <li><strong>Tagebucheinträge:</strong> Dein Text, Datum und die Stern-Markierung – verschlüsselt im lokalen App-Speicher deines Geräts. Der zugehörige Schlüssel wird einmalig auf dem Gerät erzeugt und im geschützten Systemspeicher abgelegt (Android Keystore bzw. Schlüsselbund).</li>
+      <li><strong>App-Einstellungen:</strong> Design, Erinnerungszeit, Stern-Funktion an/aus – lokal in den App-Einstellungen deines Geräts.</li>
+      <li><strong>Zugangsdaten:</strong> PIN, Passwort oder Muster werden <strong>nie im Klartext</strong> gespeichert, sondern nur als gesalzener, gestreckter Prüfwert im geschützten Systemspeicher.</li>
+      <li><strong>Backup-Dateien:</strong> Nur wenn du selbst ein Backup erstellst. Die <code>.fjb</code>-Datei ist mit deinem Backup-Passwort verschlüsselt und landet dort, wo du sie ablegst oder hinteilst.</li>
+    </ul>
+    <p>Es werden <strong>keine</strong> Nutzungsstatistiken, Absturzberichte, Werbe-Kennungen oder Analysedaten erhoben. Die App enthält keine Werbung und keine Tracking-Bibliotheken.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🌐">Netzwerkzugriff</h2>
+    <p><strong>Keiner.</strong> Die veröffentlichte Android-Fassung von Focus Journal enthält keine <code>INTERNET</code>-Berechtigung. Das Betriebssystem lässt die App damit gar nicht erst ins Netz — unabhängig davon, was die App versuchen würde.</p>
+    <p>Es gibt folglich keine Übertragung von Einträgen, keine Synchronisierung und keinen Zugriff des Entwicklers auf deine Daten. Möchtest du dein Tagebuch auf ein anderes Gerät bringen, machst du das selbst über eine Backup-Datei.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🔑">App-Berechtigungen</h2>
+    <ul>
+      <li><span class="badge">USE_BIOMETRIC</span> Für die biometrische App-Sperre (Fingerabdruck/Gesicht). Biometrische Daten verlassen das Gerät nie und sind für die App nicht lesbar.</li>
+      <li><span class="badge">POST_NOTIFICATIONS</span> Für die optionale tägliche Erinnerung.</li>
+      <li><span class="badge">SCHEDULE_EXACT_ALARM</span> Damit die Erinnerung zur eingestellten Uhrzeit kommt.</li>
+      <li><span class="badge">USE_EXACT_ALARM</span> Wie oben, für neuere Android-Versionen.</li>
+      <li><span class="badge">RECEIVE_BOOT_COMPLETED</span> Stellt die Erinnerung nach einem Neustart des Geräts wieder her.</li>
+    </ul>
+    <p>Mehr fordert die App nicht an — insbesondere keinen Standort, keine Kontakte, keine Kamera und keinen Internetzugang.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🛡️">Sicherheit</h2>
+    <ul>
+      <li>Tagebucheinträge liegen mit <strong>AES-256</strong> verschlüsselt auf dem Gerät; jeder Speichervorgang bekommt einen eigenen Zufalls-IV.</li>
+      <li>PIN, Passwort und Muster werden mit <strong>PBKDF2-HMAC-SHA256</strong> und 100.000 Iterationen samt 32-Byte-Zufallssalz abgelegt.</li>
+      <li>Backup-Dateien werden mit <strong>AES-256</strong> verschlüsselt; der Schlüssel wird aus deinem Backup-Passwort per <strong>PBKDF2-HMAC-SHA256</strong> mit 100.000 Iterationen abgeleitet.</li>
+      <li>Nach fünf falschen Entsperr-Versuchen sperrt die App zunehmend länger (30, 60, 120 und schließlich 300 Sekunden).</li>
+      <li>Wechselt die App in den Hintergrund, sperrt sie sich selbst.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="👤">Verantwortlicher</h2>
+    <p>
+      <strong>Van Cheng</strong><br>
+      Stikelkamper Straße 6<br>
+      26835 Hesel, Deutschland<br>
+      E-Mail: <a href="mailto:bdgraue@gmail.com">bdgraue@gmail.com</a><br>
+      Quellcode: <a href="https://github.com/WariKoda/FocusJournal" target="_blank" rel="noopener">github.com/WariKoda/FocusJournal</a>
+    </p>
+    <p>Da die App keinerlei personenbezogene Daten an den Entwickler übermittelt, gibt es beim Entwickler auch nichts, worüber Auskunft erteilt oder was gelöscht werden könnte. Deine Daten liegen ausschließlich auf deinem Gerät — du hast die volle Kontrolle.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📋">Deine Rechte</h2>
+    <p>Da alle Daten lokal auf deinem Gerät gespeichert werden, verwaltest du sie jederzeit selbst:</p>
+    <ul>
+      <li><strong>Löschen:</strong> Einträge am selben Tag in der App löschen, alle Daten über die Einstellungen entfernen oder die App deinstallieren.</li>
+      <li><strong>Export:</strong> Die Backup-Funktion der App erzeugt eine verschlüsselte <code>.fjb</code>-Datei.</li>
+      <li><strong>Übertragbarkeit:</strong> Diese Datei kannst du auf ein anderes Gerät bringen und dort wieder einspielen.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📅">Änderungen</h2>
+    <p>Diese Datenschutzerklärung kann sich mit neuen App-Versionen ändern. Die jeweils aktuelle Fassung ist unter dieser Adresse abrufbar. Wesentliche Änderungen werden in den Release Notes genannt.</p>
+    <p><strong>Letzte Aktualisierung:</strong> August 2026 | <strong>App-Version:</strong> 1.4.1</p>
+  </div>
+
+</div>
+
+<!-- ===== ENGLISH ===== -->
+<div data-lang="en">
+
+  <div class="card">
+    <h2 data-icon="🔒">Core Principle</h2>
+    <p><strong>Focus Journal stores all your data exclusively on your device.</strong> There are no accounts, no cloud, no server run by the developer and no sharing of data with third parties. The Android build of the app does not even request permission to access the internet.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📱">What data is stored?</h2>
+    <ul>
+      <li><strong>Journal entries:</strong> Your text, the date and the star marker – encrypted in your device's local app storage. The key for it is generated once on the device and kept in protected system storage (Android Keystore or Keychain).</li>
+      <li><strong>App settings:</strong> Theme, reminder time, stars on/off – stored locally in your device's app preferences.</li>
+      <li><strong>Credentials:</strong> PIN, password or pattern are <strong>never stored in plaintext</strong>, only as a salted, stretched verifier in protected system storage.</li>
+      <li><strong>Backup files:</strong> Only when you create a backup yourself. The <code>.fjb</code> file is encrypted with your backup password and ends up wherever you save or share it.</li>
+    </ul>
+    <p><strong>No</strong> usage analytics, crash reports, advertising identifiers or telemetry are collected. The app contains no ads and no tracking libraries.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🌐">Network Access</h2>
+    <p><strong>None.</strong> The published Android build of Focus Journal declares no <code>INTERNET</code> permission. The operating system therefore does not let the app onto the network at all — regardless of what the app might attempt.</p>
+    <p>Consequently there is no transmission of entries, no synchronisation and no developer access to your data. If you want to move your journal to another device, you do so yourself using a backup file.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🔑">App Permissions</h2>
+    <ul>
+      <li><span class="badge">USE_BIOMETRIC</span> For the biometric app lock (fingerprint/face). Biometric data never leaves the device and is not readable by the app.</li>
+      <li><span class="badge">POST_NOTIFICATIONS</span> For the optional daily reminder.</li>
+      <li><span class="badge">SCHEDULE_EXACT_ALARM</span> So the reminder arrives at the time you set.</li>
+      <li><span class="badge">USE_EXACT_ALARM</span> Same purpose, for newer Android versions.</li>
+      <li><span class="badge">RECEIVE_BOOT_COMPLETED</span> Restores the reminder after the device reboots.</li>
+    </ul>
+    <p>The app requests nothing beyond this — in particular no location, no contacts, no camera and no internet access.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="🛡️">Security</h2>
+    <ul>
+      <li>Journal entries are stored on the device encrypted with <strong>AES-256</strong>; every write gets its own random IV.</li>
+      <li>PIN, password and pattern are stored using <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations and a 32-byte random salt.</li>
+      <li>Backup files are encrypted with <strong>AES-256</strong>; the key is derived from your backup password via <strong>PBKDF2-HMAC-SHA256</strong> with 100,000 iterations.</li>
+      <li>After five wrong unlock attempts the app locks for increasing periods (30, 60, 120 and finally 300 seconds).</li>
+      <li>When the app moves to the background, it locks itself.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="👤">Data Controller</h2>
+    <p>
+      <strong>Van Cheng</strong><br>
+      Stikelkamper Straße 6<br>
+      26835 Hesel, Germany<br>
+      Email: <a href="mailto:bdgraue@gmail.com">bdgraue@gmail.com</a><br>
+      Source code: <a href="https://github.com/WariKoda/FocusJournal" target="_blank" rel="noopener">github.com/WariKoda/FocusJournal</a>
+    </p>
+    <p>Since the app transmits no personal data to the developer, there is nothing at the developer's end to disclose or delete. Your data resides solely on your device — you retain full control.</p>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📋">Your Rights</h2>
+    <p>Since all data is stored locally on your device, you manage it yourself at any time:</p>
+    <ul>
+      <li><strong>Delete:</strong> Delete an entry in the app on the same day, wipe all data from the settings, or uninstall the app.</li>
+      <li><strong>Export:</strong> The app's backup feature produces an encrypted <code>.fjb</code> file.</li>
+      <li><strong>Portability:</strong> You can carry that file to another device and restore it there.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2 data-icon="📅">Changes</h2>
+    <p>This privacy policy may change with new app versions. The current version is always available at this address. Material changes are named in the release notes.</p>
+    <p><strong>Last updated:</strong> August 2026 | <strong>App version:</strong> 1.4.1</p>
+  </div>
+
+</div>
+
+<footer>
+  Focus Journal &copy; 2026 Van Cheng &nbsp;·&nbsp;
+  <a href="https://github.com/WariKoda/FocusJournal">GitHub</a>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(el => {
+      el.classList.toggle('visible', el.dataset.lang === lang);
+    });
+    document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    const sub = document.getElementById('header-sub');
+    sub.textContent = lang === 'de'
+      ? 'Datenschutzerklärung · Stand: August 2026'
+      : 'Privacy Policy · Last updated: August 2026';
+    document.documentElement.lang = lang;
+  }
+  // Direkteinstieg in die englische Fassung: Links dürfen #en anhängen.
+  if (location.hash === '#en') setLang('en');
+</script>
+</body>
+</html>

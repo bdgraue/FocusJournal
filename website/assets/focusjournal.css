@@ -1,0 +1,781 @@
+/* Focus-Journal-Website — ein Stylesheet für alle Seiten und beide Sprachen.
+   Palette abgeleitet aus dem App-Seed Colors.deepPurple (#673AB7, siehe
+   lib/main.dart) und dem App-Icon: cremefarbenes Papier, gelber Stift.
+   Keine externen Ressourcen: System-Schriften, lokale Bilder, kein CDN.
+   Muster: die Quirl- und die Daily-Thoughts-Website. */
+
+:root {
+  --papier: #faf7f2;
+  --karton: #ffffff;
+  --tusche: #1b1a1f;
+  --grau: #4a4550;
+  --violett: #673ab7;
+  --aubergine: #4b2a94;
+  --stift: #b07d00;
+  --linie: #e6ded4;
+
+  --grund: var(--papier);
+  --karte: var(--karton);
+  --tinte: var(--tusche);
+  --tinte-2: var(--grau);
+  --akzent: var(--violett);
+  --akzent-tief: var(--aubergine);
+  --akzent-2: var(--stift);
+  --kontur: var(--linie);
+
+  --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua',
+    Georgia, serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans',
+    sans-serif;
+  --mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, 'Liberation Mono',
+    monospace;
+
+  --mass: 72rem;
+  --rund: 14px;
+  /* Höhe der klebenden Kopfzeile (.kopf-zeile min-height 3.6rem) und der
+     Abstand, den Sprungmarken darunter brauchen. */
+  --kopf-hoehe: 3.6rem;
+  --kopf-abstand: 4.2rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --grund: #151318;
+    --karte: #201d26;
+    --tinte: #eae5ef;
+    --tinte-2: #a9a2b4;
+    --akzent: #d0bcff;
+    --akzent-tief: #e4d8ff;
+    --akzent-2: #e6c766;
+    --kontur: #35303f;
+  }
+}
+:root[data-theme='dark'] {
+  --grund: #151318;
+  --karte: #201d26;
+  --tinte: #eae5ef;
+  --tinte-2: #a9a2b4;
+  --akzent: #d0bcff;
+  --akzent-tief: #e4d8ff;
+  --akzent-2: #e6c766;
+  --kontur: #35303f;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--tinte);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--akzent); text-underline-offset: 3px; }
+a:hover { color: var(--akzent-tief); }
+:focus-visible {
+  outline: 3px solid var(--akzent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+img { max-width: 100%; height: auto; }
+
+.hof { max-width: var(--mass); margin-inline: auto; padding-inline: 1.25rem; }
+
+/* ---------- Kopf ---------- */
+
+.kopf {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--grund) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--kontur);
+}
+.kopf-zeile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.6rem;
+}
+.marke {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  text-decoration: none;
+  color: var(--tinte);
+}
+.marke img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--kontur);
+}
+.kopf nav {
+  display: flex;
+  gap: 1.1rem;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.kopf nav a {
+  color: var(--tinte-2);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.kopf nav a:hover { color: var(--akzent); }
+.kopf-werkzeug {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.sprachwechsel {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--tinte-2);
+  border: 1px solid var(--kontur);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+}
+.sprachwechsel:hover { color: var(--akzent); border-color: var(--akzent); }
+#themawechsel {
+  background: none;
+  border: 1px solid var(--kontur);
+  border-radius: 999px;
+  width: 2.1rem;
+  height: 2.1rem;
+  cursor: pointer;
+  color: var(--tinte-2);
+  font-size: 1rem;
+  line-height: 1;
+}
+#themawechsel:hover { color: var(--akzent); border-color: var(--akzent); }
+
+/* ---------- Held: die aufgeschlagene Tagebuchseite ---------- */
+
+.held {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+  padding-block: 4.5rem 3.5rem;
+}
+.held h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 1rem;
+}
+.held h1 em {
+  font-style: italic;
+  color: var(--akzent);
+}
+.held-text p {
+  font-size: 1.15rem;
+  color: var(--tinte-2);
+  max-width: 34rem;
+  margin: 0 0 1.75rem;
+}
+.held-aktionen { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.knopf {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+}
+.knopf-voll { background: var(--akzent); color: var(--grund); }
+.knopf-voll:hover { background: var(--akzent-tief); color: var(--grund); }
+.knopf-rand { border-color: var(--kontur); color: var(--tinte); }
+.knopf-rand:hover { border-color: var(--akzent); color: var(--akzent); }
+
+/* Die Signatur: Focus Journal, gezeigt als das, was es verwahrt —
+   eine aufgeschlagene, linierte Tagebuchseite. */
+.tagebuchseite {
+  background: var(--karte);
+  border: 1px solid var(--kontur);
+  border-radius: var(--rund);
+  padding: 1.5rem 1.6rem 1.2rem;
+  box-shadow: 0 18px 40px -28px rgba(30, 20, 45, 0.55);
+  rotate: -0.7deg;
+  position: relative;
+}
+/* Der Falz: die Seite ist aufgeschlagen, links sitzt der Bund. */
+.tagebuchseite::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.9rem;
+  left: 0.75rem;
+  width: 1px;
+  background: color-mix(in srgb, var(--akzent-2) 55%, transparent);
+}
+.seiten-kopf {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border-bottom: 1px solid var(--kontur);
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+.seiten-kopf img {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--kontur);
+}
+.seiten-kopf h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  margin: 0;
+}
+.seiten-kopf p {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+  color: var(--tinte-2);
+}
+.karte-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--akzent);
+  margin: 0.4rem 0 0.6rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.karte-label .stern { color: var(--akzent-2); font-size: 0.95rem; }
+
+/* Liniertes Papier — gezeichnet, nicht geladen. */
+.eintrag {
+  margin: 0;
+  padding: 0 0 0.4rem 0.6rem;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.9rem;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.85rem,
+    color-mix(in srgb, var(--kontur) 80%, transparent) 1.85rem,
+    color-mix(in srgb, var(--kontur) 80%, transparent) 1.9rem
+  );
+}
+.eintrag span { display: block; }
+.seiten-fuss {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.6rem;
+  margin: 0.9rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--kontur);
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--tinte-2);
+  border: 1px solid var(--kontur);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+}
+.chip.gesperrt { color: var(--akzent); border-color: var(--akzent); }
+
+.einblenden { opacity: 0; translate: 0 8px; }
+.geladen .einblenden {
+  animation: einschreiben 0.45s ease-out forwards;
+}
+.geladen .einblenden:nth-child(2) { animation-delay: 0.09s; }
+.geladen .einblenden:nth-child(3) { animation-delay: 0.18s; }
+.geladen .einblenden:nth-child(4) { animation-delay: 0.27s; }
+.geladen .einblenden:nth-child(5) { animation-delay: 0.36s; }
+@keyframes einschreiben {
+  to { opacity: 1; translate: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .einblenden { opacity: 1; translate: 0 0; }
+}
+
+/* ---------- Zusagen: das Zahlen-Band ----------
+   Jede Ziffer ist gegen den Code belegt (Berechtigungen aus dem
+   Release-Manifest, Sprachen aus lib/l10n/translations/, Schlüsselrunden aus
+   backup_service.dart). Große Serifen-Ziffer, kleine Mono-Unterschrift. */
+
+.zusagen {
+  border-block: 1px solid var(--kontur);
+  padding-block: 1.9rem;
+}
+.zusagen ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem 3.2rem;
+  justify-content: center;
+}
+.zusagen li {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  line-height: 1.45;
+  text-transform: uppercase;
+  color: var(--tinte-2);
+  text-align: center;
+  max-width: 8.5rem;
+}
+.zusagen .zahl {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--akzent);
+  margin-bottom: 0.3rem;
+}
+
+/* ---------- Abschnitte ---------- */
+
+section[id] { scroll-margin-top: var(--kopf-abstand); }
+.abschnitt { padding-block: 3.6rem; }
+/* Jeder zweite Abschnitt auf der Kartenfarbe — gliedert die Seite, ohne
+   ein einziges neues Element zu brauchen. */
+.abschnitt.gedeckt {
+  background: var(--karte);
+  border-block: 1px solid var(--kontur);
+}
+.augenbraue {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--akzent);
+  margin: 0 0 0.5rem;
+}
+.abschnitt > .hof > h2,
+.abschnitt-titel {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  line-height: 1.15;
+  margin: 0 0 1.6rem;
+}
+.abschnitt > .hof > .vorspann {
+  color: var(--tinte-2);
+  max-width: 46rem;
+  margin: -1rem 0 1.6rem;
+}
+
+/* ---------- Funktionsstreifen: je Screenshot ein Abschnitt ---------- */
+
+/* Der Schalter über den Streifen: schaltet alle Screenshots der Seite
+   zwischen hell und dunkel — unabhängig vom Design der Seite selbst. Er
+   startet `hidden`; erst focusjournal.js blendet ihn ein, damit er ohne
+   JavaScript nicht wirkungslos herumsteht.
+
+   Er klebt beim Scrollen unter der Kopfzeile — aber nur innerhalb des
+   Funktionen-Abschnitts, weil sein Elternelement (.hof) genau dort endet.
+   Weiter unten, wo es keine Screenshots gibt, ist er damit von selbst weg.
+   `display: flex` statt `inline-flex`, weil sticky an einem Element im
+   Blockfluss verlässlich greift; `width: fit-content` hält die Pillenform.
+   z-index bleibt unter dem der Kopfzeile (10). */
+/* Die Leiste klebt, nicht die Pille selbst: Eine freistehende Pille würde
+   sich beim Scrollen über Fließtext und Screenshots legen und dort ein
+   Rechteck ausstanzen. Die Leiste ist so breit wie der Textkörper und
+   deckend — Inhalt verschwindet sauber darunter. Sie klebt bündig unter der
+   Kopfzeile, damit dazwischen kein Spalt bleibt, durch den Inhalt blitzt.
+   Ihr Klebebereich endet mit dem Funktionen-Abschnitt, weil ihr
+   Elternelement (.hof) dort endet. */
+.bild-leiste {
+  position: sticky;
+  top: calc(var(--kopf-hoehe) + 1px);
+  z-index: 5;
+  background: var(--grund);
+  border-bottom: 1px solid var(--kontur);
+  padding-block: 0.7rem;
+  margin-bottom: 1.8rem;
+}
+/* Ohne JavaScript bleibt die Leiste weg. Die Regel steht ausdrücklich hier:
+   Ein `display` im Autoren-Stylesheet schlägt die Browser-Regel
+   `[hidden] { display: none }` — bekäme .bild-leiste später eins, wäre das
+   `hidden` im Markup sonst still wirkungslos. */
+.bild-leiste[hidden] { display: none; }
+
+.bild-schalter {
+  display: flex;
+  width: fit-content;
+  gap: 0;
+  border: 1px solid var(--kontur);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bild-schalter button {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--tinte-2);
+  padding: 0.35rem 1rem;
+}
+.bild-schalter button + button { border-left: 1px solid var(--kontur); }
+.bild-schalter button[aria-pressed='true'] {
+  background: var(--akzent);
+  color: var(--grund);
+}
+.bild-schalter button:hover:not([aria-pressed='true']) { color: var(--akzent); }
+
+.funktionsstreifen {
+  display: grid;
+  gap: 0;
+}
+.streifen {
+  display: grid;
+  grid-template-columns: 20rem minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+  padding-block: 3rem;
+  border-top: 1px solid var(--kontur);
+}
+.streifen:first-child { border-top: 0; padding-top: 0.5rem; }
+/* Jeder zweite Streifen gespiegelt: Bild rechts, Text links. */
+.streifen:nth-child(even) { grid-template-columns: minmax(0, 1fr) 20rem; }
+.streifen:nth-child(even) .streifen-bild { order: 2; }
+
+.streifen-bild img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--kontur);
+  border-radius: var(--rund);
+  box-shadow: 0 20px 45px -32px rgba(30, 20, 45, 0.55);
+}
+.streifen-text h3 {
+  font-family: var(--serif);
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+  line-height: 1.2;
+  margin: 0 0 0.7rem;
+}
+.streifen-text p {
+  margin: 0 0 0.8rem;
+  color: var(--tinte-2);
+  max-width: 34rem;
+}
+.streifen-text p:last-child { margin-bottom: 0; }
+/* Die harte Zahl hinter der Aussage — Adjektive kann jeder behaupten. */
+.streifen-text .beleg {
+  margin: 1.1rem 0 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--akzent-2);
+  font-family: var(--mono);
+  font-size: 0.73rem;
+  line-height: 1.65;
+  letter-spacing: 0.02em;
+  color: var(--tinte-2);
+}
+.streifen-text .marke-nummer {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--akzent);
+  margin: 0 0 0.4rem;
+}
+.streifen.gold .streifen-text h3 { color: var(--akzent-2); }
+.streifen.gold .streifen-text .marke-nummer { color: var(--akzent-2); }
+
+/* Sanftes Einblenden beim Hereinscrollen. Der Startzustand steht bewusst
+   HINTER .beobachtet — die Klasse setzt erst das Script. Stünde er frei im
+   Stylesheet, blieben die Streifen ohne JavaScript für immer unsichtbar. */
+.funktionsstreifen.beobachtet .streifen {
+  opacity: 0;
+  translate: 0 14px;
+  transition: opacity 0.5s ease-out, translate 0.5s ease-out;
+}
+.funktionsstreifen.beobachtet .streifen.sichtbar {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Screenshot-Varianten: Ohne JavaScript folgt das Bild dem Seiten-Design
+   (Systemwahl wie data-theme-Umschalter) — die :where()-Hülle hält die
+   Spezifität niedrig. Mit JavaScript setzt der Schalter data-thema direkt an
+   .funktionsstreifen; diese Regeln stehen zuletzt und gewinnen damit
+   unabhängig vom Seiten-Design. */
+.funktionsstreifen .bild-dunkel { display: none; }
+@media (prefers-color-scheme: dark) {
+  :where(:root:not([data-theme='light'])) .funktionsstreifen .bild-hell {
+    display: none;
+  }
+  :where(:root:not([data-theme='light'])) .funktionsstreifen .bild-dunkel {
+    display: block;
+  }
+}
+:where(:root[data-theme='dark']) .funktionsstreifen .bild-hell { display: none; }
+:where(:root[data-theme='dark']) .funktionsstreifen .bild-dunkel { display: block; }
+
+.funktionsstreifen[data-thema='light'] .bild-hell { display: block; }
+.funktionsstreifen[data-thema='light'] .bild-dunkel { display: none; }
+.funktionsstreifen[data-thema='dark'] .bild-hell { display: none; }
+.funktionsstreifen[data-thema='dark'] .bild-dunkel { display: block; }
+
+/* ---------- Downloads ---------- */
+
+.plattformen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.1rem;
+}
+/* Android ist die einzige Plattform, die es heute wirklich gibt — sie bekommt
+   den Akzentrahmen. Die geplanten Ziele stehen darunter als eine Zeile,
+   nicht als sechs wortgleiche Kästen. */
+/* Doppelte Klasse mit Absicht: .plattform setzt weiter unten die
+   border-Kurzschrift und würde ein bloßes border-color hier überschreiben. */
+.plattform.plattform-haupt {
+  border-color: color-mix(in srgb, var(--akzent) 55%, var(--kontur));
+  box-shadow: 0 14px 34px -28px rgba(30, 20, 45, 0.6);
+}
+.plattform.plattform-haupt h3 {
+  font-size: 1.3rem;
+  font-family: var(--serif);
+}
+.plattform.plattform-haupt .status { color: var(--akzent); }
+.geplant {
+  margin: 1.3rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--tinte-2);
+}
+.geplant strong { color: var(--tinte); font-weight: 600; }
+.plattform {
+  border: 1px solid var(--kontur);
+  border-radius: var(--rund);
+  padding: 1.2rem 1.3rem;
+  background: var(--karte);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.plattform h3 { margin: 0; font-size: 1.05rem; }
+.plattform p { margin: 0; font-size: 0.88rem; color: var(--tinte-2); }
+.plattform code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--tinte-2);
+  overflow-wrap: break-word;
+}
+.plattform .status {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--tinte-2);
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+.plattform .status.bereit { color: var(--akzent-2); }
+.plattform a { font-weight: 600; }
+
+/* ---------- Quelloffen ---------- */
+
+.quelle {
+  background: var(--karte);
+  border: 1px solid var(--kontur);
+  border-radius: var(--rund);
+  padding: 1.5rem 1.6rem;
+  display: grid;
+  gap: 0.7rem;
+}
+.quelle p { margin: 0; color: var(--tinte-2); }
+.quelle p.stark { color: var(--tinte); }
+.quelle .lizenz {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--akzent-2);
+}
+
+/* Der Berechtigungs-Beleg: fünf Zeilen, die das Release-Manifest tatsächlich
+   anfordert — und darunter abgesetzt die eine, die fehlt. Das ist der Punkt
+   des ganzen Abschnitts, deshalb steht er als Beleg da und nicht als Satz. */
+.berechtigungen {
+  margin-top: 1.5rem;
+  border: 1px solid var(--kontur);
+  border-radius: var(--rund);
+  background: var(--grund);
+  overflow: hidden;
+}
+.berechtigungen-kopf {
+  margin: 0;
+  padding: 0.6rem 1.3rem;
+  border-bottom: 1px solid var(--kontur);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--akzent);
+}
+.berechtigungen ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.9rem 1.3rem 1.1rem;
+}
+.berechtigungen li {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 0 1.2rem;
+  padding-block: 0.3rem;
+}
+.berechtigungen code {
+  font-size: 0.76rem;
+  background: none;
+  padding: 0;
+  color: var(--tinte);
+  overflow-wrap: anywhere;
+}
+.berechtigungen span {
+  font-size: 0.86rem;
+  color: var(--tinte-2);
+}
+.berechtigungen li.fehlt {
+  margin-top: 0.7rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--kontur);
+}
+.berechtigungen li.fehlt code,
+.berechtigungen li.fehlt span { color: var(--akzent-2); }
+
+/* ---------- Abbinder: das Gegenstück zur Held-Karte am Seitenende ----------
+   Dieselben Papierlinien wie in .eintrag, damit die Seite geschlossen wirkt.
+   Die Zeilenhöhe muss zum Linienraster passen, sonst schwimmt der Text. */
+.abbinder {
+  margin-top: 2.6rem;
+  /* Höhe als Vielfaches des Linienrasters (1,9rem), damit mehrere Linien
+     sichtbar werden — eine einzelne läse sich wie ein verirrter Rahmen. */
+  padding: 1.9rem 1.8rem 5.7rem;
+  border: 1px solid var(--kontur);
+  border-radius: var(--rund);
+  background-color: var(--karte);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.85rem,
+    color-mix(in srgb, var(--kontur) 70%, transparent) 1.85rem,
+    color-mix(in srgb, var(--kontur) 70%, transparent) 1.9rem
+  );
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.1rem 1.8rem;
+}
+.abbinder p {
+  margin: 0;
+  flex: 1 1 20rem;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.9rem;
+  color: var(--tinte);
+}
+.abbinder .knopf { flex: 0 0 auto; }
+
+/* ---------- FAQ ---------- */
+
+.faq details {
+  border-bottom: 1px solid var(--kontur);
+  padding-block: 0.4rem;
+}
+.faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding-block: 0.55rem;
+  list-style-position: outside;
+}
+.faq summary::marker { color: var(--akzent); }
+.faq details p {
+  margin: 0.2rem 0 0.9rem;
+  color: var(--tinte-2);
+}
+
+/* ---------- Fließtext-Seiten (Impressum) ---------- */
+
+.prosa { max-width: 46rem; padding-block: 3rem 4rem; }
+.prosa h1 {
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.15;
+}
+.prosa h2 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  margin-top: 2.2rem;
+}
+.prosa li { margin-block: 0.3rem; }
+
+/* ---------- Fuß ---------- */
+
+.fuss {
+  border-top: 1px solid var(--kontur);
+  padding-block: 2rem 2.6rem;
+  font-size: 0.9rem;
+  color: var(--tinte-2);
+}
+.fuss-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  align-items: center;
+}
+.fuss a { color: var(--tinte-2); }
+.fuss a:hover { color: var(--akzent); }
+.fuss .marke { font-size: 1.05rem; }
+.fuss .marke img { width: 1.5rem; height: 1.5rem; }
+
+/* ---------- Schmal ---------- */
+
+@media (max-width: 52rem) {
+  .held {
+    grid-template-columns: 1fr;
+    gap: 2.2rem;
+    padding-block: 2.8rem 2.4rem;
+  }
+  .tagebuchseite { rotate: 0deg; }
+  .kopf nav { display: none; }
+
+  .streifen,
+  .streifen:nth-child(even) {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    padding-block: 2.2rem;
+  }
+  .streifen:nth-child(even) .streifen-bild { order: 0; }
+  .streifen-bild { max-width: 20rem; margin-inline: auto; width: 100%; }
+
+  /* Bezeichner und Zweck untereinander statt nebeneinander. */
+  .berechtigungen li { grid-template-columns: 1fr; gap: 0.15rem; }
+  .berechtigungen li.fehlt { margin-top: 0.9rem; }
+}
+
+/* ---------- Inline-Code ---------- */
+
+code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: color-mix(in srgb, var(--akzent) 10%, transparent);
+  border-radius: 5px;
+  padding: 0.05em 0.35em;
+}
