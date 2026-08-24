@@ -70,27 +70,6 @@ android {
             isShrinkResources = false
         }
     }
-
-    applicationVariants.all {
-        val variant = this
-        variant.outputs.all {
-            val output = this
-            if (output is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
-                output.outputFileName = "app-${variant.name}.apk"
-            }
-        }
-    }
-
-    android.applicationVariants.configureEach {
-        val variant = this
-        variant.assembleProvider.get().doLast {
-            copy {
-                from("${buildDir}/outputs/apk/${variant.name}")
-                include("app-${variant.name}.apk")
-                into("${rootProject.projectDir}/../build/app/outputs/flutter-apk")
-            }
-        }
-    }
 }
 
 flutter {

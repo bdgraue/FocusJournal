@@ -251,6 +251,32 @@ prefix — not an oversight.
 The lesson worth keeping: do not publish an immutable release until the tag is
 certain, because the name is spent either way.
 
+## 📦 Building for the Play Store
+
+```
+flutter build appbundle --release   # build/app/outputs/bundle/release/app-release.aab
+```
+
+- **Signing** comes from `android/key.properties` (gitignored), which points at
+  the upload keystore. Beware the fallback in `android/app/build.gradle.kts`: if
+  that file is missing, the release build silently signs with the **debug** key
+  and Play rejects the upload. Verify before uploading — the fingerprint must
+  match the upload key:
+
+  ```
+  keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab
+  ```
+
+- **versionCode** comes from `pubspec.yaml` — the `+N` in `version: X.Y.Z+N`.
+  Raise it for every upload; Play refuses a code it has already seen. The CI
+  deliberately does not override it, so a local build and a CI build of the same
+  commit produce the same code.
+
+- **Output paths** depend on the build-directory redirection in
+  `android/build.gradle.kts`. Without it Gradle writes to `android/app/build`
+  and `flutter build appbundle` aborts with "Gradle build failed to produce an
+  .aab file" — the bundle exists, just where the tool does not look.
+
 ## 🤝 Contributing
 
 When working on this project:
