@@ -54,7 +54,9 @@ jobs:
         run: flutter test
 
       - name: Build release APK
-        run: flutter build apk --release --build-number=${{ github.run_number }} --verbose
+        # versionCode comes from pubspec.yaml (version: X.Y.Z+N) so that a
+        # local release build and a CI build of the same commit agree.
+        run: flutter build apk --release --verbose
 
       - name: Read version from pubspec
         id: version
